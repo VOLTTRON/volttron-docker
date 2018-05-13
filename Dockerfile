@@ -8,17 +8,17 @@ ENV VOLTTRON_ROOT=/code/volttron
 ENV VOLTTRON_USER=volttron
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-	build-essential \
+    build-essential \
     python-dev \
     openssl \
     libssl-dev \
     libevent-dev \
     python-pip \
     git \
-	gnupg \
-	dirmngr \
+    gnupg \
+    dirmngr \
     && pip install PyYAML \ 
-	&& rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/*
 
 # add gosu for easy step-down from root
 ENV GOSU_VERSION 1.7
@@ -34,7 +34,7 @@ RUN set -x \
 	&& gosu nobody true \
 && apt-get purge -y --auto-remove wget
 
-RUN adduser --disabled-password --gecos "" volttron
+RUN adduser --disabled-password --gecos "" $VOLTTRON_USER
 
 RUN mkdir /code && chown $VOLTTRON_USER.$VOLTTRON_USER /code
 
