@@ -8,6 +8,17 @@ usage () {
 
 IMAGE="volttron/volttron"
 
+if [ -z $TRAVIS_BRANCH ]; then
+  echo "Not running in travis context"
+  exit 1
+fi
+
+TAG=":${TRAVIS_BRANCH}"
+
+if [ "${TRAVIS_BRANCH}" == 'master' ]; then
+  TAG=''
+fi
+
 # parse options
 while getopts bp option ; do
   case $option in
