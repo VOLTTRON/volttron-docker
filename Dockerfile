@@ -3,7 +3,8 @@ FROM debian:jessie
 SHELL [ "bash", "-c" ]
 
 ENV VOLTTRON_GIT_BRANCH=releases/5.x
-ENV VOLTTRON_HOME=/home/volttron/.volttron
+ENV VOLTTRON_USER_HOME=/home/volttron
+ENV VOLTTRON_HOME=${VOLTTRON_USER_HOME}/.volttron
 ENV VOLTTRON_ROOT=/code/volttron
 ENV VOLTTRON_USER=volttron
 
@@ -17,7 +18,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     gnupg \
     dirmngr \
-    && pip install PyYAML \ 
+    && pip install PyYAML \
     && rm -rf /var/lib/apt/lists/*
 
 # add gosu for easy step-down from root
@@ -44,11 +45,10 @@ RUN git clone https://github.com/VOLTTRON/volttron -b ${VOLTTRON_GIT_BRANCH}
 WORKDIR /code/volttron
 RUN ls -la
 RUN python bootstrap.py
-RUN echo "source /code/volttron/env/bin/activate">/home/${VOLTTRON_USER}/.bashrc
+RUN echo "source /code/volttron/env/bin/activate">${VOLTTRON_USER_HOME}/.bashrc
 USER root
 
 RUN mkdir /startup
 COPY entrypoint.sh /startup/entrypoint.sh
 RUN chmod +x /startup/entrypoint.sh
-RUN echo "AFTER COPY"
 ENTRYPOINT ["/startup/entrypoint.sh"]
