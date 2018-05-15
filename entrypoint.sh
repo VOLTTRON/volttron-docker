@@ -26,8 +26,15 @@ fi
 
 cd ${VOLTTRON_USER_HOME}
 
+if [ ! -f "platform_config.yml" ]; then
+  echo "File not found at $VOLTTRON_USER_HOME/platform_config.yml";
+  echo "mount or copy file into child container."
+  exit 1;
+fi
+
 if [ ! -n "$@" ]; then
-  echo "Please provide a command to run (e.g. /bin/bash)"
+  echo "Please provide a command to run (e.g. /bin/bash)";
+  exit 1;
 else
   echo "now Executing $@";
   exec /usr/local/bin/gosu volttron "$@";

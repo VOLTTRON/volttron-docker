@@ -51,4 +51,5 @@ USER root
 RUN mkdir /startup
 COPY entrypoint.sh /startup/entrypoint.sh
 RUN chmod +x /startup/entrypoint.sh
+WORKDIR ${VOLTTRON_USER_HOME}
 ENTRYPOINT ["/startup/entrypoint.sh"]
