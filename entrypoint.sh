@@ -7,8 +7,15 @@ set -e
 USER_ID=${LOCAL_USER_ID:-9001}
 
 echo "Starting with UID : $USER_ID VOLTTRON_USER_HOME is $VOLTTRON_USER_HOME"
-#useradd --shell /bin/bash -u $USER_ID -o -c "" -m volttron
-usermod -u $USER_ID volttron
+
+id -u volttron
+
+if [ $(id -u volttron > /dev/null 2>&1; echo $?) == 1 ]; then
+  echo "Adding new user with UID $USER_ID"
+  useradd --shell /bin/bash -u $USER_ID -o -c "" -m volttron
+else
+  usermod -u $USER_ID volttron
+fi
 
 export HOME=${VOLTTRON_USER_HOME}
 
@@ -18,5 +25,10 @@ if [ -z "${VOLTTRON_USER_HOME}" ]; then
 fi
 
 cd ${VOLTTRON_USER_HOME}
-echo "now Executing $@"
-exec /usr/local/bin/gosu volttron "$@"
+
+if [ ! -n "$@" ]; then
+  echo "Please provide a command to run (e.g. /bin/bash)"
+else
+  echo "now Executing $@";
+  exec /usr/local/bin/gosu volttron "$@";
+fi
