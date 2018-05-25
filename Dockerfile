@@ -50,6 +50,10 @@ USER root
 
 RUN mkdir /startup
 COPY entrypoint.sh /startup/entrypoint.sh
+COPY bootstart.sh /startup/bootstart.sh
+COPY setup-platform.py /startup/setup-platform.py
 RUN chmod +x /startup/entrypoint.sh
+RUN chmod +x /startup/bootstart.sh
 WORKDIR ${VOLTTRON_USER_HOME}
 ENTRYPOINT ["/startup/entrypoint.sh"]
+CMD ["/startup/bootstart.sh"]
