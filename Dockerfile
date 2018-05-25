@@ -54,6 +54,7 @@ COPY bootstart.sh /startup/bootstart.sh
 COPY setup-platform.py /startup/setup-platform.py
 RUN chmod +x /startup/entrypoint.sh
 RUN chmod +x /startup/bootstart.sh
+RUN echo "source /code/volttron/env/bin/activate">/home/${VOLTTRON_USER}/.bashrc
 WORKDIR ${VOLTTRON_USER_HOME}
 ENTRYPOINT ["/startup/entrypoint.sh"]
 CMD ["/startup/bootstart.sh"]
