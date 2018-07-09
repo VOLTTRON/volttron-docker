@@ -41,7 +41,7 @@ RUN mkdir /code && chown $VOLTTRON_USER.$VOLTTRON_USER /code
 
 USER $VOLTTRON_USER
 WORKDIR /code
-RUN git clone https://github.com/kwarodom/hive_os.git -b ${dev}
+RUN git clone https://github.com/VOLTTRON/volttron -b ${VOLTTRON_GIT_BRANCH}
 WORKDIR /code/volttron
 RUN ls -la
 RUN python bootstrap.py
