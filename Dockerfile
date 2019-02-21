@@ -2,7 +2,7 @@ FROM debian:jessie
 
 SHELL [ "bash", "-c" ]
 
-ENV VOLTTRON_GIT_BRANCH=releases/5.x
+ENV VOLTTRON_GIT_BRANCH=develop
 ENV VOLTTRON_USER_HOME=/home/volttron
 ENV VOLTTRON_HOME=${VOLTTRON_USER_HOME}/.volttron
 ENV VOLTTRON_ROOT=/code/volttron
@@ -55,6 +55,6 @@ COPY setup-platform.py /startup/setup-platform.py
 RUN chmod +x /startup/entrypoint.sh
 RUN chmod +x /startup/bootstart.sh
 RUN echo "source /code/volttron/env/bin/activate">/home/${VOLTTRON_USER}/.bashrc
-WORKDIR ${VOLTTRON_USER_HOME}
+# WORKDIR ${VOLTTRON_USER_HOME}
 ENTRYPOINT ["/startup/entrypoint.sh"]
 CMD ["/startup/bootstart.sh"]

@@ -14,6 +14,18 @@ VOLTTRON_CTL = "{}/env/bin/volttron-ctl".format(VOLTTRON_ROOT)
 INSTALL_PATH = "{}/scripts/install-agent.py".format(VOLTTRON_ROOT)
 KEYSTORES = os.path.join(VOLTTRON_HOME, "keystores")
 
+sys.stderr.write("""
+ENVIRONMENT CONTEXT
+VOLTTRON_ROOT={vroot}
+VOLTTRON_HOME={vhome}
+VOLTTRON_PATH={vpath}
+VOLTTRON_CTL={vctl}
+INSTALL_PATH={inst}
+
+
+""".format(vroot=VOLTTRON_ROOT, vhome=VOLTTRON_HOME, vctl=VOLTTRON_CTL,
+           vpath=VOLTTRON_PATH, inst=INSTALL_PATH))
+
 platform_config = None
 if 'PLATFORM_CONFIG' in os.environ and os.environ['PLATFORM_CONFIG']:
     platform_config = os.environ['PLATFORM_CONFIG']
