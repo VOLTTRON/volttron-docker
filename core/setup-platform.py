@@ -76,7 +76,8 @@ if need_to_install:
             sys.stderr.write("Invalid souce for identity: {}\n".format(identity))
             continue
 
-        if "config" in spec:
+        if "config" in spec and spec["config"]:
+            print("ThES PEC IS : {}".format(spec['config']))
             agent_cfg = os.path.abspath(
                 os.path.expandvars(
                     os.path.expanduser(spec['config']))) #os.path.join(config_dir, spec["config"])
