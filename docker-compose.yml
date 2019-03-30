@@ -4,8 +4,6 @@ volumes:
 services:
   volttron:
     hostname: vc
-    #command: tail -f /dev/null
-    #user: volttron
     image: volttron-rabbitmq
     ports:
       # - 23916:22916
