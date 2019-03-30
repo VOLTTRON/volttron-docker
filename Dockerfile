@@ -72,9 +72,9 @@ RUN ./scripts/rabbit_dependencies.sh $OS_TYPE $DIST
 RUN mkdir /startup $VOLTTRON_HOME && \
     chown $VOLTTRON_USER.$VOLTTRON_USER $VOLTTRON_HOME
 COPY ./core/entrypoint.sh /startup/entrypoint.sh
-COPY ./bootstart.sh /startup/bootstart.sh
-RUN chmod +x /startup/entrypoint.sh && \
-    chmod +x /startup/bootstart.sh
+COPY ./core/bootstart.sh /startup/bootstart.sh
+COPY ./core/setup-platform.py /startup/setup-platform.py
+RUN chmod +x /startup/*
 
 USER $VOLTTRON_USER
 RUN mkdir $RMQ_ROOT

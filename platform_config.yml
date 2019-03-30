@@ -1,12 +1,18 @@
 # Properties to be added to the root config file
-# the properties should be ingestable for volttron
+# the properties should be ingestible for volttron
 # the values will be presented in the config file
 # as key=value
 config:
   vip-address: tcp://0.0.0.0:22916
-  bind-web-address: http://0.0.0.0:8080
+  # For rabbitmq this should match the hostname specified in
+  # in the docker compose file hostname field for the service.
+  bind-web-address: https://vc:8443
+  instance-name: foobar
+  message-bus: rmq
   # volttron-central-address: a different address
   # volttron-central-serverkey: a different key
+
+rabbitmq-config: $CONFIG/rabbitmq_config.yml
 
 # Agents dictionary to install.  The key must be a valid
 # identity for the agent to be installed correctly.
@@ -33,15 +39,15 @@ agents:
 #    source: $VOLTTRON_ROOT/examples/DataPublisher
 #    config: $CONFIG/price.config
 #
-  platform.bacnet_proxy:
-    source: $VOLTTRON_ROOT/services/core/BACnetProxy
-    config: $CONFIG/bacnet-proxy.json
-  platform.driver:
-    source: $VOLTTRON_ROOT/services/core/MasterDriverAgent
-    config_store:
-      fake.csv:
-        file: $CONFIG/bacnet_example_config.csv
-        type: --csv
-      devices/PNNL/ANNEX:
-        file: $CONFIG/annex.config
+#  platform.bacnet_proxy:
+#    source: $VOLTTRON_ROOT/services/core/BACnetProxy
+#    config: $CONFIG/bacnet-proxy.json
+#  platform.driver:
+#    source: $VOLTTRON_ROOT/services/core/MasterDriverAgent
+#    config_store:
+#      fake.csv:
+#        file: $CONFIG/bacnet_example_config.csv
+#        type: --csv
+#      devices/PNNL/ANNEX:
+#        file: $CONFIG/annex.config
 
