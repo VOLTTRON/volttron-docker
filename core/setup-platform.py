@@ -74,6 +74,10 @@ if platform_cfg.get('message-bus') == 'rmq':
         sys.exit(1)
 
     rabbit_config['host'] = hostname
+    certs_test_path = os.path.join(VOLTTRON_HOME,
+                                   "certificates/certs/{}-trusted-cas.crt".format(platform_cfg.get("instance-name")))
+    if os.path.isfile(certs_test_path):
+        rabbit_config['use-existing-certs'] = True
     rabbitfilename = os.path.join(VOLTTRON_HOME, "rabbitmq_config.yml")
     print("Creating rabbitmq conifg file at {}".format(rabbitfilename))
     print("dumpfile is :{}".format(rabbit_config))
@@ -84,10 +88,8 @@ if platform_cfg.get('message-bus') == 'rmq':
     now_dir = os.getcwd()
     os.chdir(VOLTTRON_ROOT)
 
-    certs_test_path = os.path.join(VOLTTRON_HOME,
-                                   "certificates/{}-trusted-cas.crt".format(platform_cfg.get("instance-name")))
-    if not os.path.isfile(certs_test_path):
-        setup_rabbitmq_volttron('single', True, instance_name=platform_cfg.get('instance-name'))
+    setup_rabbitmq_volttron('single', True, instance_name=platform_cfg.get('instance-name'))
+    
     os.chdir(now_dir)
 
 
