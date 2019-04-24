@@ -7,6 +7,7 @@ config:
   # For rabbitmq this should match the hostname specified in
   # in the docker compose file hostname field for the service.
   bind-web-address: https://vc:8443
+  volttron-central-address: https://vc:8443
   instance-name: foobar
   message-bus: rmq
   # volttron-central-address: a different address
@@ -20,10 +21,17 @@ agents:
 
   # Each agent identity.config file should be in the configs
   # directory and will be used to install the agent.
-  listener:
-    source: $VOLTTRON_ROOT/examples/ListenerAgent
-    config: ~ # This is an empty element $CONFIG/listener.config
+  #listener:
+  #  source: $VOLTTRON_ROOT/examples/ListenerAgent
+  #  config: ~ # This is an empty element $CONFIG/listener.config
 
+  volttron.central:
+    source: $VOLTTRON_ROOT/services/core/VolttronCentral
+    config: $VOLTTRON_ROOT/services/core/VolttronCentral/config
+
+  platform.agent:
+    source: $VOLTTRON_ROOT/services/core/VolttronCentralPlatform
+    config: $VOLTTRON_ROOT/services/core/VolttronCentralPlatform/config
 #  platform.actuator:
 #    source: $VOLTTRON_ROOT/services/core/ActuatorAgent
 #
