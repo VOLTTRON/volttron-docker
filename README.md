@@ -6,14 +6,14 @@ base docker images are available on docker hub at https://hub.docker.com/r/voltt
 
 # Usage
 
-```` bash
+``` bash
 # Retrieves and executes the volttron container.
 docker run -it volttron/volttron
-````
+```
 
 After entering the above command the shell will be within the volttron container as a user named volttron.
 
-```` bash
+``` bash
 # starting the platform
 volttron -vv -l volttron.log&
 
@@ -25,13 +25,14 @@ python scripts/core/make-listener
 
 # see the log messages
 tail -f volttron.log
-````
+```
 
 All the same functionality that one would have from a VOLTTRON command line is available through the container.
 
 # Platform Initialization
 
 The VOLTTRON container when created is just a blank container with no agents.  Now there is an initialization routine available within the docker container to allow the installation of agents before launching of the instance.  To do this one will mount a platform_config.yml file to /platform_config.yml.  The recommended way to do this is through a docker-compose.yml file.  An example of this is available https://github.com/VOLTTRON/volttron-fuel-cells/.
+Note that agents within the `platform_config.yml` file are created sequentailly, it can take several seconds for each to spin up and be visible via `vctl` commands.
 
 # Advanced Usage
 
@@ -39,9 +40,8 @@ In order for volttron to keep its state between runs, the state must be stored o
 
 1. Create a directory (mkdir -p vhome).  This is where the VOLTTRON_HOME inside the container will be created on the host.
 1. Start the docker container with a volume mount point and pass a LOCAL_USER_ID environtmental variable.
-    ```` bash
+    ``` bash
     docker run -e LOCAL_USER_ID=$UID -v /home/user/vhome:/home/volttron/.volttron -it volttron/volttron
-    ````
+    ```
 
 In order to allow an external instance connect to the running volttron container one must add the -p <hostport>:<containerport> (e.g. 22916:22916)
-
