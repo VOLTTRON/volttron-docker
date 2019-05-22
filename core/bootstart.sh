@@ -20,12 +20,8 @@ fi
 # does setup-playtform.py return its PID? or do you not mean PID?
 # should `volttron -vv` be run if setup-platform fails?
 
-#PID=$?
-#echo "PID WAS $PID"
-#if [[ "$setup_return" == "0" ]]; then
-    volttron -vv
-    volttron_retcode=$?
-#fi
+volttron -vv
+volttron_retcode=$?
 if [[ $volttron_retcode ]]; then
   echo "volttron error"
   exit $volttron_retcode
