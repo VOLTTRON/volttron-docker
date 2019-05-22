@@ -4,7 +4,7 @@
 This image provides a reproducable way to install VOLTTRON within a docker container.  It features gosu which allows the storage of VOLTTRON_HOME to be persistable on the hosts hard drive.  The
 base docker images are available on docker hub at https://hub.docker.com/r/volttron/volttron/.
 
-# Usage
+# Raw Container Usage
 
 ``` bash
 # Retrieves and executes the volttron container.
@@ -35,6 +35,70 @@ The VOLTTRON container when created is just a blank container with no agents.  N
 
 The `platform_config.yml` file has two sections: `config`, which configures the main instance and populate's the main config file ($VOLTTRON_HOME/config), and `agents`, which contains a list of agents with references to configurations for them (note the frequent use of environment variables in this section).
 
+## Main Configuration
+The main instance configuration is composed of key value pairs under a "config" key in the `platofrom_config.yml` file.
+As an example, the `vip-address` and `bind-web-address` would be populated using the following partial file:
+``` yaml
+# Properties to be added to the root config file:
+# - the properties should be ingestable for volttron
+# - the values will be presented in the config file
+#   as key=value
+config:
+  vip-address: tcp://0.0.0.0:22916
+  bind-web-address: http://0.0.0.0:8080
+  # volttron-central-address: a different address
+  # volttron-central-serverkey: a different key 
+
+  ...
+```
+
+## Agent Configuration
+The agent configuration section is under a top-level key "agents" and contains several layers of nested key-value mappings.
+The top level of the section is keyed with the names of the desired agents, each of which contains a mapping.
+For each agent, the mapping must contain a `source` key and may contain either or both a `config` and/or `config_store` key; the values are strings representing resolvable paths.
+An example follows at the end of this section.
+
+Note that the agent section does not contain the detailed configuration of the agents, but only a path to the `identity.config` file for the agent which contains the actual details.
+As with the `platform_config.yaml` file, it is generally desirable to mount a local directory containing the configurations into the container, again using a `docker-compose.yaml` file.
+
+```yaml
+...
+
+# Agents dictionary to install.  The key must be a valid
+# identity for the agent to be installed correctly.
+agents:
+
+  # Each agent identity.config file should be in the configs
+  # directory and will be used to install the agent.
+  listener:
+    source: $VOLTTRON_ROOT/examples/ListenerAgent
+    config: $CONFIG/listener.config
+
+  platform.actuator:
+    source: $VOLTTRON_ROOT/services/core/ActuatorAgent
+
+  historian:
+    source: $VOLTTRON_ROOT/services/core/SQLHistorian
+    config: $CONFIG/historian.config
+
+  weather:
+    source: $VOLTTRON_ROOT/examples/DataPublisher
+    config: $CONFIG/weather.config
+
+  price:
+    source: $VOLTTRON_ROOT/examples/DataPublisher
+    config: $CONFIG/price.config
+
+  platform.driver:
+    source: $VOLTTRON_ROOT/services/core/MasterDriverAgent
+    config_store:
+      fake.csv:
+        file: $VOLTTRON_ROOT/examples/configurations/drivers/fake.csv
+        type: --csv
+      devices/fake-campus/fake-building/fake-device:
+        file: $VOLTTRON_ROOT/examples/configurations/drivers/fake.config
+```
+
 ## Other Notes
 agents within the `platform_config.yml` file are created sequentailly, it can take several seconds for each to spin up and be visible via `vctl` commands.
 
@@ -42,7 +106,7 @@ agents within the `platform_config.yml` file are created sequentailly, it can ta
 
 In order for volttron to keep its state between runs, the state must be stored on the host.  We have attempted to make this as painless as possible, by using gosu to map the hosts UID onto the containers volttron user.  The following will create a directory to be written to during VOLTTRON execution.
 
-1. Create a directory (mkdir -p vhome).  This is where the VOLTTRON_HOME inside the container will be created on the host.
+1. Create a directory (eg `mkdir -p ~/vhome`).  This is where the VOLTTRON_HOME inside the container will be created on the host.
 1. Start the docker container with a volume mount point and pass a LOCAL_USER_ID environtmental variable.
     ``` bash
     docker run -e LOCAL_USER_ID=$UID -v /home/user/vhome:/home/volttron/.volttron -it volttron/volttron
