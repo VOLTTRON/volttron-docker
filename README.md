@@ -1,33 +1,8 @@
 # Official VOLTTRON docker image
 
 # Introduction
-This image provides a reproducable way to install VOLTTRON within a docker container.  It features gosu which allows the storage of VOLTTRON_HOME to be persistable on the hosts hard drive.  The
-base docker images are available on docker hub at https://hub.docker.com/r/volttron/volttron/.
-
-# Raw Container Usage
-
-``` bash
-# Retrieves and executes the volttron container.
-docker run -it volttron/volttron
-```
-
-After entering the above command the shell will be within the volttron container as a user named volttron.
-
-``` bash
-# starting the platform
-volttron -vv -l volttron.log&
-
-# cd to volttron root
-cd $VOLTTRON_ROOT
-
-# installing listener agent
-python scripts/core/make-listener
-
-# see the log messages
-tail -f volttron.log
-```
-
-All the same functionality that one would have from a VOLTTRON command line is available through the container.
+This image provides a reproducable way to install VOLTTRON within a docker container.  It features gosu which allows the storage of VOLTTRON_HOME to be persistable on the hosts hard drive.
+The base docker images are available on docker hub at https://hub.docker.com/r/volttron/volttron/.
 
 # Platform Initialization
 
@@ -101,6 +76,31 @@ agents:
 
 ## Other Notes
 agents within the `platform_config.yml` file are created sequentailly, it can take several seconds for each to spin up and be visible via `vctl` commands.
+
+# Raw Container Usage
+
+``` bash
+# Retrieves and executes the volttron container.
+docker run -it volttron/volttron
+```
+
+After entering the above command the shell will be within the volttron container as a user named volttron.
+
+``` bash
+# starting the platform
+volttron -vv -l volttron.log&
+
+# cd to volttron root
+cd $VOLTTRON_ROOT
+
+# installing listener agent
+python scripts/core/make-listener
+
+# see the log messages
+tail -f volttron.log
+```
+
+All the same functionality that one would have from a VOLTTRON command line is available through the container.
 
 # Advanced Usage
 
