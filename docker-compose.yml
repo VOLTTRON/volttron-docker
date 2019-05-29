@@ -2,7 +2,6 @@ version: '3'
 services:
   volttron:
     hostname: vc
-    #image: volttron-rabbitmq
     image: volttron/volttron
     ports:
        - 23916:22916
