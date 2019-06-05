@@ -1,28 +1,20 @@
 version: '3'
-volumes:
-  env:
 services:
   volttron:
     hostname: vc
-    image: volttron-rabbitmq
+    image: volttron/volttron
     ports:
-      # - 23916:22916
-      - 8443:8443
-      - 6671:5671    # ampqs port
-      - 25671:15671  # management port
+       - 23916:22916
+       - 8080:8080
+      #- 8443:8443
+      #- 6671:5671    # ampqs port
+      #- 25671:15671  # management port
     volumes:
       - ./platform_config.yml:/platform_config.yml
       - ./configs:/home/volttron/configs
-     # - env:/code/volttron/env
-     # - /home/osboxes/repos/volttron-rabbitmq:/code/volttron
-     # - /home/osboxes/repos/docker-vhomes/vhome-rabbit:/home/volttron/.volttron
-      # - /home/osboxes/repos/volttron-rabbitmq/volttron:/code/volttron/volttron
-      # - /home/osboxes/repos/volttron-rabbitmq/services:/code/volttron/services
-      # - /home/osboxes/repos/volttron-rabbitmq/scripts:/code/volttron/scripts
-      # - /home/osboxes/repos/volttron-rabbitmq/volttron_data:/code/volttron/volttron_data
-      # - /home/osboxes/repos/volttron-rabbitmq/examples:/code/volttron/examples
     environment:
       - CONFIG=/home/volttron/configs
+      - IGNORE_ENV_CHECK=1
       - LOCAL_USER_ID=1000
 
 #- LOCAL_USER_ID=1000
