@@ -1,8 +1,12 @@
 # Official VOLTTRON docker image
 
 # Introduction
-This image provides a reproducable way to install VOLTTRON within a docker container.  It features gosu which allows the storage of VOLTTRON_HOME to be persistable on the hosts hard drive.
-The base docker images are available on docker hub at https://hub.docker.com/r/volttron/volttron/.
+
+This image provides a reproducable way to install VOLTTRON within a docker container.
+By using a volume mount of the `VOLTTRON_HOME` directory, runtime changes made by the platform are visible on the host and are preserved across instances of the container.
+Similarly, changes made from the host are reflect in the container.
+The image features gosu, which allows the non-root user executing the volttron platform inside the container to have the same UID as the host user running the container on the host system.
+In conjection with volume mounting of the directory, this ensures that file ownership and permissions in `VOLTTRON_HOME` match the host user, avoiding cases were root in the container leaves files inaccessible to a user without sudo permissions on the host.
 
 # Platform Initialization
 
@@ -29,11 +33,11 @@ config:
 
 ## Agent Configuration
 The agent configuration section is under a top-level key "agents" and contains several layers of nested key-value mappings.
-The top level of the section is keyed with the names of the desired agents, each of which contains a mapping.
-For each agent, the mapping must contain a `source` key and may contain either or both a `config` and/or `config_store` key; the values are strings representing resolvable paths.
+The top level of the section is keyed with the names of the desired agents, which are used as the identity of those agents within the platform.
+For each agent key, there is a further mapping which must contain a `source` key and may contain either or both a `config` and/or `config_store` key; the values are strings representing resolvable paths.
 An example follows at the end of this section.
 
-Note that the agent section does not contain the detailed configuration of the agents, but only a path to the `identity.config` file for the agent which contains the actual details.
+Note that the agent section does not contain the detailed configuration of the agents; for each agent it gives a path to a dedicated configuration file for that agent.
 As with the `platform_config.yaml` file, it is generally desirable to mount a local directory containing the configurations into the container, again using a `docker-compose.yaml` file.
 
 ```yaml
