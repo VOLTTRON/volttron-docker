@@ -38,7 +38,7 @@ jobs:
     script:
       ##- 'ci-integration/run-tests.sh'
       #- './.travis/build-docker.sh -b'
-      - .travis/bootstrap_image.sh -u amd64 -r debian -t 9 -a amd64 -i laroque/volttron-docker:`echo ${TRAVIS_BRANCH} | tr / _` -p build
+      - .travis/bootstrap_image.sh -u amd64 -r debian -t 10 -a amd64 -i laroque/volttron-docker:`echo ${TRAVIS_BRANCH} | tr / _` -p build
 
     # only execute the following instructions in
     # the case of a success (failing at this point

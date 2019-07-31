@@ -4,6 +4,8 @@ ARG image_tag=buster
 
 FROM ${image_user}/${image_repo}:${image_tag} as volttron_base
 
+RUN echo "from ${image_user}/${image_repo}:${image_tag}"
+
 SHELL [ "bash", "-c" ]
 
 ENV OS_TYPE=debian
