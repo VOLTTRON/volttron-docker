@@ -119,9 +119,9 @@ case $phase_action in
             $dot_travis_path
         # build the arch-specific image on top of it
         docker build \
-            --build-arg img_user=local \
-            --build-arg img_repo=emulation_base \
-            --build-arg img_tag=latest \
+            --build-arg image_user=local \
+            --build-arg image_repo=emulation_base \
+            --build-arg image_tag=latest \
             -t ${output_image}-${architecture_img_suffix} \
             .
         ;;

@@ -1,4 +1,8 @@
-FROM debian:buster as volttron_base
+ARG image_user=amd64
+ARG image_repo=debian
+ARG image_tag=buster
+
+FROM ${image_user}/${image_repo}:${image_tag} as volttron_base
 
 SHELL [ "bash", "-c" ]
 
