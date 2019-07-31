@@ -55,4 +55,5 @@ jobs:
         #    docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD ;
         #    ./.travis/build-docker.sh -p ;
         #  fi
+        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
         - .travis/bootstrap_image.sh -u amd64 -r debian -t 10 -a amd64 -i laroque/volttron-docker:`echo ${TRAVIS_BRANCH} | tr / _` -p push

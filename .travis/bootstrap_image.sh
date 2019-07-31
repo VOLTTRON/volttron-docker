@@ -126,7 +126,6 @@ case $phase_action in
             .
         ;;
     push)
-        echo "$DOCKERPASSWORD" | docker login -u $DOCKER_USERNAME --password-stdin
         docker push ${output_image}-${architecture_img_suffix}
         ;;
     *)
