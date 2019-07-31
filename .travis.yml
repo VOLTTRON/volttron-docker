@@ -2,12 +2,12 @@
 sudo: 'required'
 
 # xenial is pretty old, but not as bad as trusty...
-#dist: xenial
+dist: xenial
 
-language: java
+#language: java
 
-jdk:
-  - oraclejdk8
+#jdk:
+#  - oraclejdk8
 
 # have the docker service set up (we'll
 # update it later)
@@ -25,7 +25,7 @@ addons:
 # installation scripts
 before_install:
   - './.travis/main.sh'
-  #- './.travis/setup_emulation.sh'
+  - './.travis/setup_emulation.sh'
 
 #install:
 #  - python2 bootstrap.py
