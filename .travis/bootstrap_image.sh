@@ -5,6 +5,7 @@
 ## - local variables are lower_snake_case (leaves UPPER_SNAKE for environment stuff)
 ## - echo statements that are just progress notes start with "-- "
 
+set -o
 
 usage() {
     echo -e "Usage: $0 \n"\
