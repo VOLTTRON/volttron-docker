@@ -2,6 +2,7 @@
 
 # Set an option to exit immediately if any error appears
 set -o errexit
+set -x
 
 # Main function that describes the behavior of the 
 # script. 

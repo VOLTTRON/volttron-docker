@@ -1,6 +1,9 @@
 # make use of vm's
 sudo: 'required'
 
+# xenial is pretty old, but not as bad as trusty...
+dist: xenial
+
 language: java
 
 jdk:
