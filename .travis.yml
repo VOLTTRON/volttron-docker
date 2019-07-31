@@ -5,16 +5,24 @@ language: java
 
 jdk:
   - oraclejdk8
-  
+
 # have the docker service set up (we'll
 # update it later)
 services:
-  - 'docker'
+  - docker
+
+# adding additional apt packages, required
+# for multi-architecture builds
+addons:
+  apt:
+    packages:
+      - qemu-user-static
 
 # prepare the machine before any code
 # installation scripts
 before_install:
   - './.travis/main.sh'
+  - './.travis/setup_emulation.sh'
 
 #install:
 #  - python2 bootstrap.py
