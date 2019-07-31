@@ -1,8 +1,8 @@
-ARG img_user=amd64
-ARG img_repo=debian
-ARG img_tag=9
+ARG image_user=amd64
+ARG image_repo=debian
+ARG image_tag=9
 
-FROM ${img_user}/${img_repo}:${img_tag}
+FROM ${image_user}/${image_repo}:${image_tag}
 
 # copy the local qemu interpreter layer
 # NOTE: this file is *not* provided in the repo, it needs to be installed via your package manager and copied here
