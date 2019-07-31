@@ -12,7 +12,8 @@ usage() {
          "    -r (repo portion of emulation base image specification)\n"\
          "    -t (tag portion of emulation base image specification)\n" \
          "    -i (user, repo, and base-tag of output image (arch is automatically appended)\n" \
-         "    -a (desired architecture, one of [arm7, amd64])"
+         "    -a (desired architecture, one of [arm7, amd64])\n" \
+         "    -p (desire phase, one of [build, push])"
     exit 2
 }
 
@@ -21,7 +22,7 @@ echo "-- parsing bootstrap base image options"
 if [[ $1 == "" ]]; then
   usage
 fi
-while getopts u:r:t:i:a: option ; do
+while getopts u:r:t:i:a:p: option ; do
   case $option in
     u) # store user
       if [[ $OPTARG == "" ]]; then
@@ -63,6 +64,18 @@ while getopts u:r:t:i:a: option ; do
         usage
       fi
       ;;
+    p) # store phase
+      if [[ $OPTARG == "" ]]; then
+        echo "phase flag requires value"
+        exit 2
+      fi
+      if [[ "build push" =~ (^|[[:space:]])"$OPTARG"($|[[:space:]]) ]]; then
+        phase_action="$OPTARG"
+      else
+        echo "arch '${OPTARG}' not recognized"
+        usage
+      fi
+      ;;
     *) # print usage
       usage
       ;;
@@ -92,24 +105,33 @@ dot_travis_path=`readlink -e $dot_travis_path`
 
 set -x
 
-# bootstrap a custom base image with emulation
-cp $original_qemu_path ${dot_travis_path}/this_qemu
-sed "s#QEMU_TARGET_LOCATION#${original_qemu_path}#" $dot_travis_path/Dockerfile.shim > $dot_travis_path/Dockerfile
-docker build \
-    --build-arg image_user=$image_user \
-    --build-arg image_repo=$image_repo \
-    --build-arg image_tag=$image_tag \
-    -t local/emulation_base:latest \
-    -f $dot_travis_path/Dockerfile \
-    $dot_travis_path
-
-# build the arch-specific image on top of it
-docker build \
-    --build-arg img_user=local \
-    --build-arg img_repo=emulation_base \
-    --build-arg img_tag=latest \
-    -t ${output_image}-${architecture_img_suffix} \
-    .
-docker push ${output_image}-${architecture_img_suffix}
-
+case $phase_action in
+    build)
+        # bootstrap a custom base image with emulation
+        cp $original_qemu_path ${dot_travis_path}/this_qemu
+        sed "s#QEMU_TARGET_LOCATION#${original_qemu_path}#" $dot_travis_path/Dockerfile.shim > $dot_travis_path/Dockerfile
+        docker build \
+            --build-arg image_user=$image_user \
+            --build-arg image_repo=$image_repo \
+            --build-arg image_tag=$image_tag \
+            -t local/emulation_base:latest \
+            -f $dot_travis_path/Dockerfile \
+            $dot_travis_path
+        # build the arch-specific image on top of it
+        docker build \
+            --build-arg img_user=local \
+            --build-arg img_repo=emulation_base \
+            --build-arg img_tag=latest \
+            -t ${output_image}-${architecture_img_suffix} \
+            .
+        ;;
+    push)
+        docker login -u $DOCKER_PASSWORD -p $DOCKER_PASSWORD
+        docker push ${output_image}-${architecture_img_suffix}
+        ;;
+    *)
+        echo "phase not recognized"
+        usage
+        ;;
+esac
 set +x
