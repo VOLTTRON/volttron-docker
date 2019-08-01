@@ -36,8 +36,9 @@ RUN set -eux; apt-get update; apt-get install -y --no-install-recommends \
     wget \
     curl \
     ca-certificates \
+    libffi-dev \
     && apt-get update && apt-get install -yf \
-    && curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py \
+    && curl -k https://bootstrap.pypa.io/get-pip.py -o get-pip.py \
     && python get-pip.py \
     && rm -rf /var/lib/apt/lists/*
 

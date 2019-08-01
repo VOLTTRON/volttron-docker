@@ -108,7 +108,7 @@ set -x
 
 case $phase_action in
     build)
-        set -o
+        set -e
         # bootstrap a custom base image with emulation
         cp $original_qemu_path ${dot_travis_path}/this_qemu
         sed "s#QEMU_TARGET_LOCATION#${original_qemu_path}#" $dot_travis_path/Dockerfile.shim > $dot_travis_path/Dockerfile
