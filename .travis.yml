@@ -14,12 +14,21 @@ dist: xenial
 services:
   - docker
 
-# adding additional apt packages, required
-# for multi-architecture builds
+# adding additional apt packages
 addons:
   apt:
     packages:
       - qemu-user-static
+      # from the original main.sh
+      - realpath
+      - build-essential
+      - python
+      - python-pip
+      - python-dev
+      - openssl
+      - libssl-dev
+      - libevent-dev
+      - git
 
 jobs:
   include:
