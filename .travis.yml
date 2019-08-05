@@ -71,7 +71,7 @@ jobs:
         - './.travis/main.sh'
         - './.travis/setup_emulation.sh'
       script:
-        - .travis/bootstrap_image.sh -u arm32v7 -r 2.7 -t 2.7 -a arm7 -i laroque/volttron-docker:`echo ${TRAVIS_BRANCH} | tr / _` -p build
+        - .travis/bootstrap_image.sh -u arm32v7 -r python -t 2.7 -a arm7 -i laroque/volttron-docker:`echo ${TRAVIS_BRANCH} | tr / _` -p build
       after_success:
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
         - .travis/bootstrap_image.sh -u arm32v7 -r python -t 2.7 -a arm7 -i laroque/volttron-docker:`echo ${TRAVIS_BRANCH} | tr / _` -p push
