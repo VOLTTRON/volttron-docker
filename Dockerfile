@@ -25,7 +25,7 @@ RUN set -eux; apt-get update; apt-get install -y --no-install-recommends \
     vim \
     tree \
     build-essential \
-    python-dev \
+    #python-dev \
     openssl \
     libssl-dev \
     libevent-dev \
@@ -38,8 +38,8 @@ RUN set -eux; apt-get update; apt-get install -y --no-install-recommends \
     ca-certificates \
     libffi-dev \
     && apt-get update && apt-get install -yf \
-    && curl -k https://bootstrap.pypa.io/get-pip.py -o get-pip.py \
-    && python get-pip.py \
+    #&& curl -k https://bootstrap.pypa.io/get-pip.py -o get-pip.py \
+    #&& python get-pip.py \
     && rm -rf /var/lib/apt/lists/*
 
 
