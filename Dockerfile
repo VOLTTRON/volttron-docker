@@ -66,7 +66,11 @@ WORKDIR /code
 RUN git clone https://github.com/VOLTTRON/volttron -b ${VOLTTRON_GIT_BRANCH}
 
 WORKDIR /code/volttron
-RUN pip install --user -r requirements.txt && pip install -e . --user
+RUN echo "staring requirements install at `date`"
+RUN pip install --user -r requirements.txt
+RUN echo "requirements complete, installing package at `date`"
+RUN pip install -e . --user
+RUN echo "package installed at `date`"
 
 ############################################
 # RABBITMQ SPECIFIC INSTALLATION
