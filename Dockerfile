@@ -62,8 +62,9 @@ FROM volttron_base AS volttron_core
 USER $VOLTTRON_USER
 
 # The following lines ar no longer necesary because of the copy command above.
-WORKDIR /code
-RUN git clone https://github.com/VOLTTRON/volttron -b ${VOLTTRON_GIT_BRANCH}
+#WORKDIR /code
+#RUN git clone https://github.com/VOLTTRON/volttron -b ${VOLTTRON_GIT_BRANCH}
+COPY --chown=volttron:volttron volttron /code/volttron
 
 WORKDIR /code/volttron
 RUN echo "staring requirements install at `date`"
