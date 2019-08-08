@@ -14,7 +14,8 @@ usage() {
          "    -t (tag portion of emulation base image specification)\n" \
          "    -i (user, repo, and base-tag of output image (arch is automatically appended)\n" \
          "    -a (desired architecture, one of [arm7, amd64])\n" \
-         "    -p (desire phase, one of [build, push])"
+         "    -p (desire phase, one of [build, push])\n" \
+         "    -d (name of Dockerfile to build - default is Dockerfile)"
     exit 2
 }
 
@@ -23,7 +24,8 @@ echo "-- parsing bootstrap base image options"
 if [[ $1 == "" ]]; then
   usage
 fi
-while getopts u:r:t:i:a:p: option ; do
+dockerfile_path="Dockerfile"
+while getopts u:r:t:i:a:p:d: option ; do
   case $option in
     u) # store user
       if [[ $OPTARG == "" ]]; then
@@ -77,6 +79,12 @@ while getopts u:r:t:i:a:p: option ; do
         usage
       fi
       ;;
+    d) # update dockerfile_path
+      if [[ $OPTARG == "" ]]; then
+        echo "dockerfile_path flag requires value"
+        exit 2
+      fi
+      dockerfile_path="$OPTARG"
     *) # print usage
       usage
       ;;
@@ -125,6 +133,7 @@ case $phase_action in
             --build-arg image_repo=emulation_base \
             --build-arg image_tag=latest \
             -t ${output_image}-${architecture_img_suffix} \
+            -f ${dockerfile_path} \
             .
         ;;
     push)

@@ -47,7 +47,10 @@ jobs:
       #  - python2 bootstrap.py --testing
 
       script:
-        #- .travis/bootstrap_image.sh -u amd64 -r debian -t 10 -a amd64 -i laroque/volttron-docker:`echo ${TRAVIS_BRANCH} | tr / _` -p build
+        # build/push an intermediate container
+        - .travis/bootstrap_image.sh -u amd64 -r python -t 2.7-buster -a amd64 -f Dockerfile.deps -i laroque/volttron-docker:deps-`echo ${TRAVIS_BRANCH} | tr / _` -p build
+        - .travis/bootstrap_image.sh -u amd64 -r python -t 2.7-buster -a amd64 -f Dockerfile.deps -i laroque/volttron-docker:deps-`echo ${TRAVIS_BRANCH} | tr / _` -p push
+        # build the image itself
         - .travis/bootstrap_image.sh -u amd64 -r python -t 2.7-buster -a amd64 -i laroque/volttron-docker:`echo ${TRAVIS_BRANCH} | tr / _` -p build
 
       # only execute the following instructions in
