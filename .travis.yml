@@ -48,8 +48,8 @@ jobs:
 
       script:
         # build/push an intermediate container
-        - .travis/bootstrap_image.sh -u amd64 -r python -t 2.7-buster -a amd64 -f Dockerfile.deps -i laroque/volttron-docker:deps-`echo ${TRAVIS_BRANCH} | tr / _` -p build
-        - .travis/bootstrap_image.sh -u amd64 -r python -t 2.7-buster -a amd64 -f Dockerfile.deps -i laroque/volttron-docker:deps-`echo ${TRAVIS_BRANCH} | tr / _` -p push
+        - .travis/bootstrap_image.sh -u amd64 -r python -t 2.7-buster -a amd64 -d Dockerfile.deps -i laroque/volttron-docker:deps-`echo ${TRAVIS_BRANCH} | tr / _` -p build
+        - .travis/bootstrap_image.sh -u amd64 -r python -t 2.7-buster -a amd64 -d Dockerfile.deps -i laroque/volttron-docker:deps-`echo ${TRAVIS_BRANCH} | tr / _` -p push
         # build the image itself
         - .travis/bootstrap_image.sh -u amd64 -r python -t 2.7-buster -a amd64 -i laroque/volttron-docker:`echo ${TRAVIS_BRANCH} | tr / _` -p build
 
