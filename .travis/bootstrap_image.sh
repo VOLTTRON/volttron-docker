@@ -85,6 +85,7 @@ while getopts u:r:t:i:a:p:d: option ; do
         exit 2
       fi
       dockerfile_path="$OPTARG"
+      ;;
     *) # print usage
       usage
       ;;
