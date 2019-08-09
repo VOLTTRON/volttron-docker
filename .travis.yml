@@ -4,11 +4,6 @@ sudo: 'required'
 # xenial is pretty old, but not as bad as trusty...
 dist: xenial
 
-#language: java
-
-#jdk:
-#  - oraclejdk8
-
 # have the docker service set up (we'll
 # update it later)
 services:
@@ -33,24 +28,24 @@ addons:
 jobs:
   include:
     ## a stage to take build a new base image with python dependencies included (this is slow on some architectures)
-    #- stage: preinstall
-    #  name: prebuild amd64
-    #  before_install:
-    #    - './.travis/main.sh'
-    #    - './.travis/setup_emulation.sh'
-    #  script:
-    #    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-    #    - .travis/bootstrap_image.sh -u amd64 -r python -t 2.7-buster -a amd64 -d Dockerfile.deps -i laroque/volttron-docker:deps-`echo ${TRAVIS_BRANCH} | tr / _` -p build
-    #    - .travis/bootstrap_image.sh -u amd64 -r python -t 2.7-buster -a amd64 -d Dockerfile.deps -i laroque/volttron-docker:deps-`echo ${TRAVIS_BRANCH} | tr / _` -p push
-    #- stage: preinstall
-    #  name: prebuild arm7
-    #  before_install:
-    #    - './.travis/main.sh'
-    #    - './.travis/setup_emulation.sh'
-    #  script:
-    #    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-    #    - .travis/bootstrap_image.sh -u arm32v7 -r python -t 2.7-buster -a arm7 -d Dockerfile.deps -i laroque/volttron-docker:deps-`echo ${TRAVIS_BRANCH} | tr / _` -p build
-    #    - .travis/bootstrap_image.sh -u arm32v7 -r python -t 2.7-buster -a arm7 -d Dockerfile.deps -i laroque/volttron-docker:deps-`echo ${TRAVIS_BRANCH} | tr / _` -p push
+    - stage: preinstall
+      name: prebuild amd64
+      before_install:
+        - './.travis/main.sh'
+        - './.travis/setup_emulation.sh'
+      script:
+        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+        - .travis/bootstrap_image.sh -u amd64 -r python -t 2.7-buster -a amd64 -d Dockerfile.deps -i laroque/volttron-docker:deps-`echo ${TRAVIS_BRANCH} | tr / _` -p build
+        - .travis/bootstrap_image.sh -u amd64 -r python -t 2.7-buster -a amd64 -d Dockerfile.deps -i laroque/volttron-docker:deps-`echo ${TRAVIS_BRANCH} | tr / _` -p push
+    - stage: preinstall
+      name: prebuild arm7
+      before_install:
+        - './.travis/main.sh'
+        - './.travis/setup_emulation.sh'
+      script:
+        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+        - .travis/bootstrap_image.sh -u arm32v7 -r python -t 2.7-buster -a arm7 -d Dockerfile.deps -i laroque/volttron-docker:deps-`echo ${TRAVIS_BRANCH} | tr / _` -p build
+        - .travis/bootstrap_image.sh -u arm32v7 -r python -t 2.7-buster -a arm7 -d Dockerfile.deps -i laroque/volttron-docker:deps-`echo ${TRAVIS_BRANCH} | tr / _` -p push
     ## actually install our software on top of the above
     - stage: install
       name: build amd64
@@ -60,17 +55,11 @@ jobs:
         - './.travis/main.sh'
         - './.travis/setup_emulation.sh'
 
-      #install:
-      #  - python2 bootstrap.py
-        # Installs testing toolkit
-        #- python2 bootstrap.py --crate
-      #  - python2 bootstrap.py --testing
-
       script:
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
         # build/push an intermediate container
-        #- .travis/bootstrap_image.sh -u amd64 -r python -t 2.7-buster -a amd64 -d Dockerfile.deps -i laroque/volttron-docker:deps-`echo ${TRAVIS_BRANCH} | tr / _` -p build
-        #- .travis/bootstrap_image.sh -u amd64 -r python -t 2.7-buster -a amd64 -d Dockerfile.deps -i laroque/volttron-docker:deps-`echo ${TRAVIS_BRANCH} | tr / _` -p push
+        - .travis/bootstrap_image.sh -u amd64 -r python -t 2.7-buster -a amd64 -d Dockerfile.deps -i laroque/volttron-docker:deps-`echo ${TRAVIS_BRANCH} | tr / _` -p build
+        - .travis/bootstrap_image.sh -u amd64 -r python -t 2.7-buster -a amd64 -d Dockerfile.deps -i laroque/volttron-docker:deps-`echo ${TRAVIS_BRANCH} | tr / _` -p push
         # build the image itself
         - .travis/bootstrap_image.sh -u amd64 -r python -t 2.7-buster -a amd64 -i laroque/volttron-docker:`echo ${TRAVIS_BRANCH} | tr / _` -p build
 
@@ -82,7 +71,7 @@ jobs:
       # and then `travis set ..` or go to the travis
       # page of your repository and then change the 
       # environment in the settings pannel.
-      after_success:
+      #after_success:
         #- if [[ "$TRAVIS_BRANCH" == "master" ]]; then
         #    docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD ;
         #    ./.travis/build-docker.sh -p ;
