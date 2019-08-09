@@ -33,24 +33,24 @@ addons:
 jobs:
   include:
     ## a stage to take build a new base image with python dependencies included (this is slow on some architectures)
-    - stage: preinstall
-      name: prebuild amd64
-      before_install:
-        - './.travis/main.sh'
-        - './.travis/setup_emulation.sh'
-      script:
-        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-        - .travis/bootstrap_image.sh -u amd64 -r python -t 2.7-buster -a amd64 -d Dockerfile.deps -i laroque/volttron-docker:deps-`echo ${TRAVIS_BRANCH} | tr / _` -p build
-        - .travis/bootstrap_image.sh -u amd64 -r python -t 2.7-buster -a amd64 -d Dockerfile.deps -i laroque/volttron-docker:deps-`echo ${TRAVIS_BRANCH} | tr / _` -p push
-    - stage: preinstall
-      name: prebuild arm7
-      before_install:
-        - './.travis/main.sh'
-        - './.travis/setup_emulation.sh'
-      script:
-        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-        - .travis/bootstrap_image.sh -u arm32v7 -r python -t 2.7-buster -a arm7 -d Dockerfile.deps -i laroque/volttron-docker:deps-`echo ${TRAVIS_BRANCH} | tr / _` -p build
-        - .travis/bootstrap_image.sh -u arm32v7 -r python -t 2.7-buster -a arm7 -d Dockerfile.deps -i laroque/volttron-docker:deps-`echo ${TRAVIS_BRANCH} | tr / _` -p push
+    #- stage: preinstall
+    #  name: prebuild amd64
+    #  before_install:
+    #    - './.travis/main.sh'
+    #    - './.travis/setup_emulation.sh'
+    #  script:
+    #    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+    #    - .travis/bootstrap_image.sh -u amd64 -r python -t 2.7-buster -a amd64 -d Dockerfile.deps -i laroque/volttron-docker:deps-`echo ${TRAVIS_BRANCH} | tr / _` -p build
+    #    - .travis/bootstrap_image.sh -u amd64 -r python -t 2.7-buster -a amd64 -d Dockerfile.deps -i laroque/volttron-docker:deps-`echo ${TRAVIS_BRANCH} | tr / _` -p push
+    #- stage: preinstall
+    #  name: prebuild arm7
+    #  before_install:
+    #    - './.travis/main.sh'
+    #    - './.travis/setup_emulation.sh'
+    #  script:
+    #    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+    #    - .travis/bootstrap_image.sh -u arm32v7 -r python -t 2.7-buster -a arm7 -d Dockerfile.deps -i laroque/volttron-docker:deps-`echo ${TRAVIS_BRANCH} | tr / _` -p build
+    #    - .travis/bootstrap_image.sh -u arm32v7 -r python -t 2.7-buster -a arm7 -d Dockerfile.deps -i laroque/volttron-docker:deps-`echo ${TRAVIS_BRANCH} | tr / _` -p push
     ## actually install our software on top of the above
     - stage: install
       name: build amd64
@@ -94,7 +94,7 @@ jobs:
         - './.travis/main.sh'
         - './.travis/setup_emulation.sh'
       script:
-        - .travis/bootstrap_image.sh -u laroque -r volttron-docker -t deps-`echo ${TRAVIS_BRANCH} | tr / _` -a arm7 -i laroque/volttron-docker:`echo ${TRAVIS_BRANCH} | tr / _` -p build
+        - .travis/bootstrap_image.sh -u laroque -r volttron-docker -t deps-`echo ${TRAVIS_BRANCH} | tr / _`-arm -a arm7 -i laroque/volttron-docker:`echo ${TRAVIS_BRANCH} | tr / _` -p build
       after_success:
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
         - .travis/bootstrap_image.sh -u arm32v7 -r debian -t 10 -a arm7 -i laroque/volttron-docker:`echo ${TRAVIS_BRANCH} | tr / _` -p push
