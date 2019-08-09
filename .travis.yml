@@ -99,6 +99,9 @@ jobs:
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
         - .travis/bootstrap_image.sh -u arm32v7 -r debian -t 10 -a arm7 -i laroque/volttron-docker:`echo ${TRAVIS_BRANCH} | tr / _` -p push
     - stage: manifest
+      before_install:
+        - './.travis/main.sh'
+        #- './.travis/setup_emulation.sh'
       script:
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
         - .travis/build_manifest.sh -a arm -a amd64 -n laroque/volttron-docker:`echo ${TRAVIS_BRANCH} | tr / _`
