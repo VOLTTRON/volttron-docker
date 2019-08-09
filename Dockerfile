@@ -44,7 +44,7 @@ RUN set -eux; apt-get update; apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 
-RUN adduser --disabled-password --gecos "" $VOLTTRON_USER
+RUN id -u $VOLTTRON_USER &>/dev/null || adduser --disabled-password --gecos "" $VOLTTRON_USER
 
 RUN mkdir /code && chown $VOLTTRON_USER.$VOLTTRON_USER /code \
   && echo "export PATH=/home/volttron/.local/bin:$PATH" > /home/volttron/.bashrc
