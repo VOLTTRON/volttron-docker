@@ -19,6 +19,7 @@ ENV RMQ_ROOT=${VOLTTRON_USER_HOME}/rabbitmq_server
 ENV RMQ_HOME=${RMQ_ROOT}/rabbitmq_server-3.7.7
 
 # --no-install-recommends \
+USER root
 RUN set -eux; apt-get update; apt-get install -y --no-install-recommends \
     procps \
     gosu \
