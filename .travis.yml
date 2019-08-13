@@ -25,6 +25,9 @@ addons:
       - libevent-dev
       - git
 
+env:
+  - DOCKER_CLI_EXPERIMENTAL=enabled
+
 jobs:
   include:
     ## a stage to take build a new base image with python dependencies included (this is slow on some architectures)
