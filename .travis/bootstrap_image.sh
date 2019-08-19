@@ -13,7 +13,7 @@ usage() {
          "    -r (repo portion of emulation base image specification)\n"\
          "    -t (tag portion of emulation base image specification)\n" \
          "    -i (user, repo, and base-tag of output image (arch is automatically appended)\n" \
-         "    -a (desired architecture, one of [arm7, amd64])\n" \
+         "    -a (desired architecture, one of [arm7, arm8, amd64])\n" \
          "    -p (desire phase, one of [build, push])\n" \
          "    -d (name of Dockerfile to build - default is Dockerfile)"
     exit 2
@@ -60,7 +60,7 @@ while getopts u:r:t:i:a:p:d: option ; do
         echo "architecture flag requires value"
         exit 2
       fi
-      if [[ "amd64 arm7" =~ (^|[[:space:]])"$OPTARG"($|[[:space:]]) ]]; then
+      if [[ "amd64 arm7 arm8" =~ (^|[[:space:]])"$OPTARG"($|[[:space:]]) ]]; then
         target_arch="$OPTARG"
       else
         echo "arch '${OPTARG}' not recognized"
@@ -107,6 +107,11 @@ case $target_arch in
         original_qemu_path="/usr/bin/qemu-arm-static"
         architecture_img_suffix="arm"
         echo "-- set qemu vars for arm7"
+        ;;
+    arm8)
+        original_qemu_path="/usr/bin/qemu-aarch64-static"
+        architecture_img_suffix="arm64"
+        echo "-- set qemu vars for arm64-v8"
         ;;
 esac
 
