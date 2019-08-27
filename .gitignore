@@ -3,6 +3,13 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# scripting output/products
+.travis/Dockerfile
+.travis/this_qemu
+
+#editor files
+*.swp
+
 # C extensions
 *.so
 
