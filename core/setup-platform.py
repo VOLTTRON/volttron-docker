@@ -134,10 +134,7 @@ if need_to_install:
             continue
 
         # grab the priority from the system config file
-        try:
-            priority = spec['priority']
-        except KeyError:
-            priority = 50
+        priority = spec.get('priority', 50)
 
         install_cmd = ["python", INSTALL_PATH]
         install_cmd.extend(["--agent-source", agent_source])
