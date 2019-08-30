@@ -133,7 +133,7 @@ if need_to_install:
             sys.stderr.write("Invalid agent source ({}) for agent id identity: {}\n".format(agent_source, identity))
             continue
 
-        # grab the priority from the systyem config file
+        # grab the priority from the system config file
         try:
             priority = spec['priority']
         except KeyError:
