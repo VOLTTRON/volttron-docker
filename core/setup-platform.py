@@ -133,10 +133,13 @@ if need_to_install:
             sys.stderr.write("Invalid agent source ({}) for agent id identity: {}\n".format(agent_source, identity))
             continue
 
+        # grab the priority from the system config file
+        priority = spec.get('priority', 50)
+
         install_cmd = ["python", INSTALL_PATH]
         install_cmd.extend(["--agent-source", agent_source])
         install_cmd.extend(["--vip-identity", identity])
-        install_cmd.extend(["--start", "--priority", "50"])
+        install_cmd.extend(["--start", "--priority", priority])
         install_cmd.extend(["--agent-start-time", "5"])
         install_cmd.append('--force')
         if agent_cfg:
