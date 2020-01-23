@@ -9,7 +9,7 @@ fi
 echo "Right before setup-platform.py is called I am calling printenv"
 printenv
 
-python /startup/setup-platform.py
+python3 /startup/setup-platform.py
 setup_return=$?
 if [[ $setup_return ]]; then
     echo "error running setup-platform.py"

@@ -26,7 +26,9 @@ RUN set -eux; apt-get update; apt-get install -y --no-install-recommends \
     vim \
     tree \
     build-essential \
-    python-dev \
+    python3-dev \
+    python3-pip \
+    python3-setuptools \
     openssl \
     libssl-dev \
     libevent-dev \
@@ -37,11 +39,7 @@ RUN set -eux; apt-get update; apt-get install -y --no-install-recommends \
     wget \
     curl \
     ca-certificates \
-    libffi-dev \
-    && apt-get update && apt-get install -yf \
-    && curl -k https://bootstrap.pypa.io/get-pip.py -o get-pip.py \
-    && python get-pip.py \
-    && rm -rf /var/lib/apt/lists/*
+    libffi-dev
 
 
 RUN id -u $VOLTTRON_USER &>/dev/null || adduser --disabled-password --gecos "" $VOLTTRON_USER
@@ -68,10 +66,7 @@ USER $VOLTTRON_USER
 COPY --chown=volttron:volttron volttron /code/volttron
 
 WORKDIR /code/volttron
-RUN echo "staring requirements install at `date`"
-RUN pip install --user -r requirements.txt
-RUN echo "requirements complete, installing package at `date`"
-RUN pip install -e . --user
+RUN pip3 install -e . --user
 RUN echo "package installed at `date`"
 
 ############################################
