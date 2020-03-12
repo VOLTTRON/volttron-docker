@@ -32,8 +32,12 @@ setup_dependencies() {
   "
 
   sudo apt update -y
-  sudo apt install realpath python python-pip build-essential \
-    python-dev openssl libssl-dev libevent-dev git -y
+  #sudo apt install realpath python python-pip build-essential \
+  #  python-dev openssl libssl-dev libevent-dev git -y
+  sudo apt install python python-pip build-essential \
+    python-dev openssl libssl-dev libevent-dev git \
+    manpages-pl manpages-fr-extra -y
+   
   sudo apt install --only-upgrade docker-ce -y
 
   sudo pip install docker-compose || true
