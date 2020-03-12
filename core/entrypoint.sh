@@ -23,7 +23,7 @@ export HOME=${VOLTTRON_USER_HOME}
 export PATH=$HOME/.local/bin:$PATH
 VOLTTRON_UID_ORIGINAL=`id -u volttron`
 
-echo "original volttron uuid is $VOLTTRON_UID_ORIGINAL"
+#echo "original volttron uuid is $VOLTTRON_UID_ORIGINAL"
 
 if [[ $VOLTTRON_UID_ORIGINAL != $USER_ID ]]; then
   echo "Changing volttron USER_ID to match passed LOCAL_USER_ID ${USER_ID} "
