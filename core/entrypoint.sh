@@ -6,7 +6,6 @@
 set -e
 
 USER_ID="${LOCAL_USER_ID:?LOCAL_USER_ID must be set use -e LOCAL_USER_ID=\$UID -it <image> as an example}" # ${LOCAL_USER_ID:-2001}
-USER_ID=1000
 
 if [[ -z ${USER_ID} ]]; then
   echo "USER_ID NOT SET"
@@ -23,6 +22,8 @@ export HOME=${VOLTTRON_USER_HOME}
 # virtualenv environment in the distribution.
 export PATH=$HOME/.local/bin:$PATH
 VOLTTRON_UID_ORIGINAL=`id -u volttron`
+
+echo "original volttron uuid is $VOLTTRON_UID_ORIGINAL"
 
 if [[ $VOLTTRON_UID_ORIGINAL != $USER_ID ]]; then
   echo "Changing volttron USER_ID to match passed LOCAL_USER_ID ${USER_ID} "
