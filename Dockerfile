@@ -47,6 +47,7 @@ RUN id -u $VOLTTRON_USER &>/dev/null || adduser --disabled-password --gecos "" $
 RUN mkdir -p /code && chown $VOLTTRON_USER.$VOLTTRON_USER /code \
   && echo "export PATH=/home/volttron/.local/bin:$PATH" > /home/volttron/.bashrc
 
+RUN ln -s /usr/bin/pip3 /usr/bin/pip
 ############################################
 # ENDING volttron_base image
 ############################################

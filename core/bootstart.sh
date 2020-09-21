@@ -11,7 +11,8 @@ printenv
 
 python3 /startup/setup-platform.py
 setup_return=$?
-if [[ $setup_return ]]; then
+
+if [[ $setup_return -ne 0 ]]; then
     echo "error running setup-platform.py"
     exit $setup_return
 fi
