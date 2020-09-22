@@ -29,6 +29,7 @@ RUN set -eux; apt-get update; apt-get install -y --no-install-recommends \
     python3-dev \
     python3-pip \
     python3-setuptools \
+    python3-wheel \
     openssl \
     libssl-dev \
     libevent-dev \
@@ -57,6 +58,8 @@ FROM volttron_base AS volttron_core
 # so must hard code the user.  Note this is a feature request for docker
 # https://github.com/moby/moby/issues/35018
 # COPY --chown=volttron:volttron . ${VOLTTRON_ROOT}
+
+RUN ln -s /usr/bin/pip3 /usr/bin/pip
 
 USER $VOLTTRON_USER
 
