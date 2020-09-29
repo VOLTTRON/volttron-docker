@@ -49,8 +49,8 @@ agents:
       devices/PNNL/ANNEX:
         file: $CONFIG/annex.config
 
-#  platform.actuator:
-#    source: $VOLTTRON_ROOT/services/core/ActuatorAgent
+  platform.actuator:
+    source: $VOLTTRON_ROOT/services/core/ActuatorAgent
 #
 #  weather:
 #    source: $VOLTTRON_ROOT/examples/DataPublisher
