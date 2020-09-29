@@ -2,11 +2,11 @@
 
 # Introduction
 
-This image provides a reproducable way to install VOLTTRON within a docker container.
+This image provides a reproducible way to install VOLTTRON within a docker container.
 By using a volume mount of the `VOLTTRON_HOME` directory, runtime changes made by the platform are visible on the host and are preserved across instances of the container.
 Similarly, changes made from the host are reflect in the container.
 The image features gosu, which allows the non-root user executing the volttron platform inside the container to have the same UID as the host user running the container on the host system.
-In conjection with volume mounting of the directory, this ensures that file ownership and permissions in `VOLTTRON_HOME` match the host user, avoiding cases were root in the container leaves files inaccessible to a user without sudo permissions on the host.
+In conjunction with volume mounting of the directory, this ensures that file ownership and permissions in `VOLTTRON_HOME` match the host user, avoiding cases were root in the container leaves files inaccessible to a user without sudo permissions on the host.
 
 # Platform Initialization
 
@@ -79,8 +79,34 @@ agents:
 ```
 
 ## Other Notes
-agents within the `platform_config.yml` file are created sequentailly, it can take several seconds for each to spin up and be visible via `vctl` commands.
+Agents within the `platform_config.yml` file are created sequentailly, it can take several seconds for each to spin up and be visible via `vctl` commands.
 
+# Local Development
+
+To build and test this image locally, you will need to install docker on Ubuntu, 
+build the image locally, and then create the container. 
+
+Step 1. Install docker using the script below: 
+```
+$ ./docker_install_ubuntu.sh
+```
+Step 2. Build the image:
+```
+$ docker build -t volttron_local .
+```
+
+Step 3. Run the container:
+```
+$ docker run \
+-e LOCAL_USER_ID=$UID \
+-e CONFIG=/home/volttron/configs \
+-v $HOME/volttron-docker/configs:/home/volttron/configs \
+-v $HOME/volttron-docker/platform_config.yml:/platform_config.yml \
+-p 8080:8080 \
+-it volttron_local
+``` 
+
+Step 4. Once the container is started and running, open http://0.0.0.0:8080 on a browser to view the Volttron web platform interface.
 # Raw Container Usage
 
 ``` bash
