@@ -8,6 +8,44 @@ Similarly, changes made from the host are reflect in the container.
 The image features gosu, which allows the non-root user executing the volttron platform inside the container to have the same UID as the host user running the container on the host system.
 In conjunction with volume mounting of the directory, this ensures that file ownership and permissions in `VOLTTRON_HOME` match the host user, avoiding cases were root in the container leaves files inaccessible to a user without sudo permissions on the host.
 
+# Prerequisites
+
+* Docker
+* Docker-compose
+
+If you need to install docker and/or docker-compose, you can use the script in this repo. From the root level, execute the following command:
+
+```bash
+$ ./docker_install_ubuntu.sh
+```
+
+# Quickstart using Docker-Compose
+
+To create the container and start using the platform on the container, run the following command from the command line. Ensure that you are in the root level of the directory.
+
+``` bash
+$ docker-compose up
+
+# If you want to run the container in the background, you can use the detach flag:
+$ docker-compose up --detach
+
+# To look inside the container
+$ docker-compose exec volttron bash 
+
+# To stop the container
+$ docker-compose stop 
+
+# To start the container after it's been stopped
+$ docker-compose start 
+
+# To get a list of all containers created from docker-compose
+$ docker-compose ps
+```
+
+Once the container is fully created, open http://0.0.0.0:8080 on a browser to use the Volttron Web Interface. 
+
+
+
 # Platform Initialization
 
 The VOLTTRON container when created is just a blank container with no agents.  Now there is an initialization routine available within the docker container to allow the installation of agents before launching of the instance.  To do this one will mount a `platform_config.yml` file to `/platform_config.yml` within the container. One is also likely to need to mount agent configurations (specified in the `platform_config.yml` file), into the container. The recommended way to do this is through a `docker-compose.yml` file.  An example of this is included in this repository, based on the one in the [volttron-fuel-cells repo](https://github.com/VOLTTRON/volttron-fuel-cells/).
@@ -83,19 +121,15 @@ Agents within the `platform_config.yml` file are created sequentailly, it can ta
 
 # Local Development
 
-To build and test this image locally, you will need to install docker on Ubuntu, 
+To build and test this image locally, make any changes on the Dockerfile,
 build the image locally, and then create the container. 
 
-Step 1. Install docker using the script below: 
-```
-$ ./docker_install_ubuntu.sh
-```
-Step 2. Build the image:
+Step 1. Build the image:
 ```
 $ docker build -t volttron_local .
 ```
 
-Step 3. Run the container:
+Step 2. Run the container:
 ```
 $ docker run \
 -e LOCAL_USER_ID=$UID \
@@ -106,7 +140,8 @@ $ docker run \
 -it volttron_local
 ``` 
 
-Step 4. Once the container is started and running, open http://0.0.0.0:8080 on a browser to view the Volttron web platform interface.
+Step 3. Once the container is started and running, open http://0.0.0.0:8080 on a browser to view the Volttron web platform interface.
+
 # Raw Container Usage
 
 ``` bash

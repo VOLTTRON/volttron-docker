@@ -2,10 +2,12 @@ version: '3'
 services:
   volttron:
     hostname: vc
+    build:
+      context: .
     image: volttron/volttron
     ports:
-       - 23916:22916
-       - 8080:8080
+      - 8080:8080
+      #- 23916:22916
       #- 8443:8443
       #- 6671:5671    # ampqs port
       #- 25671:15671  # management port
@@ -14,7 +16,4 @@ services:
       - ./configs:/home/volttron/configs
     environment:
       - CONFIG=/home/volttron/configs
-      - IGNORE_ENV_CHECK=1
       - LOCAL_USER_ID=1000
-
-#- LOCAL_USER_ID=1000
