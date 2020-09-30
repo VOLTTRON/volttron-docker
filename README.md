@@ -19,6 +19,23 @@ If you need to install docker and/or docker-compose, you can use the script in t
 $ ./docker_install_ubuntu.sh
 ```
 
+## Gotcha
+This repo has a directory called 'volttron', which contains the volttron codebase. In other words, this repo contains another repo in a subfolder. 
+When you initially clone this repo, the 'volttron' directory is empty. This directory contains the volttron codebase used to create the volttron platform. Before creating the container, you must pull in volttron from the official volttron repo using the following git command:
+
+```bash
+# Ensure that you are in the `volttron directory` 
+# Clones https://github.com/VOLTTRON/volttron.git into the 'volttron' directory
+$ git submodule update --init --recursive
+```
+
+To get the latest volttron from the `develop` branch, execute the following command:
+
+```bash 
+# Ensure that you are in the `volttron directory`
+$ git pull origin develop
+```
+
 # Quickstart using Docker-Compose
 
 To create the container and start using the platform on the container, run the following command from the command line. Ensure that you are in the root level of the directory.
