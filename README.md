@@ -4,9 +4,9 @@
 
 This image provides a reproducible way to install VOLTTRON within a docker container.
 By using a volume mount of the `VOLTTRON_HOME` directory, runtime changes made by the platform are visible on the host and are preserved across instances of the container.
-Similarly, changes made from the host are reflect in the container.
-The image features gosu, which allows the non-root user executing the volttron platform inside the container to have the same UID as the host user running the container on the host system.
-In conjunction with volume mounting of the directory, this ensures that file ownership and permissions in `VOLTTRON_HOME` match the host user, avoiding cases were root in the container leaves files inaccessible to a user without sudo permissions on the host.
+Similarly, changes made from the host are reflected in the container.
+The image uses the utility [gosu](https://github.com/tianon/gosu), which allows the non-root user executing the volttron platform inside the container to have the same UID as the host user running the container on the host system.
+In conjunction with volume mounting of the directory, this ensures that file ownership and permissions in `VOLTTRON_HOME` match the host user, avoiding cases where root in the container leaves files inaccessible to a user without sudo permissions on the host.
 
 # Prerequisites
 
@@ -19,22 +19,6 @@ If you need to install docker and/or docker-compose, you can use the script in t
 $ ./docker_install_ubuntu.sh
 ```
 
-## Gotcha
-This repo has a directory called 'volttron', which contains the volttron codebase. In other words, this repo contains another repo in a subfolder. 
-When you initially clone this repo, the 'volttron' directory is empty. This directory contains the volttron codebase used to create the volttron platform. Before creating the container, you must pull in volttron from the official volttron repo using the following git command:
-
-```bash
-# Ensure that you are in the `volttron directory` 
-# Clones https://github.com/VOLTTRON/volttron.git into the 'volttron' directory
-$ git submodule update --init --recursive
-```
-
-To get the latest volttron from the `develop` branch, execute the following command:
-
-```bash 
-# Ensure that you are in the `volttron directory`
-$ git pull origin develop
-```
 
 # Quickstart using Docker-Compose
 
@@ -43,7 +27,7 @@ To create the container and start using the platform on the container, run the f
 ``` bash
 $ docker-compose up
 
-# If you want to run the container in the background, you can use the detach flag:
+# To run the container in the background:
 $ docker-compose up --detach
 
 # To look inside the container
@@ -71,7 +55,7 @@ The `platform_config.yml` file has two sections: `config`, which configures the 
 
 ## Main Configuration
 The main instance configuration is composed of key value pairs under a "config" key in the `platofrom_config.yml` file.
-As an example, the `vip-address` and `bind-web-address` would be populated using the following partial file:
+For example, the `vip-address` and `bind-web-address` would be populated using the following partial file:
 ``` yaml
 # Properties to be added to the root config file:
 # - the properties should be ingestable for volttron
@@ -87,7 +71,7 @@ config:
 ```
 
 ## Agent Configuration
-The agent configuration section is under a top-level key "agents" and contains several layers of nested key-value mappings.
+The agent configuration section is under a top-level key called "agents". This top-level key contains several layers of nested key-value mappings.
 The top level of the section is keyed with the names of the desired agents, which are used as the identity of those agents within the platform.
 For each agent key, there is a further mapping which must contain a `source` key and may contain either or both a `config` and/or `config_store` key; the values are strings representing resolvable paths.
 An example follows at the end of this section.
@@ -134,14 +118,34 @@ agents:
 ```
 
 ## Other Notes
-Agents within the `platform_config.yml` file are created sequentailly, it can take several seconds for each to spin up and be visible via `vctl` commands.
+Agents within the `platform_config.yml` file are created sequentially, it can take several seconds for each to spin up and be visible via `vctl` commands.
 
-# Local Development
+# Building Image Locally
 
-To build and test this image locally, make any changes on the Dockerfile,
-build the image locally, and then create the container. 
+## Prerequisite
+
+This repo has a directory called 'volttron', which contains the volttron codebase. In other words, this repo contains another repo in a subfolder. 
+When you initially clone this repo, the 'volttron' directory is empty. This directory contains the volttron codebase used to create the volttron platform. 
+Before creating the container, you must pull in volttron from the [official volttron repo](https://github.com/VOLTTRON/volttron) using the following git command:
+
+```bash
+# Clones https://github.com/VOLTTRON/volttron.git into the 'volttron' directory
+$ git submodule update --init --recursive
+```
+
+To get the latest volttron from the `develop` branch from the volttron repo, execute the following command:
+
+```bash 
+# Ensure that you are in the `volttron` folder
+$ git pull origin develop
+```
+
+## How to build locally
+
+To build and test this image locally, follow the steps below:
 
 Step 1. Build the image:
+
 ```
 $ docker build -t volttron_local .
 ```
@@ -158,6 +162,7 @@ $ docker run \
 ``` 
 
 Step 3. Once the container is started and running, open http://0.0.0.0:8080 on a browser to view the Volttron web platform interface.
+
 
 # Raw Container Usage
 

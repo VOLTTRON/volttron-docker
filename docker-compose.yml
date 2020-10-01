@@ -2,9 +2,7 @@ version: '3'
 services:
   volttron:
     hostname: vc
-    build:
-      context: .
-    image: volttron/volttron
+    image: bonicim/volttron-docker-dev:test
     ports:
       - 8080:8080
       #- 23916:22916
