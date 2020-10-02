@@ -54,7 +54,7 @@ The VOLTTRON container when created is just a blank container with no agents.  N
 The `platform_config.yml` file has two sections: `config`, which configures the main instance and populate's the main config file ($VOLTTRON_HOME/config), and `agents`, which contains a list of agents with references to configurations for them (note the frequent use of environment variables in this section).
 
 ## Main Configuration
-The main instance configuration is composed of key value pairs under a "config" key in the `platofrom_config.yml` file.
+The main instance configuration is composed of key value pairs under a "config" key in the `platform_config.yml` file.
 For example, the `vip-address` and `bind-web-address` would be populated using the following partial file:
 ``` yaml
 # Properties to be added to the root config file:
