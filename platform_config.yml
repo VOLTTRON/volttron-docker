@@ -7,7 +7,7 @@ config:
   # For rabbitmq this should match the hostname specified in
   # in the docker compose file hostname field for the service.
   bind-web-address: http://0.0.0.0:8080
-  #volttron-central-address: https://vc:8443
+  volttron-central-address: http://0.0.0.0:8080
   instance-name: foobar
   message-bus: zmq
   # volttron-central-address: a different address
@@ -29,19 +29,25 @@ agents:
     source: $VOLTTRON_ROOT/services/core/VolttronCentral
     config: $VOLTTRON_ROOT/services/core/VolttronCentral/config
 
-  master.driver:
+  platform.driver:
     source: $VOLTTRON_ROOT/services/core/MasterDriverAgent
+    config_store:
+      fake.csv:
+        file: $VOLTTRON_ROOT/examples/configurations/drivers/fake.csv
+        type: --csv
+      devices/fake-campus/fake-building/fake-device:
+        file: $VOLTTRON_ROOT/examples/configurations/drivers/fake.config
 
   platform.agent:
     source: $VOLTTRON_ROOT/services/core/VolttronCentralPlatform
     config: $VOLTTRON_ROOT/services/core/VolttronCentralPlatform/config
 
-  historian:
+  platform.historian:
     source: $VOLTTRON_ROOT/services/core/SQLHistorian
     config: $CONFIG/historian.config
 
-#  platform.actuator:
-#    source: $VOLTTRON_ROOT/services/core/ActuatorAgent
+  platform.actuator:
+    source: $VOLTTRON_ROOT/services/core/ActuatorAgent
 #
 #  weather:
 #    source: $VOLTTRON_ROOT/examples/DataPublisher
@@ -54,12 +60,3 @@ agents:
 #  platform.bacnet_proxy:
 #    source: $VOLTTRON_ROOT/services/core/BACnetProxy
 #    config: $CONFIG/bacnet-proxy.json
-#  platform.driver:
-#    source: $VOLTTRON_ROOT/services/core/MasterDriverAgent
-#    config_store:
-#      fake.csv:
-#        file: $CONFIG/bacnet_example_config.csv
-#        type: --csv
-#      devices/PNNL/ANNEX:
-#        file: $CONFIG/annex.config
-

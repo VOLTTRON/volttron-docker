@@ -1,5 +1,4 @@
 import logging
-from shutil import copy
 import subprocess
 import os
 import sys
@@ -11,7 +10,7 @@ from volttron.platform.instance_setup import setup_rabbitmq_volttron
 
 logging.basicConfig(level=logging.DEBUG)
 
-# The environment variables must be set or we ahve big issues
+# The environment variables must be set or we have big issues
 VOLTTRON_ROOT = os.environ['VOLTTRON_ROOT']
 VOLTTRON_HOME = os.environ['VOLTTRON_HOME']
 VOLTTRON_CMD = "volttron"
@@ -42,6 +41,18 @@ with open(platform_config) as cin:
     platform_cfg = config['config']
 
 print("Platform instance name set to: {}".format(platform_cfg.get('instance-name')))
+
+bind_web_address = platform_cfg.get("bind-web-address", None)
+if bind_web_address is not None:
+    print(f"Platform bind web address set to: {bind_web_address}")
+    from requirements import extras_require as extras
+    web_plt_pack = extras.get("web", None)
+    install_cmd = ["pip3", "install"]
+    install_cmd.extend(web_plt_pack)
+    if install_cmd is not None:
+        print(f"Installing packages for web platform: {web_plt_pack}")
+        subprocess.check_call(install_cmd)
+
 envcpy = os.environ.copy()
 
 # Create the main volttron config file
@@ -116,7 +127,7 @@ if need_to_install:
         sys.stdout.write("Processing identity: {}\n".format(identity))
         agent_cfg = None
         if "source" not in spec:
-            sys.stderr.write("Invalid souce for identity: {}\n".format(identity))
+            sys.stderr.write("Invalid source for identity: {}\n".format(identity))
             continue
 
         if "config" in spec and spec["config"]:
@@ -134,13 +145,13 @@ if need_to_install:
             continue
 
         # grab the priority from the system config file
-        priority = spec.get('priority', 50)
+        priority = spec.get('priority', '50')
 
-        install_cmd = ["python", INSTALL_PATH]
+        install_cmd = ["python3", INSTALL_PATH]
         install_cmd.extend(["--agent-source", agent_source])
         install_cmd.extend(["--vip-identity", identity])
         install_cmd.extend(["--start", "--priority", priority])
-        install_cmd.extend(["--agent-start-time", "5"])
+        install_cmd.extend(["--agent-start-time", "20"])
         install_cmd.append('--force')
         if agent_cfg:
             install_cmd.extend(["--config", agent_cfg])
@@ -169,6 +180,9 @@ if need_to_install:
                 subprocess.check_call(entry_cmd)
 
     # Stop running volttron now that it is setup.
+    sys.stdout.write("\n**************************************************\n")
+    sys.stdout.write("SHUTTING DOWN FROM SETUP-PLATFORM.PY\n")
+    sys.stdout.write("**************************************************\n")
     subprocess.call(["vctl", "shutdown", "--platform"])
 
     sleep(5)
