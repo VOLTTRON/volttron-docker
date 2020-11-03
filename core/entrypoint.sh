@@ -34,8 +34,8 @@ fi
 
 # # Only need to change
 # if [ -z "${VOLTTRON_USER_HOME}" ]; then
-#   echo "chown volttron.volttron -R $VOLTTRON_USER_HOME"
-#   chown volttron.volttron -R ${VOLTTRON_USER_HOME}
+echo "chown volttron.volttron -R $VOLTTRON_USER_HOME"
+chown volttron.volttron -R ${VOLTTRON_USER_HOME}
 # fi
 
 # echo "cd to $VOLTTRON_USER_HOME"
