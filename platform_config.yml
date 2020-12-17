@@ -8,12 +8,12 @@ config:
   # in the docker compose file hostname field for the service.
   bind-web-address: http://0.0.0.0:8080
   volttron-central-address: http://0.0.0.0:8080
-  instance-name: foobar
+  instance-name: volttron1
   message-bus: zmq
   # volttron-central-address: a different address
   # volttron-central-serverkey: a different key
 
-#rabbitmq-config: $CONFIG/rabbitmq_config.yml
+rabbitmq-config: $CONFIG/rabbitmq_config.yml
 
 # Agents dictionary to install.  The key must be a valid
 # identity for the agent to be installed correctly.

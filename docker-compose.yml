@@ -2,7 +2,9 @@ version: '3'
 services:
   volttron:
     hostname: vc
-    image: volttron/volttron:develop
+#    image: volttron/volttron:develop
+    # since I currently don't have access to the official volttron Dockerhub, I'm housing the Dockerfile in my personal DHub account
+    image: bonicim/volttron:develop
     ports:
       - 8080:8080
       #- 23916:22916
