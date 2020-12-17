@@ -8,7 +8,6 @@ from time import sleep
 
 from volttron.platform import get_home, set_home, certs
 from volttron.platform.instance_setup import setup_rabbitmq_volttron
-from volttron.platform.agent.known_identities import MASTER_WEB
 from volttron.utils import get_hostname
 
 logging.basicConfig(level=logging.DEBUG)
@@ -70,8 +69,8 @@ if not os.path.exists(cfg_path):
             fout.write("[volttron]\n")
             for key, value in platform_cfg.items():
                 fout.write("{}={}\n".format(key.strip(), value.strip()))
-    # configure the volttron platform to create CA cert
-    # use copied code from ~$HOME/volttron/platform/instance_setup.py
+
+if platform_cfg.get('message-bus') == 'rmq':
     print("Creating CA Certificate...")
     crts = certs.Certs()
     data = {
@@ -85,43 +84,23 @@ if not os.path.exists(cfg_path):
     crts.create_root_ca(overwrite=False, **data)
     copy(crts.cert_file(crts.root_ca_name), crts.cert_file(crts.trusted_ca_name))
 
-    print("Creating new web server certificate.")
     print(
         "Creating and signing new certificate using the newly created CA certificate."
     )
-    print(f"ca_name {crts.root_ca_name}")
+
+    print(
+        "Creating Certs for server and client, which is required for the RMQ message bus."
+    )
+    (
+        root_ca_name,
+        server_name,
+        admin_client_name,
+    ) = certs.Certs.get_admin_cert_names(platform_cfg.get("instance-name"))
     crts.create_signed_cert_files(
-        name=MASTER_WEB + "-server",
-        cert_type="server",
-        ca_name=crts.root_ca_name,
-        fqdn=get_hostname(),
+        server_name, cert_type="server", fqdn=get_hostname()
     )
-    master_web_cert = os.path.join(
-        VOLTTRON_HOME, "certificates/certs/", MASTER_WEB + "-server.crt"
-    )
-    master_web_key = os.path.join(
-        VOLTTRON_HOME, "certificates/private/", MASTER_WEB + "-server.pem"
-    )
-    print("Appending ssl cert and key paths to config.")
-    with open(os.path.join(cfg_path), "a") as fout:
-        fout.write(f"web-ssl-cert = {master_web_cert}\n")
-        fout.write(f"web-ssl-key = {master_web_key}\n")
+    crts.create_signed_cert_files(admin_client_name, cert_type="client")
 
-    if platform_cfg.get('message-bus') == 'rmq':
-        print(
-            "Creating Certs for server and client, which is required for the RMQ message bus."
-        )
-        (
-            root_ca_name,
-            server_name,
-            admin_client_name,
-        ) = certs.Certs.get_admin_cert_names(platform_cfg.get("instance-name"))
-        crts.create_signed_cert_files(
-            server_name, cert_type="server", fqdn=get_hostname()
-        )
-        crts.create_signed_cert_files(admin_client_name, cert_type="client")
-
-if platform_cfg.get('message-bus') == 'rmq':
     if not config.get('rabbitmq-config'):
         sys.stderr.write("Invalid rabbit-config entry in platform configuration file.\n")
         sys.exit(1)
