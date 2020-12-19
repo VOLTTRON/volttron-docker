@@ -4,11 +4,20 @@ services:
     hostname: vc
     image: volttron/volttron:develop
     ports:
+      # host_port:container_port
+
+      # http port for volttron central
       - 8080:8080
-      #- 23916:22916
+      # https port for volttron central
       #- 8443:8443
-      #- 6671:5671    # ampqs port
-      #- 25671:15671  # management port
+
+      #- 23916:22916
+
+      # rmq ampqs port
+      #- 5671:5671
+
+      # rmq mgmt ssl port
+      #- 15671:15671
     volumes:
       - ./platform_config.yml:/platform_config.yml
       - ./configs:/home/volttron/configs

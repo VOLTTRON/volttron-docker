@@ -8,7 +8,7 @@ config:
   # in the docker compose file hostname field for the service.
   bind-web-address: http://0.0.0.0:8080
   volttron-central-address: http://0.0.0.0:8080
-  instance-name: foobar
+  instance-name: volttron1
   message-bus: zmq
   # volttron-central-address: a different address
   # volttron-central-serverkey: a different key
@@ -23,7 +23,7 @@ agents:
   # directory and will be used to install the agent.
   listener:
     source: $VOLTTRON_ROOT/examples/ListenerAgent
-    config: $CONFIG/listener.config # This is an empty element $CONFIG/listener.config
+    config: $CONFIG/listener.config
 
   volttron.central:
     source: $VOLTTRON_ROOT/services/core/VolttronCentral
