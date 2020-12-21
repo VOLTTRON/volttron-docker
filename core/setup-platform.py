@@ -6,7 +6,8 @@ from shutil import copy
 import yaml
 from time import sleep
 
-from volttron.platform import get_home, set_home, certs
+from volttron.platform.agent.known_identities import MASTER_WEB
+from volttron.platform import set_home, certs
 from volttron.platform.instance_setup import setup_rabbitmq_volttron
 from volttron.utils import get_hostname
 
@@ -100,6 +101,16 @@ if platform_cfg.get('message-bus') == 'rmq':
         server_name, cert_type="server", fqdn=get_hostname()
     )
     crts.create_signed_cert_files(admin_client_name, cert_type="client")
+
+    name = f"{platform_cfg.get('instance-name')}.{MASTER_WEB}"
+    master_web_cert = os.path.join(VOLTTRON_HOME, 'certificates/certs/',
+                                   name + "-server.crt")
+    master_web_key = os.path.join(VOLTTRON_HOME, 'certificates/private/',
+                                  name + "-server.pem")
+    print("Writing ssl cert and key paths to config.")
+    with open(os.path.join(cfg_path), "a") as fout:
+        fout.write(f"web-ssl-cert = {master_web_cert}\n")
+        fout.write(f"web-ssl-key = {master_web_key}\n")
 
     if not config.get('rabbitmq-config'):
         sys.stderr.write("Invalid rabbit-config entry in platform configuration file.\n")

@@ -23,12 +23,16 @@ $ ./docker_install_ubuntu.sh
 # Quickstart using Docker-Compose
 
 To create the container and start using the platform on the container, run the following command from the command line. Ensure that you are in the root level of the directory.
+Note that there are two docker-compose files:
+* docker-compose.yml: creates a single Volttron instance with ZMQ message bus
+* docker-compose.yml: creates a single Volttron instance with RMQ message bus
 
 ``` bash
+# Creates Volttron instance with ZMQ message bus
 $ docker-compose up
 
-# To run the container in the background:
-$ docker-compose up --detach
+# To create a Volttron instance with RMQ message bus
+$ docker-compose -f docker-compose-rmq.yml up 
 
 # To look inside the container
 $ docker-compose exec volttron bash 
@@ -43,8 +47,13 @@ $ docker-compose start
 $ docker-compose ps
 ```
 
-Once the container is fully created, open http://0.0.0.0:8080 on a browser to use the Volttron Web Interface. 
+For Volttron instance using ZMQ message bus:
+* Set the master username and password on the Volttron Central Admin page at `http://0.0.0.0:8080/index.html` 
+* To log in to Volttron Central, open a browser and login to the Volttron web interface: `http://0.0.0.0:8080/vc/index.html`
 
+For Volttron instances using RMQ message bus:
+* Set the master username and password on the Volttron Central Admin page at `https://0.0.0.0:8080/index.html` 
+* To log in to Volttron Central, open a browser and login to the Volttron web interface: `https://0.0.0.0:8080/vc/index.html`
 
 
 # Platform Initialization
