@@ -166,9 +166,9 @@ $ docker run \
 -it volttron_local
 ``` 
 
-Step 3. Once the container is started and running, set the master username and password on the Volttron Central Admin page at `http://localhost:8080/index.html`
+Step 3. Once the container is started and running, set the master username and password on the Volttron Central Admin page at `http://0.0.0.0:8080/index.html`
 
-Step 4. To log in to Volttron Central, open a browser and login to the Volttron web interface: `http://localhost:8080/vc/index.html`
+Step 4. To log in to Volttron Central, open a browser and login to the Volttron web interface: `http://0.0.0.0:8080/vc/index.html`
 
 # Raw Container Usage
 
