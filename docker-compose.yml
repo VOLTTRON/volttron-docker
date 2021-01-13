@@ -7,11 +7,20 @@ services:
     # since I currently don't have access to the official volttron Dockerhub, I'm housing the Dockerfile image in my personal DHub account
     image: bonicim/volttron:develop # see https://hub.docker.com/repository/docker/bonicim/volttron/tags?page=1&ordering=last_updated
     ports:
+      # host_port:container_port
+
+      # http port for volttron central
       - 8080:8080
-      #- 23916:22916
+      # https port for volttron central
       #- 8443:8443
-      #- 6671:5671    # ampqs port
-      #- 25671:15671  # management port
+
+      #- 23916:22916
+
+      # rmq ampqs port
+      #- 5671:5671
+
+      # rmq mgmt ssl port
+      #- 15671:15671
     volumes:
       - ./platform_config.yml:/platform_config.yml
       - ./configs:/home/volttron/configs

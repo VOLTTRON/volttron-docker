@@ -21,7 +21,7 @@ agents:
   # directory and will be used to install the agent.
   listener:
     source: $VOLTTRON_ROOT/examples/ListenerAgent
-    config: $CONFIG/listener.config # This is an empty element $CONFIG/listener.config
+    config: $CONFIG/listener.config
 
   volttron.central:
     source: $VOLTTRON_ROOT/services/core/VolttronCentral
