@@ -52,8 +52,8 @@ For Volttron instance using ZMQ message bus:
 * To log in to Volttron Central, open a browser and login to the Volttron web interface: `http://0.0.0.0:8080/vc/index.html`
 
 For Volttron instances using RMQ message bus:
-* Set the master username and password on the Volttron Central Admin page at `https://0.0.0.0:8080/index.html` 
-* To log in to Volttron Central, open a browser and login to the Volttron web interface: `https://0.0.0.0:8080/vc/index.html`
+* Set the master username and password on the Volttron Central Admin page at `https://0.0.0.0:8443/index.html` 
+* To log in to Volttron Central, open a browser and login to the Volttron web interface: `https://0.0.0.0:8443/vc/index.html`
 
 
 # Platform Initialization
