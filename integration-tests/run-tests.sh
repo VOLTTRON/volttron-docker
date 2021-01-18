@@ -2,22 +2,29 @@
 # set -x # log all shell commands for debugging.
 set -e # fail if any command errors without being caught with an || or an 'if'.
 
+start=$(date +%s.%N)
+
 docker system prune --force
 
 git submodule update --init --recursive
 
-docker-compose up --build --detach
+docker rmi volttron/volttron:develop --force
 
-# sleep to let container build
+docker build -t volttron/volttron:develop .
 
-# while statement to test con
+#docker-compose up --detach
+#
+#sleep 120
+## or test for connection
+#
+#docker exec -u volttron volttron1 /home/volttron/.local/bin/vctl status
+#
+##docker exec -u volttron volttron1 /home/volttron/.local/bin/vctl status
+#
+#docker-compose down
 
-no_
-while no_connect:
+dur=$(echo "$(date +%s.%N) - $start" | bc)
 
-docker exec -u volttron volttron1 /home/volttron/.local/bin/vctl status
-
-# close docker
-
+printf "Execution time: %.6f seconds" $dur
 
 echo "Image testing finished"

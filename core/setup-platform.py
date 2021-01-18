@@ -26,6 +26,11 @@ KEYSTORES = os.path.join(VOLTTRON_HOME, "keystores")
 if not VOLTTRON_HOME:
     VOLTTRON_HOME="/home/volttron/.volttron"
 
+import time
+
+start = time.time()
+
+
 set_home(VOLTTRON_HOME)
 
 platform_config = None
@@ -234,4 +239,5 @@ if need_to_install:
     subprocess.call(["vctl", "shutdown", "--platform"])
 
     sleep(5)
+    print(f"tiem to compoelte setypo: {time.time() - start}")
     sys.exit(0)

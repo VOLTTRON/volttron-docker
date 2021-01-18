@@ -6,7 +6,7 @@ services:
 #    image: volttron/volttron:develop
     # since I currently don't have access to the official volttron Dockerhub, I'm housing the Dockerfile image in my personal DHub account
 #    image: bonicim/volttron:develop # see https://hub.docker.com/repository/docker/bonicim/volttron/tags?page=1&ordering=last_updated
-    build: .
+#    build: .
     image: volttron/volttron:develop
     ports:
       # host_port:container_port
