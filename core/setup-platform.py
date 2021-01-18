@@ -6,7 +6,7 @@ from shutil import copy
 import yaml
 from time import sleep
 
-from volttron.platform.agent.known_identities import MASTER_WEB
+from volttron.platform.agent.known_identities import PLATFORM_WEB
 from volttron.platform import set_home, certs
 from volttron.platform.instance_setup import setup_rabbitmq_volttron
 from volttron.utils import get_hostname
@@ -24,7 +24,7 @@ INSTALL_PATH = "{}/scripts/install-agent.py".format(VOLTTRON_ROOT)
 KEYSTORES = os.path.join(VOLTTRON_HOME, "keystores")
 
 if not VOLTTRON_HOME:
-    VOLTTRON_HOME="/home/volttron/.volttron"
+    VOLTTRON_HOME = "/home/volttron/.volttron"
 
 set_home(VOLTTRON_HOME)
 

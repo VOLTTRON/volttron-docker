@@ -28,7 +28,7 @@ agents:
     config: $VOLTTRON_ROOT/services/core/VolttronCentral/config
 
   platform.driver:
-    source: $VOLTTRON_ROOT/services/core/MasterDriverAgent
+    source: $VOLTTRON_ROOT/services/core/PlatformDriverAgent
     config_store:
       fake.csv:
         file: $VOLTTRON_ROOT/examples/configurations/drivers/fake.csv
