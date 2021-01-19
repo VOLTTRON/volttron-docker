@@ -24,12 +24,7 @@ INSTALL_PATH = "{}/scripts/install-agent.py".format(VOLTTRON_ROOT)
 KEYSTORES = os.path.join(VOLTTRON_HOME, "keystores")
 
 if not VOLTTRON_HOME:
-    VOLTTRON_HOME="/home/volttron/.volttron"
-
-import time
-
-start = time.time()
-
+    VOLTTRON_HOME = "/home/volttron/.volttron"
 
 set_home(VOLTTRON_HOME)
 
@@ -239,5 +234,4 @@ if need_to_install:
     subprocess.call(["vctl", "shutdown", "--platform"])
 
     sleep(5)
-    print(f"tiem to compoelte setypo: {time.time() - start}")
     sys.exit(0)
