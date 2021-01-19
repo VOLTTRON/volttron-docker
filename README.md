@@ -23,16 +23,12 @@ $ ./docker_install_ubuntu.sh
 # Quickstart using Docker-Compose
 
 To create the container and start using the platform on the container, run the following command from the command line. Ensure that you are in the root level of the directory.
-Note that there are two docker-compose files:
-* docker-compose.yml: creates a single Volttron instance with ZMQ message bus
-* docker-compose.yml: creates a single Volttron instance with RMQ message bus
 
 ``` bash
-# Creates Volttron instance with ZMQ message bus
 $ docker-compose up
 
-# To create a Volttron instance with RMQ message bus
-$ docker-compose -f docker-compose-rmq.yml up 
+# To run the container in the background:
+$ docker-compose up --detach
 
 # To look inside the container
 $ docker-compose exec volttron bash 
@@ -47,13 +43,8 @@ $ docker-compose start
 $ docker-compose ps
 ```
 
-For Volttron instance using ZMQ message bus:
-* Set the master username and password on the Volttron Central Admin page at `http://0.0.0.0:8080/index.html` 
-* To log in to Volttron Central, open a browser and login to the Volttron web interface: `http://0.0.0.0:8080/vc/index.html`
+Once the container is fully created, open http://0.0.0.0:8080 on a browser to use the Volttron Web Interface. 
 
-For Volttron instances using RMQ message bus:
-* Set the master username and password on the Volttron Central Admin page at `https://0.0.0.0:8443/index.html` 
-* To log in to Volttron Central, open a browser and login to the Volttron web interface: `https://0.0.0.0:8443/vc/index.html`
 
 
 # Platform Initialization
@@ -142,8 +133,7 @@ Before creating the container, you must pull in volttron from the [official volt
 $ git submodule update --init --recursive
 ```
 
-OPTIONAL: This repo uses a specific version of volttron based on the commit in the 'volttron' submodule. If you want to use the latest volttron from the `develop` 
-branch from the volttron repo, execute the following command (NOTE: this is not required):
+To get the latest volttron from the `develop` branch from the volttron repo, execute the following command:
 
 ```bash 
 # Ensure that you are in the `volttron` folder
@@ -161,50 +151,40 @@ $ docker build -t volttron_local .
 ```
 
 Step 2. Run the container:
-
 ```
-# Creates a docker container named "volttron1"; this container will be automatically removed when the container stops running
 $ docker run \
---name volttron1 \
---rm \
 -e LOCAL_USER_ID=$UID \
 -e CONFIG=/home/volttron/configs \
--v "$(pwd)"/configs:/home/volttron/configs \
--v "$(pwd)"/platform_config.yml:/platform_config.yml \
+-v $HOME/volttron-docker/configs:/home/volttron/configs \
+-v $HOME/volttron-docker/platform_config.yml:/platform_config.yml \
 -p 8080:8080 \
 -it volttron_local
 ``` 
 
-Step 3. Once the container is started and running, set the master username and password on the Volttron Central Admin page at `http://0.0.0.0:8080/index.html`
+Step 3. Once the container is started and running, open http://0.0.0.0:8080 on a browser to view the Volttron web platform interface.
 
-Step 4. To log in to Volttron Central, open a browser and login to the Volttron web interface: `http://0.0.0.0:8080/vc/index.html`
 
 # Raw Container Usage
 
 ``` bash
-# Retrieves and creates a volttron container from the volttron/volttron:develop image on Volttron DockerHub
-$ docker run -it  -e LOCAL_USER_ID=$UID --name volttron1 --rm -d volttron/volttron:develop
+# Retrieves and executes the volttron container.
+docker run -it volttron/volttron
 ```
 
 After entering the above command the shell will be within the volttron container as a user named volttron.
 
 ``` bash
-$ docker exec -itu volttron volttron1 bash
+# starting the platform
+volttron -vv -l volttron.log&
 
-# check status of volttron platform
-$ vctl status
+# cd to volttron root
+cd $VOLTTRON_ROOT
 
-# set environment variable, IGNORE_ENV_CHECK, to ignore virtual env in python
-$ export IGNORE_ENV_CHECK=1
+# installing listener agent
+python scripts/core/make-listener
 
-# Install a ListenterAgent
-$ python3 scripts/install-agent.py -s examples/ListenerAgent --start
-
-# check status of volttron platform to verify ListenerAgent is installed
-$ vctl status
-
-# To Stop the container
-$ docker stop volttron1
+# see the log messages
+tail -f volttron.log
 ```
 
 All the same functionality that one would have from a VOLTTRON command line is available through the container.
@@ -220,19 +200,3 @@ In order for volttron to keep its state between runs, the state must be stored o
     ```
 
 In order to allow an external instance connect to the running volttron container one must add the -p <hostport>:<containerport> (e.g. 22916:22916)
-
-
-# Development
-
-## Dockerfile 
-
-If you want to work on improving/developing the Dockerfile, you can locally run a test script to check whether the image
-works as expected. To run the test, see the following:
-
-```bash
-# run the test (rebuilds and tests the most current image)
-$ ./run-test-docker-image.sh
-
-# You can also run the test but skip rebuilding the image 
-$ ./run-test-docker-image.sh -s
-```
