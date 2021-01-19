@@ -6,12 +6,14 @@ config:
   vip-address: tcp://0.0.0.0:22916
   # For rabbitmq this should match the hostname specified in
   # in the docker compose file hostname field for the service.
-  bind-web-address: http://0.0.0.0:8080
-  volttron-central-address: http://0.0.0.0:8080
+  bind-web-address: https://0.0.0.0:8443
+  volttron-central-address: https://0.0.0.0:8443
   instance-name: volttron1
-  message-bus: zmq # allowed values: zmq, rmq
+  message-bus: rmq # allowed values: zmq, rmq
   # volttron-central-address: a different address
   # volttron-central-serverkey: a different key
+
+rabbitmq-config: $CONFIG/rabbitmq_config.yml
 
 # Agents dictionary to install.  The key must be a valid
 # identity for the agent to be installed correctly.
@@ -21,7 +23,7 @@ agents:
   # directory and will be used to install the agent.
   listener:
     source: $VOLTTRON_ROOT/examples/ListenerAgent
-    config: $CONFIG/listener.config
+    config: $CONFIG/listener.config # This is an empty element $CONFIG/listener.config
 
   volttron.central:
     source: $VOLTTRON_ROOT/services/core/VolttronCentral

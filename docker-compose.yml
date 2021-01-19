@@ -1,14 +1,13 @@
 version: '3'
 services:
   volttron:
-    hostname: vc
+    container_name: volttron1
+    hostname: volttron1
     image: volttron/volttron:develop
     ports:
+      # host_port:container_port
+      # http port for volttron central
       - 8080:8080
-      #- 23916:22916
-      #- 8443:8443
-      #- 6671:5671    # ampqs port
-      #- 25671:15671  # management port
     volumes:
       - ./platform_config.yml:/platform_config.yml
       - ./configs:/home/volttron/configs

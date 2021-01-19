@@ -1,0 +1,18 @@
+version: '3'
+services:
+  volttron:
+    container_name: volttron1
+    hostname: volttron1
+#    image: volttron/volttron:develop
+    # since I currently don't have access to the official volttron Dockerhub, I'm housing the Dockerfile image in my personal DHub account
+    image: bonicim/volttron:develop # see https://hub.docker.com/repository/docker/bonicim/volttron/tags?page=1&ordering=last_updated
+    ports:
+      # host_port:container_port
+      # http port for volttron central
+      - 8443:8443
+    volumes:
+      - ./platform_config_rmq.yml:/platform_config.yml
+      - ./configs:/home/volttron/configs
+    environment:
+      - CONFIG=/home/volttron/configs
+      - LOCAL_USER_ID=1000
