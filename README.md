@@ -220,3 +220,19 @@ In order for volttron to keep its state between runs, the state must be stored o
     ```
 
 In order to allow an external instance connect to the running volttron container one must add the -p <hostport>:<containerport> (e.g. 22916:22916)
+
+
+# Development
+
+## Dockerfile 
+
+If you want to work on improving/developing the Dockerfile, you can locally run a test script to check whether the image
+works as expected. To run the test, see the following:
+
+```bash
+# run the test (rebuilds and tests the most current image)
+$ ./run-test-docker-image.sh
+
+# You can also run the test but skip rebuilding the image 
+$ ./run-test-docker-image.sh -s
+```

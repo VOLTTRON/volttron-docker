@@ -17,6 +17,9 @@ if [[ $setup_return -ne 0 ]]; then
     exit $setup_return
 fi
 
+echo "Setup of Volttron platform is complete."
+echo "Starting Volttron..."
+
 # Now spin up the volttron platform
 volttron -vv
 volttron_retcode=$?
