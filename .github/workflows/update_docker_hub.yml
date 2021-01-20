@@ -43,6 +43,7 @@ jobs:
             restore-keys: |
               ${{ runner.os }}-buildx-
 
+        # This step will update the volttron/volttron:develop image at https://hub.docker.com/r/volttron/volttron
         - name: Build and push
           id: docker_build
           uses: docker/build-push-action@v2

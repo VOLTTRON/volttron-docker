@@ -23,28 +23,47 @@ check_test_execution() {
 
 
 ############ Parse optional parameters
-# One option to the test script is '-s' which gives the option to skip building the image
-skip_build=''
+
+# "$#" number of args passed
+# "$@" list of strings of positional arguments passed
+
+# "$*" single string of args
+## ^^^ this will hand over exactly one argument, containing all
+##     original arguments, separated by single spaces.
+
+# $*
+## ^^^ this will join all arguments by single spaces as well and
+##     will then split the string as the shell does on the command
+##     line, thus it will split an argument containing spaces into
+##     several arguments.
+
+# Optional parameters; defaults provided for each one
+skip_build='' # skip building the image
 wait=300 # 5 minutes; wait is used for sleep while the container is setting up Volttron
-while getopts 'sw:' flag; do
+group='volttron' # group name of the image; will be used to name the image <group>/volttron
+tag='develop' # image tag; will be used to name the image <source image>:<tag>
+while getopts 'sw:g:t:' flag; do
   case "$flag" in
     s) skip_build=true ;;
     w) wait="$OPTARG" ;;
+    g) group="$OPTARG" ;;
+    t) tag="$OPTARG" ;;
     *) echo "Unexpected option ${flag}"
        exit 1 ;;
   esac
 done
 
+echo "Test running with following optional parameters: $skip_build $wait $group $tag"
 
 ############ Build image
 if [ "$skip_build" = true ]; then
   echo "Skipping the build"
 else
   echo "Building image..."
-  docker system prune --force
   git submodule update --init --recursive
-  docker rmi volttron/volttron:develop --force
-  docker build -t volttron/volttron:develop .
+  image_name="${group}/volttron:${tag}"
+  docker rmi "${image_name}" --force
+  docker build --no-cache -t "${image_name}" .
 fi
 
 

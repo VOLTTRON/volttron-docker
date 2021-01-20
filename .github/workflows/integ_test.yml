@@ -19,4 +19,4 @@ jobs:
     steps:
         - uses: actions/checkout@v2
         - name: Run integration tests
-          run: ./run-test-docker-image.sh
+          run: ./run-test-docker-image.sh -g test -t integ
