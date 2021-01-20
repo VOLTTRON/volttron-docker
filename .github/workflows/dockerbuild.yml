@@ -1,0 +1,39 @@
+name: CI to Docker hub
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    # The strategy allows customization of the build and allows matrixing the version of os and software
+    # https://docs.github.com/en/free-pro-team@l.atest/actions/reference/workflow-syntax-for-github-actions#jobsjob_idstrategy
+    strategy:
+      fail-fast: false
+      matrix:
+        # Each entry in the os and python-version matrix will be run so for the 3 x 4 there will be 12 jobs run
+#          os: [ ubuntu-16.04, ubuntu-18.04, ubuntu-20.04 ]
+        os: [ ubuntu-18.04 ]
+        python-version: [ 3.6, 3.7 ] # , 3.8, 3.9 ]
+    runs-on: ${{ matrix.os }}
+    steps:
+        - uses: actions/checkout@v2
+
+        - name: Login to DockerHub
+          uses: docker/login-action@v1
+          with:
+            username: ${{ secrets.DOCKER_HUB_USERNAME }}
+            password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+        - name: Build and push
+          id: docker_build
+          uses: docker/build-push-action@v2
+          with:
+            context: ./
+            file: ./Dockerfile
+            push: true
+            tags: bonicim/volttron:develop
+
+        - name: Image digest
+          run: echo ${{ steps.docker_build.outputs.digest }}

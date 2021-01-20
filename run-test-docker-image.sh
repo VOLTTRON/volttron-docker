@@ -25,7 +25,7 @@ check_test_execution() {
 ############ Parse optional parameters
 # One option to the test script is '-s' which gives the option to skip building the image
 skip_build=''
-wait=240 # 4 minutes; wait is used for sleep while the container is setting up Volttron
+wait=300 # 5 minutes; wait is used for sleep while the container is setting up Volttron
 while getopts 'sw:' flag; do
   case "$flag" in
     s) skip_build=true ;;
@@ -50,7 +50,7 @@ fi
 
 ############ Setup and start container
 docker-compose up --detach
-echo "Configuring and starting Volttron platform; this might take some time, please be patient........"
+echo "Configuring and starting Volttron platform; this will take approximately several minutes........"
 # need to wait until setup is complete, usually takes about 4 minutes == 240 seconds
 sleep "$wait" # 4 minutes by default
 
