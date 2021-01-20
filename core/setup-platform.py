@@ -102,7 +102,7 @@ if platform_cfg.get('message-bus') == 'rmq':
     )
     crts.create_signed_cert_files(admin_client_name, cert_type="client")
 
-    name = f"{platform_cfg.get('instance-name')}.{MASTER_WEB}"
+    name = f"{platform_cfg.get('instance-name')}.{PLATFORM_WEB}"
     master_web_cert = os.path.join(VOLTTRON_HOME, 'certificates/certs/',
                                    name + "-server.crt")
     master_web_key = os.path.join(VOLTTRON_HOME, 'certificates/private/',
