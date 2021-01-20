@@ -3,9 +3,7 @@ services:
   volttron:
     container_name: volttron1
     hostname: volttron1
-#    image: volttron/volttron:develop
-    # since I currently don't have access to the official volttron Dockerhub, I'm housing the Dockerfile image in my personal DHub account
-    image: bonicim/volttron:develop # see https://hub.docker.com/repository/docker/bonicim/volttron/tags?page=1&ordering=last_updated
+    image: volttron/volttron:develop # located in https://hub.docker.com/r/volttron/volttron
     ports:
       # host_port:container_port
       # http port for volttron central

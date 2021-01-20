@@ -7,6 +7,11 @@ on:
 
 jobs:
   build:
+    env:
+      # variables to change image name on DockerHub; here, the image name will take form volttron/<GROUP>:<TAG>
+      GROUP: volttron
+      TAG: develop
+
     # The strategy allows customization of the build and allows matrixing the version of os and software
     # https://docs.github.com/en/free-pro-team@l.atest/actions/reference/workflow-syntax-for-github-actions#jobsjob_idstrategy
     strategy:
@@ -14,15 +19,17 @@ jobs:
       matrix:
         # Each entry in the os and python-version matrix will be run so for the 3 x 4 there will be 12 jobs run
         os: [ ubuntu-18.04 ] # ubuntu-18.04, ubuntu-20.04 ]
-        python-version: [ 3.6, 3.7 ] # , 3.8, 3.9 ]
+        python-version: [ 3.6, 3.7 , 3.8, 3.9 ]
+
     runs-on: ${{ matrix.os }}
+
     steps:
         - uses: actions/checkout@v2
 
-        - name: Clone the submodule
+        - name: Clone submodule
           run: git submodule update --init --recursive
 
-        # Ensure that the volttron-docker github repo has the username and token added from the
+       # Ensure that the volttron-docker github repo has the username and token added from the
         # official Volttron Dockerhub page at https://hub.docker.com/r/volttron/volttron
         # On instructions how to do this, see https://docs.github.com/en/actions/guides/publishing-docker-images
         - name: Login to DockerHub
@@ -31,10 +38,22 @@ jobs:
             username: ${{ secrets.DOCKER_HUB_USERNAME }}
             password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
+        # Putting here now to use for tagging images in the future
+        # See https://github.com/marketplace/actions/docker-meta
+        - name: Docker meta
+          id: docker_meta
+          uses: crazy-max/ghaction-docker-meta@v1
+          with:
+            images: volttron/${{ env.GROUP }} # list of Docker images to use as base name for tags
+            tag-sha: true # add git short SHA as Docker tag
+
+        - name: Set up QEMU
+          uses: docker/setup-qemu-action@v1
+
         - name: Set up Docker Buildx
-          id: buildx
           uses: docker/setup-buildx-action@v1
 
+        # Helps reduce build time see https://docs.docker.com/ci-cd/github-actions/#optimizing-the-workflow
         - name: Cache Docker layers
           uses: actions/cache@v2
           with:
@@ -43,6 +62,7 @@ jobs:
             restore-keys: |
               ${{ runner.os }}-buildx-
 
+        # This step will update the volttron/volttron:develop image at https://hub.docker.com/r/volttron/volttron
         - name: Build and push
           id: docker_build
           uses: docker/build-push-action@v2
@@ -50,7 +70,10 @@ jobs:
             context: ./
             file: ./Dockerfile
             push: true
-            tags: volttron/volttron:develop
+            tags: |
+              volttron/${{ env.GROUP }}:${{ env.TAG }}
+            # uncomment below if want to create tagging based on sha
+            # ${{ steps.docker_meta.outputs.tags }}
             builder: ${{ steps.buildx.outputs.name }}
             cache-from: type=local,src=/tmp/.buildx-cache
             cache-to: type=local,dest=/tmp/.buildx-cache

@@ -102,7 +102,7 @@ if platform_cfg.get('message-bus') == 'rmq':
     )
     crts.create_signed_cert_files(admin_client_name, cert_type="client")
 
-    name = f"{platform_cfg.get('instance-name')}.{MASTER_WEB}"
+    name = f"{platform_cfg.get('instance-name')}.{PLATFORM_WEB}"
     master_web_cert = os.path.join(VOLTTRON_HOME, 'certificates/certs/',
                                    name + "-server.crt")
     master_web_key = os.path.join(VOLTTRON_HOME, 'certificates/private/',
@@ -199,7 +199,7 @@ if need_to_install:
         install_cmd.extend(["--agent-source", agent_source])
         install_cmd.extend(["--vip-identity", identity])
         install_cmd.extend(["--start", "--priority", priority])
-        install_cmd.extend(["--agent-start-time", "20"])
+        install_cmd.extend(["--agent-start-time", "60"])
         install_cmd.append('--force')
         if agent_cfg:
             install_cmd.extend(["--config", agent_cfg])
