@@ -6,12 +6,20 @@ sudo apt-get install jq -y
 start=$(date +%s)
 
 
-exit_test(){
-  echo "Failed test. Exiting..."
+exit_cleanly() {
   docker-compose down
-  exit 1
+  if [ "$skip_build" != true ]; then
+    echo "Removing image..."
+    docker rmi ${image_name}
+  fi
 }
 
+
+exit_test() {
+  echo "Failed test. Exiting..."
+  exit_cleanly
+  exit 1
+}
 
 check_test_execution() {
   local code="$1"
@@ -53,6 +61,9 @@ while getopts 'sw:g:t:' flag; do
   esac
 done
 
+# Set image_name to be used in calls to docker
+image_name="${group}/volttron:${tag}"
+
 echo "Test running with following optional parameters: $skip_build $wait $group $tag"
 
 ############ Build image
@@ -61,7 +72,6 @@ if [ "$skip_build" = true ]; then
 else
   echo "Building image..."
   git submodule update --init --recursive
-  image_name="${group}/volttron:${tag}"
   docker rmi "${image_name}" --force
   docker build --no-cache -t "${image_name}" .
 fi
@@ -79,7 +89,7 @@ echo "Running tests..."
 set +e
 
 # Test 1
-# Check expected number of agents
+# Check expected number of agents based on the number of agents in platform_config.yml
 count=$(docker exec -u volttron volttron1 /home/volttron/.local/bin/vctl list | grep "" -c)
 check_test_execution $? "Failed to get list of agents"
 if [ $count -ne 6 ]; then
@@ -89,7 +99,9 @@ if [ $count -ne 6 ]; then
 fi
 
 ## Test 2
-# Check the configuration of the platform
+# Check the configuration of the platform which should match the config in platform_config.yml
+# For now, we are verifying that the number of lines is the same number of lines in the config block of platform_config.yml (currently set at 8 with the new line)
+# because the output is the configuration itself, thus we are using STDOUT to check configuration; not ideal but a start
 count=$(docker exec -u volttron volttron1 cat /home/volttron/.volttron/config | grep "" -c)
 check_test_execution $? 'Failed to get platform configuration'
 if [ $count -ne 8 ]; then
@@ -99,6 +111,8 @@ if [ $count -ne 8 ]; then
 fi
 
 # Test 3
+# Check that PlatformWeb is working by calling the discovery endpoint; the output is a JSON consisting of several keys such
+# as "server-key", "instance_name"; here we are checking "instance_name" matches the instance name that we set in platform_config.yml
 instance_name=$(curl -s http://0.0.0.0:8080/discovery/ | jq .\"instance-name\")
 check_test_execution $? 'Failed to get or parse http://0.0.0.0:8080/discovery'
 if [[ "$instance_name" != '"volttron1"' ]]; then
@@ -108,13 +122,9 @@ fi
 
 set -e
 echo "All tests passed; image is cleared to be pushed to repo."
-
-############ Shutdown container/cleanup
-docker-compose down
-if [ "$skip_build" != true ]; then
-  echo "Removing image..."
-  docker rmi volttron/volttron:develop
-fi
 end=$(date +%s)
 runtime=$((end-start))
+
+############ Shutdown container/cleanup
+exit_cleanly
 echo "Testing completed in $runtime seconds"
