@@ -77,6 +77,7 @@ RUN echo "package installed at `date`"
 ############################################
 USER root
 RUN ./scripts/rabbit_dependencies.sh $OS_TYPE $DIST
+RUN python3 -m pip install gevent-pika
 
 RUN mkdir /startup $VOLTTRON_HOME && \
     chown $VOLTTRON_USER.$VOLTTRON_USER $VOLTTRON_HOME

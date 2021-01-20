@@ -2,17 +2,21 @@ import logging
 import subprocess
 import os
 import sys
+from shutil import copy
 import yaml
 from time import sleep
 
-from volttron.platform import get_home, set_home
+from volttron.platform.agent.known_identities import MASTER_WEB
+from volttron.platform import set_home, certs
 from volttron.platform.instance_setup import setup_rabbitmq_volttron
+from volttron.utils import get_hostname
 
 logging.basicConfig(level=logging.DEBUG)
 
 # The environment variables must be set or we have big issues
 VOLTTRON_ROOT = os.environ['VOLTTRON_ROOT']
 VOLTTRON_HOME = os.environ['VOLTTRON_HOME']
+RMQ_HOME = os.environ["RMQ_HOME"]
 VOLTTRON_CMD = "volttron"
 VOLTTRON_CTL_CMD = "volttron-ctl"
 VOLTTRON_CFG_CMD = "vcfg"
@@ -20,7 +24,7 @@ INSTALL_PATH = "{}/scripts/install-agent.py".format(VOLTTRON_ROOT)
 KEYSTORES = os.path.join(VOLTTRON_HOME, "keystores")
 
 if not VOLTTRON_HOME:
-    VOLTTRON_HOME="/home/volttron/.volttron"
+    VOLTTRON_HOME = "/home/volttron/.volttron"
 
 set_home(VOLTTRON_HOME)
 
@@ -67,8 +71,47 @@ if not os.path.exists(cfg_path):
             for key, value in platform_cfg.items():
                 fout.write("{}={}\n".format(key.strip(), value.strip()))
 
-
 if platform_cfg.get('message-bus') == 'rmq':
+    print("Creating CA Certificate...")
+    crts = certs.Certs()
+    data = {
+        "C": "US",
+        "ST": "WA",
+        "L": "Richmond",
+        "O": "PNNL",
+        "OU": "Volttron",
+        "CN": f"{platform_cfg.get('instance-name')}-root-ca",
+    }
+    crts.create_root_ca(overwrite=False, **data)
+    copy(crts.cert_file(crts.root_ca_name), crts.cert_file(crts.trusted_ca_name))
+
+    print(
+        "Creating and signing new certificate using the newly created CA certificate."
+    )
+
+    print(
+        "Creating Certs for server and client, which is required for the RMQ message bus."
+    )
+    (
+        root_ca_name,
+        server_name,
+        admin_client_name,
+    ) = certs.Certs.get_admin_cert_names(platform_cfg.get("instance-name"))
+    crts.create_signed_cert_files(
+        server_name, cert_type="server", fqdn=get_hostname()
+    )
+    crts.create_signed_cert_files(admin_client_name, cert_type="client")
+
+    name = f"{platform_cfg.get('instance-name')}.{MASTER_WEB}"
+    master_web_cert = os.path.join(VOLTTRON_HOME, 'certificates/certs/',
+                                   name + "-server.crt")
+    master_web_key = os.path.join(VOLTTRON_HOME, 'certificates/private/',
+                                  name + "-server.pem")
+    print("Writing ssl cert and key paths to config.")
+    with open(os.path.join(cfg_path), "a") as fout:
+        fout.write(f"web-ssl-cert = {master_web_cert}\n")
+        fout.write(f"web-ssl-key = {master_web_key}\n")
+
     if not config.get('rabbitmq-config'):
         sys.stderr.write("Invalid rabbit-config entry in platform configuration file.\n")
         sys.exit(1)
@@ -89,10 +132,15 @@ if platform_cfg.get('message-bus') == 'rmq':
                                    "certificates/certs/{}-trusted-cas.crt".format(platform_cfg.get("instance-name")))
     if os.path.isfile(certs_test_path):
         rabbit_config['use-existing-certs'] = True
+
+    ## Update rmq_home
+    print(f"Setting rmq-home to {RMQ_HOME}.")
+    rabbit_config["rmq-home"] = RMQ_HOME
+
     rabbitfilename = os.path.join(VOLTTRON_HOME, "rabbitmq_config.yml")
     print("Creating rabbitmq conifg file at {}".format(rabbitfilename))
     print("dumpfile is :{}".format(rabbit_config))
-    with open(rabbitfilename, 'wb') as outfile:
+    with open(rabbitfilename, 'w') as outfile:
         yaml.dump(rabbit_config, outfile, default_flow_style=False)
 
     assert os.path.isfile(rabbitfilename)
