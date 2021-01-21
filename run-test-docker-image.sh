@@ -82,8 +82,8 @@ docker images
 ############ Setup and start container
 docker-compose up --detach
 echo "Configuring and starting Volttron platform; this will take approximately several minutes........"
-# need to wait until setup is complete, usually takes about 4 minutes == 240 seconds
-sleep "$wait" # 4 minutes by default
+# need to wait until setup is complete, usually takes about 5 minutes
+sleep "$wait"
 
 ############# Tests
 # The following tests ensure that the container is actually alive and works
