@@ -80,19 +80,35 @@ fi
 docker images
 
 ############ Setup and start container
-docker-compose up --detach
-echo "Configuring and starting Volttron platform; this will take approximately several minutes........"
-# need to wait until setup is complete, usually takes about 5 minutes
-sleep "$wait"
+attempts=5
+while [ ${attempts} -gt 0 ]; do
+  echo "Attempt to start container: ${attempts}"
+  docker-compose up --detach
+  sleep 2
+  has_volttron1=$(docker ps --filter "name=volttron1" | grep "" -c)
+  if [ ${has_volttron1} -eq 1 ]; then
+    echo "Container failed to start."
+    docker logs -n 20 volttron1
+    docker-compose down
+    ((attempts=attempts-1))
+  else
+    # Container was successfully created
+    echo "Configuring and starting Volttron platform; this will take approximately several minutes........"
+    break
+  fi
+done
 
 ############# Tests
 # The following tests ensure that the container is actually alive and works
+sleep "$wait"
 echo "Running tests..."
 set +e
 
 # Test 1
 # Check expected number of agents based on the number of agents in platform_config.yml
+vctl="/home/volttron/.local/bin/vctl"
 count=$(docker exec -u volttron volttron1 /home/volttron/.local/bin/vctl list | grep "" -c)
+docker logs -n 20 volttron1
 check_test_execution $? "Failed to get list of agents"
 if [ $count -ne 6 ]; then
   echo "Total count of agents were not installed. Current count: $count"
