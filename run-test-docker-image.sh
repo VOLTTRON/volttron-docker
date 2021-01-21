@@ -16,8 +16,10 @@ exit_cleanly() {
 
 
 exit_test() {
-  echo "Failed test. Exiting..."
+  echo "Test failed; showing container logs before cleaning up."
+  docker logs --tail 20 volttron1
   exit_cleanly
+  echo "Tests failed; please fix and rerun tests."
   exit 1
 }
 
@@ -85,6 +87,8 @@ while [ ${attempts} -gt 0 ]; do
   echo "Attempt to start container: ${attempts}"
   docker-compose up --detach
   sleep 2
+  docker ps --filter "name=volttron1"
+  # has_volttron1 gets the number of lines from docker ps; if volttron1 is running, then there will be at least 2 lines in the standard out
   has_volttron1=$(docker ps --filter "name=volttron1" | grep "" -c)
   if [ ${has_volttron1} -eq 1 ]; then
     echo "Container failed to start."
@@ -94,32 +98,24 @@ while [ ${attempts} -gt 0 ]; do
   else
     # Container was successfully created
     echo "Configuring and starting Volttron platform; this will take approximately several minutes........"
+    sleep "$wait" # Let Docker complete the setup of Volttron
     break
   fi
 done
 
 ############# Tests
 # The following tests ensure that the container is actually alive and works
-sleep "$wait"
-docker logs --tail 25 volttron1
 echo "Running tests..."
-
-docker ps --filter "name=volttron1"
 set +e
 
 # Test 1
 # Check expected number of agents based on the number of agents in platform_config.yml
 vctl="/home/volttron/.local/bin/vctl"
-count=$(docker exec -u volttron volttron1 /home/volttron/.local/bin/vctl list | grep "" -c)
-docker logs --tail 20 volttron1
-docker logs volttron1 --tail 20
-docker logs --tail 20 volttron1
-docker logs volttron1 --tail 20
-
+count=$(docker exec -u volttron volttron1 ${vctl} list | grep "" -c)
 check_test_execution $? "Failed to get list of agents"
 if [ $count -ne 6 ]; then
   echo "Total count of agents were not installed. Current count: $count"
-  docker exec -u volttron volttron1 /home/volttron/.local/bin/vctl list
+  docker exec -u volttron volttron1 ${vctl} list
   exit_test
 fi
 
@@ -127,21 +123,23 @@ fi
 # Check the configuration of the platform which should match the config in platform_config.yml
 # For now, we are verifying that the number of lines is the same number of lines in the config block of platform_config.yml (currently set at 8 with the new line)
 # because the output is the configuration itself, thus we are using STDOUT to check configuration; not ideal but a start
-count=$(docker exec -u volttron volttron1 cat /home/volttron/.volttron/config | grep "" -c)
+config_path="/home/volttron/.volttron/config"
+count=$(docker exec -u volttron volttron1 cat ${config_path} | grep "" -c)
 check_test_execution $? 'Failed to get platform configuration'
 if [ $count -ne 8 ]; then
   echo "Platform not correctly configured. Expected at least 6 lines of configuration."
-  docker exec -u volttron volttron1 cat /home/volttron/.volttron/config
+  docker exec -u volttron volttron1 cat ${config_path}
   exit_test
 fi
 
 # Test 3
 # Check that PlatformWeb is working by calling the discovery endpoint; the output is a JSON consisting of several keys such
 # as "server-key", "instance_name"; here we are checking "instance_name" matches the instance name that we set in platform_config.yml
-instance_name=$(curl -s http://0.0.0.0:8080/discovery/ | jq .\"instance-name\")
-check_test_execution $? 'Failed to get or parse http://0.0.0.0:8080/discovery'
+discovery="http://0.0.0.0:8080/discovery/"
+instance_name=$(curl -s ${discovery}  | jq .\"instance-name\")
+check_test_execution $? "Failed to get or parse ${discovery}"
 if [[ "$instance_name" != '"volttron1"' ]]; then
-  echo "Instance name is not correct. instance_name: $instance_name"
+  echo "Instance name is not correct. instance_name: ${instance_name}"
   exit_test
 fi
 
