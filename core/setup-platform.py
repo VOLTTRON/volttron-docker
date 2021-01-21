@@ -199,7 +199,7 @@ if need_to_install:
         install_cmd.extend(["--agent-source", agent_source])
         install_cmd.extend(["--vip-identity", identity])
         install_cmd.extend(["--start", "--priority", priority])
-        install_cmd.extend(["--agent-start-time", "20"])
+        install_cmd.extend(["--agent-start-time", "40"])
         install_cmd.append('--force')
         if agent_cfg:
             install_cmd.extend(["--config", agent_cfg])
