@@ -77,6 +77,8 @@ else
 fi
 
 
+docker images
+
 ############ Setup and start container
 docker-compose up --detach
 echo "Configuring and starting Volttron platform; this will take approximately several minutes........"
