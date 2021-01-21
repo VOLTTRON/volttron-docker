@@ -101,14 +101,21 @@ done
 ############# Tests
 # The following tests ensure that the container is actually alive and works
 sleep "$wait"
+docker logs --tail 25 volttron1
 echo "Running tests..."
+
+docker ps --filter "name=volttron1"
 set +e
 
 # Test 1
 # Check expected number of agents based on the number of agents in platform_config.yml
 vctl="/home/volttron/.local/bin/vctl"
 count=$(docker exec -u volttron volttron1 /home/volttron/.local/bin/vctl list | grep "" -c)
-docker logs -n 20 volttron1
+docker logs --tail 20 volttron1
+docker logs volttron1 --tail 20
+docker logs --tail 20 volttron1
+docker logs volttron1 --tail 20
+
 check_test_execution $? "Failed to get list of agents"
 if [ $count -ne 6 ]; then
   echo "Total count of agents were not installed. Current count: $count"
