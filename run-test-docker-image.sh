@@ -109,7 +109,7 @@ set +e
 vctl="/home/volttron/.local/bin/vctl"
 count=$(docker exec -u volttron volttron1 ${vctl} list | grep "" -c)
 check_test_execution $? "Failed to get list of agents"
-if [ $count -ne 6 ]; then
+if [ $count -ne 5 ]; then
   echo "Total count of agents were not installed. Current count: $count"
   docker exec -u volttron volttron1 ${vctl} list
   exit_test
