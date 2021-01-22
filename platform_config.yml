@@ -43,9 +43,9 @@ agents:
   platform.actuator:
     source: $VOLTTRON_ROOT/services/core/ActuatorAgent
 
-#  platform.historian:
-#    source: $VOLTTRON_ROOT/services/core/SQLHistorian
-#    config: $CONFIG/historian.config
+  platform.historian:
+    source: $VOLTTRON_ROOT/services/core/SQLHistorian
+    config: $CONFIG/historian.config
 
 #
 #  weather:
