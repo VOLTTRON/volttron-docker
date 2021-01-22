@@ -84,7 +84,8 @@ attempts=5
 while [ ${attempts} -gt 0 ]; do
   echo "Attempt to start container: ${attempts}"
   docker-compose up --detach
-  sleep 2
+  echo "Configuring and starting Volttron platform; this will take approximately several minutes........"
+  sleep "$wait"
   has_volttron1=$(docker ps --filter "name=volttron1" | grep "" -c)
   if [ ${has_volttron1} -eq 1 ]; then
     echo "Container failed to start."
@@ -93,18 +94,14 @@ while [ ${attempts} -gt 0 ]; do
     ((attempts=attempts-1))
   else
     # Container was successfully created
-    echo "Configuring and starting Volttron platform; this will take approximately several minutes........"
+    docker ps --filter "name=volttron1"
     break
   fi
 done
 
 ############# Tests
 # The following tests ensure that the container is actually alive and works
-sleep "$wait"
-docker logs --tail 25 volttron1
 echo "Running tests..."
-
-docker ps --filter "name=volttron1"
 set +e
 
 # Test 1
