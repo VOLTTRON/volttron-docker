@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - main
+      - add-docker-image-test-scripts
 
 jobs:
   build:
