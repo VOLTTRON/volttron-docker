@@ -1,6 +1,4 @@
 #!/usr/bin/env bash
-# set -x # log all shell commands for debugging.
-set -e # fail if any command errors without being caught with an || or an 'if'.
 # install jq for testing
 sudo apt-get install jq -y
 start=$(date +%s)
@@ -8,48 +6,30 @@ start=$(date +%s)
 
 exit_cleanly() {
   if [ "${skip_build}" != true ]; then
-    echo "Removing image..."
+    echo "Removing image: ${image_name}..."
     docker rmi ${image_name}
   fi
+  exit
 }
 
 
 exit_test() {
-  echo $1
+  echo -e $1
   docker logs --tail 25 volttron1
   docker-compose down
   exit_cleanly
-  exit
 }
 
 check_error_code() {
   local code=$1
   if [ "${code}" -ne 0 ]; then
-    echo "Inisde error code"
-    echo $2
-    exit_test "${code}"
+    exit_test $2
   fi
 }
 
-
-############ Parse optional parameters
-
-# "$#" number of args passed
-# "$@" list of strings of positional arguments passed
-
-# "$*" single string of args
-## ^^^ this will hand over exactly one argument, containing all
-##     original arguments, separated by single spaces.
-
-# $*
-## ^^^ this will join all arguments by single spaces as well and
-##     will then split the string as the shell does on the command
-##     line, thus it will split an argument containing spaces into
-##     several arguments.
-
 # Optional parameters; defaults provided for each one
 skip_build='' # skip building the image
-wait=300 # 5 minutes; wait is used for sleep while the container is setting up Volttron
+wait=360 # 6 minutes; wait is used for sleep while the container is setting up Volttron
 group='volttron' # group name of the image; will be used to name the image <group>/volttron
 tag='develop' # image tag; will be used to name the image <source image>:<tag>
 while getopts 'sw:g:t:' flag; do
@@ -78,10 +58,8 @@ else
 fi
 
 ###### Test that the image was built
-set +e
-docker images --format "{{.Tag}}: {{.Repository}}" | grep 'secure-central: volttron/volttron'
+docker images --format "{{.Tag}}: {{.Repository}}" | grep 'develop: volttron/volttron'
 check_error_code $? 'Failed to build image'
-set -e
 
 ############ Setup and start container
 attempts=5
@@ -104,11 +82,15 @@ while [ "${attempts}" -gt 0 ]; do
   fi
 done
 
+if [ "${attempts}" -eq 0 ]; then
+  echo "Failed to start container and thus cannot proceed to integration testing. Please check the Dockerfile and/or docker-compose.yml."
+  exit_cleanly
+fi
+
 ############# Tests
 # The following tests ensure that the container is actually alive and works
 echo "Running tests..."
 vctl="/home/volttron/.local/bin/vctl"
-set +e
 
 # Test
 # Check expected number of agents based on the number of agents in platform_config.yml; currently 6 agents are installed
@@ -139,8 +121,7 @@ do
 done
 echo "PASSED....CHECKING HEALTH OF AGENTS."
 
-# TODO:
-# check for connected is not null
+# TODO: check for connected is not null for these agents
 #actuatoragent-1.0
 #vcplatformagent-4.8
 #volttroncentralagent-5.2
@@ -170,11 +151,10 @@ if [[ "$instance_name" != '"volttron1"' ]]; then
 fi
 echo "PASSED....CHECKING DISCOVERY OF WEB UI."
 
-set -e
 echo "All tests passed; image is cleared to be pushed to repo."
 end=$(date +%s)
 runtime=$((end-start))
+echo "Testing completed in $runtime seconds"
 
 ############ Shutdown container/cleanup
 exit_cleanly
-echo "Testing completed in $runtime seconds"

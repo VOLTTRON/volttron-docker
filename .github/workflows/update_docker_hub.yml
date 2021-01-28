@@ -1,4 +1,4 @@
-name: Push Image to DockerHub CI
+name: Push Image to DockerHub CD
 
 on:
   push:
