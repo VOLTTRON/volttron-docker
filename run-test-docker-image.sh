@@ -7,7 +7,7 @@ start=$(date +%s)
 exit_cleanly() {
   if [ "${skip_build}" != true ]; then
     echo "Removing image: ${image_name}..."
-    docker rmi ${image_name}
+    docker rmi --force ${image_name}
   fi
   exit
 }
