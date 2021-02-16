@@ -1,9 +1,10 @@
 version: '3'
 services:
-  volttron:
+  volttron1:
     container_name: volttron1
     hostname: volttron1
-    image: volttron/volttron:develop
+    build: .
+    image: volttron/volttron:develop # located in https://hub.docker.com/r/volttron/volttron
     ports:
       # host_port:container_port
       # http port for volttron central
