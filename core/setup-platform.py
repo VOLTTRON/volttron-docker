@@ -157,10 +157,6 @@ if platform_cfg.get('message-bus') == 'rmq':
     now_dir = os.getcwd()
     os.chdir(VOLTTRON_ROOT)
 
-    # if os.listdir("/home/volttron/.volttron/certificates/certs"):
-    #     print("######### there is certification")
-    # else:
-    #     print("######### there is no certification")
     setup_rabbitmq_volttron('single', True, instance_name=platform_cfg.get('instance-name'))
     os.chdir(now_dir)
 
