@@ -108,9 +108,19 @@ if platform_cfg.get('message-bus') == 'rmq':
     master_web_key = os.path.join(VOLTTRON_HOME, 'certificates/private/',
                                   name + "-server.pem")
     print("Writing ssl cert and key paths to config.")
+
+    with open(os.path.join(cfg_path), "r") as f:
+        if 'web-ssl-cert' in f.read():
+            print('web-ssl-cert is already written')
+            web_ssl = True
+        else:
+            print('## there is no web-ssl-cert and key')
+            web_ssl = False
+
     with open(os.path.join(cfg_path), "a") as fout:
-        fout.write(f"web-ssl-cert = {master_web_cert}\n")
-        fout.write(f"web-ssl-key = {master_web_key}\n")
+        if not web_ssl:
+            fout.write(f"web-ssl-cert = {master_web_cert}\n")
+            fout.write(f"web-ssl-key = {master_web_key}\n")
 
     if not config.get('rabbitmq-config'):
         sys.stderr.write("Invalid rabbit-config entry in platform configuration file.\n")
@@ -148,7 +158,6 @@ if platform_cfg.get('message-bus') == 'rmq':
     os.chdir(VOLTTRON_ROOT)
 
     setup_rabbitmq_volttron('single', True, instance_name=platform_cfg.get('instance-name'))
-    
     os.chdir(now_dir)
 
 
