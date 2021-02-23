@@ -20,14 +20,14 @@ services:
       - LOCAL_USER_ID=1000
       - MESSAGE_BUS=zmq
     networks:
-      securecentral:
+      multiplatform:
         ipv4_address: 172.28.5.1 # assigning a static IP to the VolttronCentral platform so that the other remote platforms can connect to VC everytime Docker-compose is run
 
   volttron2:
     container_name: volttron2
     hostname: volttron2
     build: .
-    image: volttron/volttron:secure-central
+    image: volttron/volttron:develop
     ports:
       # host_port:container_port
       # ssl port for hostname
@@ -42,13 +42,13 @@ services:
       - LOCAL_USER_ID=1000
       - MESSAGE_BUS=zmq
     networks:
-      securecentral:
+      multiplatform:
         ipv4_address: 172.28.5.2
 
 
 networks:
-  securecentral:
-    name: secure_central
+  multiplatform:
+    name: multiplatform
     driver: bridge
     ipam:
      config:

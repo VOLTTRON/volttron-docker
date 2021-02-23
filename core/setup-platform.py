@@ -47,15 +47,16 @@ with open(platform_config) as cin:
 print("Platform instance name set to: {}".format(platform_cfg.get('instance-name')))
 
 bind_web_address = platform_cfg.get("bind-web-address", None)
-if bind_web_address is not None:
-    print(f"Platform bind web address set to: {bind_web_address}")
-    from requirements import extras_require as extras
-    web_plt_pack = extras.get("web", None)
-    install_cmd = ["pip3", "install"]
-    install_cmd.extend(web_plt_pack)
-    if install_cmd is not None:
-        print(f"Installing packages for web platform: {web_plt_pack}")
-        subprocess.check_call(install_cmd)
+# if bind_web_address is not None:
+#     print(f"Platform bind web address set to: {bind_web_address}")
+
+from requirements import extras_require as extras
+web_plt_pack = extras.get("web", None)
+install_cmd = ["pip3", "install"]
+install_cmd.extend(web_plt_pack)
+if install_cmd is not None:
+    print(f"Installing packages for web platform: {web_plt_pack}")
+    subprocess.check_call(install_cmd)
 
 envcpy = os.environ.copy()
 
@@ -207,7 +208,7 @@ if need_to_install:
         install_cmd = ["python3", INSTALL_PATH]
         install_cmd.extend(["--agent-source", agent_source])
         install_cmd.extend(["--vip-identity", identity])
-        install_cmd.extend(["--start", "--priority", priority])
+        install_cmd.extend(["--priority", priority])
         install_cmd.extend(["--agent-start-time", "60"])
         install_cmd.append('--force')
         if agent_cfg:
@@ -238,6 +239,7 @@ if need_to_install:
 
 
     subprocess.call(["vctl", "auth", "add", "--credentials", '/.*/'])
+
     # Stop running volttron now that it is setup.
     sys.stdout.write("\n**************************************************\n")
     sys.stdout.write("SHUTTING DOWN FROM SETUP-PLATFORM.PY\n")
