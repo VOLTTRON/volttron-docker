@@ -1,0 +1,56 @@
+version: '3.5'
+
+services:
+  volttron1:
+    container_name: volttron1
+    hostname: volttron1
+    build: .
+    image: volttron/volttron:develop
+    ports:
+      # host_port:container_port
+      # ssl port for web
+      - 8443:8443
+      # port for VIP-address
+      - 22916:22916
+    volumes:
+      - ./configs:/home/volttron/configs
+      - ./platform_config_multi_dest.yml:/platform_config.yml
+    environment:
+      - CONFIG=/home/volttron/configs
+      - LOCAL_USER_ID=1000
+      - MESSAGE_BUS=zmq
+    networks:
+      securecentral:
+        ipv4_address: 172.28.5.1 # assigning a static IP to the VolttronCentral platform so that the other remote platforms can connect to VC everytime Docker-compose is run
+
+  volttron2:
+    container_name: volttron2
+    hostname: volttron2
+    build: .
+    image: volttron/volttron:secure-central
+    ports:
+      # host_port:container_port
+      # ssl port for hostname
+      - 8444:8443
+      # port for VIP-address
+      - 22917:22916
+    volumes:
+      - ./configs:/home/volttron/configs
+      - ./platform_config_multi_source.yml:/platform_config.yml
+    environment:
+      - CONFIG=/home/volttron/configs
+      - LOCAL_USER_ID=1000
+      - MESSAGE_BUS=zmq
+    networks:
+      securecentral:
+        ipv4_address: 172.28.5.2
+
+
+networks:
+  securecentral:
+    name: secure_central
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 172.28.0.0/16
+         ip_range: 172.28.5.0/24

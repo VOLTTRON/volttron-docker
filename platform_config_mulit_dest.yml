@@ -1,0 +1,39 @@
+# Properties to be added to the root config file
+# the properties should be ingestible for volttron
+# the values will be presented in the config file
+# as key=value
+config:
+  vip-address: tcp://172.28.5.1:22916
+  # For rabbitmq this should match the hostname specified in
+  # in the docker compose file hostname field for the service.
+  bind-web-address: https://172.28.5.1:8443
+  # the volttron-central-address should be the docker assigned ip address of the VC platform
+  # The address below is configured under a user-defined network in docker-compose.yml in the top-level 'networks' block
+#  volttron-central-address: https://172.28.5.1:8443
+  instance-name: volttron1
+  message-bus: zmq
+
+
+# Agents dictionary to install.  The key must be a valid
+# identity for the agent to be installed correctly.
+agents:
+
+  # Each agent identity.config file should be in the configs
+  # directory and will be used to install the agent.
+  listener:
+    source: $VOLTTRON_ROOT/examples/ListenerAgent
+    config: $CONFIG/listener.config
+
+#  platform.driver:
+#    source: $VOLTTRON_ROOT/services/core/PlatformDriverAgent
+#    config_store:
+#      fake.csv:
+#        file: $CONFIG/fake.csv
+#        type: --csv
+#      devices/fake-campus/fake-building/fake-device:
+#        file: $CONFIG/fake.config
+#
+#  volttron.central:
+#    source: $VOLTTRON_ROOT/services/core/VolttronCentral
+#    config: $VOLTTRON_ROOT/services/core/VolttronCentral/config
+
