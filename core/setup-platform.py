@@ -72,88 +72,89 @@ if not os.path.exists(cfg_path):
                 fout.write("{}={}\n".format(key.strip(), value.strip()))
 
 if platform_cfg.get('message-bus') == 'rmq':
-    print("Creating CA Certificate...")
-    crts = certs.Certs()
-    data = {
-        "C": "US",
-        "ST": "WA",
-        "L": "Richmond",
-        "O": "PNNL",
-        "OU": "Volttron",
-        "CN": f"{platform_cfg.get('instance-name')}-root-ca",
-    }
-    crts.create_root_ca(overwrite=False, **data)
-    copy(crts.cert_file(crts.root_ca_name), crts.cert_file(crts.trusted_ca_name))
+    if os.getenv('SKIP_CA_CREATE_CERTIFICATION') != 'true':
+        print("Creating CA Certificate...")
+        crts = certs.Certs()
+        data = {
+            "C": "US",
+            "ST": "WA",
+            "L": "Richmond",
+            "O": "PNNL",
+            "OU": "Volttron",
+            "CN": f"{platform_cfg.get('instance-name')}-root-ca",
+        }
+        crts.create_root_ca(overwrite=False, **data)
+        copy(crts.cert_file(crts.root_ca_name), crts.cert_file(crts.trusted_ca_name))
 
-    print(
-        "Creating and signing new certificate using the newly created CA certificate."
-    )
+        print(
+            "Creating and signing new certificate using the newly created CA certificate."
+        )
 
-    print(
-        "Creating Certs for server and client, which is required for the RMQ message bus."
-    )
-    (
-        root_ca_name,
-        server_name,
-        admin_client_name,
-    ) = certs.Certs.get_admin_cert_names(platform_cfg.get("instance-name"))
-    crts.create_signed_cert_files(
-        server_name, cert_type="server", fqdn=get_hostname()
-    )
-    crts.create_signed_cert_files(admin_client_name, cert_type="client")
+        print(
+            "Creating Certs for server and client, which is required for the RMQ message bus."
+        )
+        (
+            root_ca_name,
+            server_name,
+            admin_client_name,
+        ) = certs.Certs.get_admin_cert_names(platform_cfg.get("instance-name"))
+        crts.create_signed_cert_files(
+            server_name, cert_type="server", fqdn=get_hostname()
+        )
+        crts.create_signed_cert_files(admin_client_name, cert_type="client")
 
-    name = f"{platform_cfg.get('instance-name')}.{PLATFORM_WEB}"
-    master_web_cert = os.path.join(VOLTTRON_HOME, 'certificates/certs/',
-                                   name + "-server.crt")
-    master_web_key = os.path.join(VOLTTRON_HOME, 'certificates/private/',
-                                  name + "-server.pem")
-    print("Writing ssl cert and key paths to config.")
+        name = f"{platform_cfg.get('instance-name')}.{PLATFORM_WEB}"
+        master_web_cert = os.path.join(VOLTTRON_HOME, 'certificates/certs/',
+                                       name + "-server.crt")
+        master_web_key = os.path.join(VOLTTRON_HOME, 'certificates/private/',
+                                      name + "-server.pem")
+        print("Writing ssl cert and key paths to config.")
 
-    with open(os.path.join(cfg_path), "r") as f:
-        if 'web-ssl-cert' in f.read():
-            print('web-ssl-cert is already written')
-            web_ssl = True
-        else:
-            print('## there is no web-ssl-cert and key')
-            web_ssl = False
+        with open(os.path.join(cfg_path), "r") as f:
+            if 'web-ssl-cert' in f.read():
+                print('web-ssl-cert is already written')
+                web_ssl = True
+            else:
+                print('## there is no web-ssl-cert and key')
+                web_ssl = False
 
-    with open(os.path.join(cfg_path), "a") as fout:
-        if not web_ssl:
-            fout.write(f"web-ssl-cert = {master_web_cert}\n")
-            fout.write(f"web-ssl-key = {master_web_key}\n")
+        with open(os.path.join(cfg_path), "a") as fout:
+            if not web_ssl:
+                fout.write(f"web-ssl-cert = {master_web_cert}\n")
+                fout.write(f"web-ssl-key = {master_web_key}\n")
 
-    if not config.get('rabbitmq-config'):
-        sys.stderr.write("Invalid rabbit-config entry in platform configuration file.\n")
-        sys.exit(1)
-    rabbitcfg_file = os.path.expandvars(os.path.expanduser(config.get('rabbitmq-config')))
-    if not os.path.isfile(rabbitcfg_file):
-        sys.stderr.write("Invalid rabbit-config entry {} \n".format(rabbitcfg_file))
-        sys.exit(1)
-    with open(rabbitcfg_file) as cin:
-        rabbit_config = yaml.safe_load(cin)
-    with open('/etc/hostname') as hostfile:
-        hostname = hostfile.read().strip()
-    if not hostname:
-        sys.stderr.write("Invalid hostname set, please set it in the docker-compose or in the container.")
-        sys.exit(1)
+        if not config.get('rabbitmq-config'):
+            sys.stderr.write("Invalid rabbit-config entry in platform configuration file.\n")
+            sys.exit(1)
+        rabbitcfg_file = os.path.expandvars(os.path.expanduser(config.get('rabbitmq-config')))
+        if not os.path.isfile(rabbitcfg_file):
+            sys.stderr.write("Invalid rabbit-config entry {} \n".format(rabbitcfg_file))
+            sys.exit(1)
+        with open(rabbitcfg_file) as cin:
+            rabbit_config = yaml.safe_load(cin)
+        with open('/etc/hostname') as hostfile:
+            hostname = hostfile.read().strip()
+        if not hostname:
+            sys.stderr.write("Invalid hostname set, please set it in the docker-compose or in the container.")
+            sys.exit(1)
 
-    rabbit_config['host'] = hostname
-    certs_test_path = os.path.join(VOLTTRON_HOME,
-                                   "certificates/certs/{}-trusted-cas.crt".format(platform_cfg.get("instance-name")))
-    if os.path.isfile(certs_test_path):
-        rabbit_config['use-existing-certs'] = True
+        rabbit_config['host'] = hostname
+        certs_test_path = os.path.join(VOLTTRON_HOME,
+                                       "certificates/certs/{}-trusted-cas.crt".format(platform_cfg.get("instance-name")))
+        if os.path.isfile(certs_test_path):
+            rabbit_config['use-existing-certs'] = True
 
-    ## Update rmq_home
-    print(f"Setting rmq-home to {RMQ_HOME}.")
-    rabbit_config["rmq-home"] = RMQ_HOME
+        ## Update rmq_home
+        print(f"Setting rmq-home to {RMQ_HOME}.")
+        rabbit_config["rmq-home"] = RMQ_HOME
 
-    rabbitfilename = os.path.join(VOLTTRON_HOME, "rabbitmq_config.yml")
-    print("Creating rabbitmq conifg file at {}".format(rabbitfilename))
-    print("dumpfile is :{}".format(rabbit_config))
-    with open(rabbitfilename, 'w') as outfile:
-        yaml.dump(rabbit_config, outfile, default_flow_style=False)
+        rabbitfilename = os.path.join(VOLTTRON_HOME, "rabbitmq_config.yml")
+        print("Creating rabbitmq conifg file at {}".format(rabbitfilename))
+        print("dumpfile is :{}".format(rabbit_config))
+        with open(rabbitfilename, 'w') as outfile:
+            yaml.dump(rabbit_config, outfile, default_flow_style=False)
 
-    assert os.path.isfile(rabbitfilename)
+        assert os.path.isfile(rabbitfilename)
     now_dir = os.getcwd()
     os.chdir(VOLTTRON_ROOT)
 
