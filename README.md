@@ -25,7 +25,7 @@ $ ./docker_install_ubuntu.sh
 To create the container and start using the platform on the container, run the following command from the command line. Ensure that you are in the root level of the directory.
 Note that there are two docker-compose files:
 * docker-compose.yml: creates a single Volttron instance with ZMQ message bus
-* docker-compose.yml: creates a single Volttron instance with RMQ message bus
+* docker-compose-rmq.yml: creates a single Volttron instance with RMQ message bus
 
 ``` bash
 # Creates Volttron instance with ZMQ message bus
