@@ -28,7 +28,7 @@ agents:
     config: $VOLTTRON_ROOT/services/core/VolttronCentral/config
 
   platform.driver:
-    source: $VOLTTRON_ROOT/services/core/MasterDriverAgent
+    source: $VOLTTRON_ROOT/services/core/PlatformDriverAgent
     config_store:
       fake.csv:
         file: $VOLTTRON_ROOT/examples/configurations/drivers/fake.csv
@@ -40,12 +40,13 @@ agents:
     source: $VOLTTRON_ROOT/services/core/VolttronCentralPlatform
     config: $VOLTTRON_ROOT/services/core/VolttronCentralPlatform/config
 
+  platform.actuator:
+    source: $VOLTTRON_ROOT/services/core/ActuatorAgent
+
   platform.historian:
     source: $VOLTTRON_ROOT/services/core/SQLHistorian
     config: $CONFIG/historian.config
 
-  platform.actuator:
-    source: $VOLTTRON_ROOT/services/core/ActuatorAgent
 #
 #  weather:
 #    source: $VOLTTRON_ROOT/examples/DataPublisher

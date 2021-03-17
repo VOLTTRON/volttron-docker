@@ -236,3 +236,10 @@ $ ./run-test-docker-image.sh
 # You can also run the test but skip rebuilding the image 
 $ ./run-test-docker-image.sh -s
 ```
+
+
+Note: If you want to use a different image name and/or tag, you must ensure that the image name in docker-compose.yml matches
+the image name given to the integration test script. For example, if you run the integration tests with the following options 
+```  ./run-test-docker-image.sh -g test -t integ ```,
+then the 'image' key in docker-compose.yml must be set to 'volttron/test:integ'.
+
