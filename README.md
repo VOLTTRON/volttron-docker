@@ -25,7 +25,7 @@ $ ./docker_install_ubuntu.sh
 To create the container and start using the platform on the container, run the following command from the command line. Ensure that you are in the root level of the directory.
 Note that there are two docker-compose files:
 * docker-compose.yml: creates a single Volttron instance with ZMQ message bus
-* docker-compose.yml: creates a single Volttron instance with RMQ message bus
+* docker-compose-rmq.yml: creates a single Volttron instance with RMQ message bus
 
 ``` bash
 # Creates Volttron instance with ZMQ message bus
@@ -237,7 +237,9 @@ $ ./run-test-docker-image.sh
 $ ./run-test-docker-image.sh -s
 ```
 
+
 Note: If you want to use a different image name and/or tag, you must ensure that the image name in docker-compose.yml matches
 the image name given to the integration test script. For example, if you run the integration tests with the following options 
 ```  ./run-test-docker-image.sh -g test -t integ ```,
 then the 'image' key in docker-compose.yml must be set to 'volttron/test:integ'.
+
