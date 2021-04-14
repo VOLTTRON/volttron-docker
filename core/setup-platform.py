@@ -217,7 +217,13 @@ if need_to_install:
         # This allows install agent to ignore the fact that we aren't running
         # form a virtual environment.
         envcpy['IGNORE_ENV_CHECK'] = "1"
-        subprocess.check_call(install_cmd, env=envcpy)
+        try:
+            subprocess.check_call(install_cmd, env=envcpy)
+        except subprocess.CalledProcessError as e:
+            # sometimes, the install command returns an Error saying that volttron couldn't install the agent, when in fact the agent was successfully installed
+            # this is most likely a bug in Volttron. For now, we are ignoring that error so that the setup of the Volttron platform does not fail and to allow Docker to start the container
+            sys.stderr.write(f"IGNORING ERROR: {e}")
+            continue
 
         if "config_store" in spec:
             sys.stdout.write("Processing config_store entries")
