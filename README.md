@@ -13,7 +13,7 @@ In conjunction with volume mounting of the directory, this ensures that file own
 * Docker
 * Docker-compose
 
-If you need to install docker and/or docker-compose, you can use the script in this repo. From the root level, execute the following command:
+If you need to install docker and/or docker-compose, you can use the script in this repo. From the root level, execute the following command. NOTE: this script is written for machines running Ubuntu:
 
 ```bash
 $ ./docker_install_ubuntu.sh
@@ -21,6 +21,27 @@ $ ./docker_install_ubuntu.sh
 
 
 # Quickstart using Docker-Compose
+
+## Prerequisites
+
+This repo has a directory called 'volttron', which contains the volttron codebase. In other words, this repo contains another repo in a subfolder. 
+When you initially clone this repo, the 'volttron' directory is empty. This directory contains the volttron codebase used to create the volttron platform. 
+Before creating the container, you must pull in volttron from the [official volttron repo](https://github.com/VOLTTRON/volttron) using the following git command:
+
+```bash
+# Clones https://github.com/VOLTTRON/volttron.git into the 'volttron' directory
+$ git submodule update --init --recursive
+```
+
+OPTIONAL: This repo uses a specific version of volttron based on the commit in the 'volttron' submodule. If you want to use the latest volttron from the `develop` 
+branch from the volttron repo, execute the following command (NOTE: this is not required):
+
+```bash 
+# Ensure that you are in the `volttron` folder
+$ git pull origin develop
+```
+
+## Docker-compose
 
 To create the container and start using the platform on the container, run the following command from the command line. Ensure that you are in the root level of the directory.
 Note that there are two docker-compose files:
@@ -130,27 +151,6 @@ agents:
 Agents within the `platform_config.yml` file are created sequentially, it can take several seconds for each to spin up and be visible via `vctl` commands.
 
 # Building Image Locally
-
-## Prerequisite
-
-This repo has a directory called 'volttron', which contains the volttron codebase. In other words, this repo contains another repo in a subfolder. 
-When you initially clone this repo, the 'volttron' directory is empty. This directory contains the volttron codebase used to create the volttron platform. 
-Before creating the container, you must pull in volttron from the [official volttron repo](https://github.com/VOLTTRON/volttron) using the following git command:
-
-```bash
-# Clones https://github.com/VOLTTRON/volttron.git into the 'volttron' directory
-$ git submodule update --init --recursive
-```
-
-OPTIONAL: This repo uses a specific version of volttron based on the commit in the 'volttron' submodule. If you want to use the latest volttron from the `develop` 
-branch from the volttron repo, execute the following command (NOTE: this is not required):
-
-```bash 
-# Ensure that you are in the `volttron` folder
-$ git pull origin develop
-```
-
-## How to build locally
 
 To build and test this image locally, follow the steps below:
 
