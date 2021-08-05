@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# install jq for testing
+
 sudo apt-get install jq -y
 start=$(date +%s)
 
