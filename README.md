@@ -10,14 +10,8 @@ In conjunction with volume mounting of the directory, this ensures that file own
 
 # Prerequisites
 
-* Docker
-* Docker-compose
-
-If you need to install docker and/or docker-compose, you can use the script in this repo. From the root level, execute the following command. NOTE: this script is written for machines running Ubuntu:
-
-```bash
-$ ./docker_install_ubuntu.sh
-```
+* Docker >=20.10.8 
+* Docker-compose >=1.27.4
 
 This repo has a directory called 'volttron', which contains the volttron codebase. In other words, this repo contains another repo in a subfolder. 
 When you initially clone this repo, the 'volttron' directory is empty. This directory contains the volttron codebase used to create the volttron platform. 
@@ -50,13 +44,13 @@ Note that there are two docker-compose files:
 
 # For ZMQ-based Volttron: 
 # Build a clean image locally
-$ docker-compose build --no-cache volttron1
+$ docker-compose build --no-cache --force-rm volttron1
 
 # Creates Volttron instance with ZMQ message bus
 $ docker-compose up
 
 # For RMQ-based Volttron:
-$ docker-compose -f docker-compose-rmq.yml build --no-cache volttron1
+$ docker-compose -f docker-compose-rmq.yml build --no-cache --force-rm volttron1
 $ docker-compose -f docker-compose-rmq.yml up 
 
 # To ssh into the container
@@ -75,13 +69,8 @@ $ docker-compose ps
 $ docker-compose down
 ```
 
-For Volttron instances using ZMQ message bus:
-* Set the master username and password on the Volttron Central Admin page at `http://0.0.0.0:8080/index.html` 
-* To log in to Volttron Central, open a browser and login to the Volttron web interface: `http://0.0.0.0:8080/vc/index.html`
-
-For Volttron instances using RMQ message bus:
-* Set the master username and password on the Volttron Central Admin page at `https://0.0.0.0:8443/index.html` 
-* To log in to Volttron Central, open a browser and login to the Volttron web interface: `https://0.0.0.0:8443/vc/index.html`
+* Set the master username and password on the Volttron Central Admin page at `https://172.28.5.1:8443/index.html` 
+* To log in to Volttron Central, open a browser and login to the Volttron web interface: `https://172.28.5.1:8443/vc/index.html`
 
 ## Docker 
 
@@ -96,14 +85,16 @@ $ docker build --no-cache --build-arg install_rmq=false -t volttron_local .
 $ docker build --no-cache --build-arg install_rmq=true-t volttron_local .
 
 # Create a docker container named "volttron1"; this container will be automatically removed when the container stops running
+# Note that you must specify the type of message bus using the environment variable, MESSAGE_BUS
 $ docker run \
 --name volttron1 \
 --rm \
 -e LOCAL_USER_ID=$UID \
 -e CONFIG=/home/volttron/configs \
+-e MESSAGE_BUS=zmq \
 -v "$(pwd)"/configs:/home/volttron/configs \
 -v "$(pwd)"/platform_config.yml:/platform_config.yml \
--p 8080:8080 \
+-p 8443:8443 \
 -it volttron_local
  
 # Once the container is started and running, set the master username and password on the Volttron Central Admin page at `http://0.0.0.0:8080/index.html`
@@ -117,11 +108,8 @@ $ docker exec -itu volttron volttron1 bash
 # check status of volttron platform
 $ vctl status
 
-# set environment variable, IGNORE_ENV_CHECK, to ignore virtual env in python
-$ export IGNORE_ENV_CHECK=1
-
 # Install a ListenerAgent
-$ python3 scripts/install-agent.py -s examples/ListenerAgent --start
+$ vctl install examples/ListenerAgent --start
 
 # check status of volttron platform to verify ListenerAgent is installed
 $ vctl status
@@ -208,7 +196,7 @@ Agents within the `platform_config.yml` file are created sequentially, it can ta
 In order for volttron to keep its state between runs, the state must be stored on the host.  We have attempted to make this as painless as possible, by using gosu to map the hosts UID onto the containers volttron user.  The following will create a directory to be written to during VOLTTRON execution.
 
 1. Create a directory (eg `mkdir -p ~/vhome`).  This is where the VOLTTRON_HOME inside the container will be created on the host.
-1. Start the docker container with a volume mount point and pass a LOCAL_USER_ID environtmental variable.
+1. Start the docker container with a volume mount point and pass a LOCAL_USER_ID environmental variable.
     ``` bash
     docker run -e LOCAL_USER_ID=$UID -v /home/user/vhome:/home/volttron/.volttron -it volttron/volttron
     ```

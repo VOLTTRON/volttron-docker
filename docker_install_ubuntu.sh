@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# This script has not been tested in a long time.
+# Use at your own risk
+
 # Environment variables you need to set so you don't have to edit the script below.
 DOCKER_CHANNEL=stable
 DOCKER_COMPOSE_VERSION=1.18.0

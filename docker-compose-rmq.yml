@@ -7,14 +7,29 @@ services:
       context: .
       args:
         install_rmq: 'true'
-    image: volttron/volttron-rmq
+    image: volttron/volttron:rmq
     ports:
       # host_port:container_port
       # http port for volttron central
       - 8443:8443
+      - 22916:22916
     volumes:
       - ./platform_config_rmq.yml:/platform_config.yml
       - ./configs:/home/volttron/configs
     environment:
       - CONFIG=/home/volttron/configs
       - LOCAL_USER_ID=1000
+      - MESSAGE_BUS=rmq
+      - SETUP_TYPE=single # setup_type is one of "single", "shovel"
+    networks:
+      securecentral:
+        ipv4_address: 172.28.5.1 # assigning a static IP to the VolttronCentral platform so that the other remote platforms can connect to VC everytime Docker-compose is run
+
+networks:
+  securecentral:
+    name: secure_central
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 172.28.0.0/16
+         ip_range: 172.28.5.0/24

@@ -8,6 +8,7 @@ SHELL [ "bash", "-c" ]
 
 ENV OS_TYPE=debian
 ENV DIST=buster
+
 ENV VOLTTRON_GIT_BRANCH=rabbitmq-volttron
 ENV VOLTTRON_USER_HOME=/home/volttron
 ENV VOLTTRON_HOME=${VOLTTRON_USER_HOME}/.volttron
@@ -71,6 +72,10 @@ USER $VOLTTRON_USER
 COPY --chown=volttron:volttron volttron /code/volttron
 WORKDIR /code/volttron
 RUN pip install -e . --user
+RUN pip3 install -e .[drivers]
+RUN pip3 install -e .[web]
+RUN pip3 install -e .[testing]
+RUN pip3 install -e .[databases]
 RUN echo "package installed at `date`"
 
 ############################################

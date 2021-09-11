@@ -3,13 +3,15 @@
 # the values will be presented in the config file
 # as key=value
 config:
-  vip-address: tcp://0.0.0.0:22916
-  # For rabbitmq this should match the hostname specified in
+  # the IP addresses being used here come from the 'networks' section in docker-compose.yml
+  vip-address: tcp://172.28.5.1:22916
+  # For rabbitmq this should match the hostname specified
   # in the docker compose file hostname field for the service.
-  bind-web-address: http://0.0.0.0:8080
-  volttron-central-address: http://0.0.0.0:8080
+  bind-web-address: https://172.28.5.1:8443
+  volttron-central-address: https://172.28.5.1:8443
+
   instance-name: volttron1
-  message-bus: zmq # allowed values: zmq, rmq
+  message-bus: $MESSAGE_BUS
   # volttron-central-address: a different address
   # volttron-central-serverkey: a different key
 
