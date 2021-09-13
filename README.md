@@ -5,7 +5,7 @@
 This image provides a reproducible way to install VOLTTRON within a docker container.
 By using a volume mount of the `VOLTTRON_HOME` directory, runtime changes made by the platform are visible on the host and are preserved across instances of the container.
 Similarly, changes made from the host are reflected in the container.
-The image uses the utility [gosu](https://github.com/tianon/gosu), which allows the non-root user executing the volttron platform inside the container to have the same UID as the host user running the container on the host system.
+The image uses the utility [gosu](https://github.com/tianon/gosu), which allows the non-root user that is executing the volttron platform inside the container to have the same UID as the host user running the container on the host system.
 In conjunction with volume mounting of the directory, this ensures that file ownership and permissions in `VOLTTRON_HOME` match the host user, avoiding cases where root in the container leaves files inaccessible to a user without sudo permissions on the host.
 
 # Prerequisites

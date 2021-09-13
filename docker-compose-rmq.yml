@@ -20,14 +20,14 @@ services:
       - CONFIG=/home/volttron/configs
       - LOCAL_USER_ID=1000
       - MESSAGE_BUS=rmq
-      - SETUP_TYPE=single # setup_type is one of "single", "shovel"
+      - SETUP_TYPE=single # currently, this Docker image only supports setup_type: "single"
     networks:
-      securecentral:
+      volttron1network:
         ipv4_address: 172.28.5.1 # assigning a static IP to the VolttronCentral platform so that the other remote platforms can connect to VC everytime Docker-compose is run
 
 networks:
-  securecentral:
-    name: secure_central
+  volttron1network:
+    name: volttron1_network
     driver: bridge
     ipam:
      config:
