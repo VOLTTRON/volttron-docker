@@ -118,6 +118,43 @@ $ vctl status
 $ docker stop volttron1
 ```
 
+## Running tests on the container
+
+There are two ways to run tests on the container:
+
+### Running tests after creating the container
+
+After starting the container, you can ssh into the container and start running tests. 
+
+```shell
+# SSH into the container
+$ docker exec -itu volttron volttron1 bash
+# run pytest on a test or test directory
+(volttron1) $ pytest <path to test or test directory>
+```
+
+### Running tests directly from docker-compose run
+
+Instead of manually creating the container and then running a specific test inside the container via ssh, you 
+can create the container and run a specific test in one command. This option allows you run automate testing in script; 
+for example, if you want to write a script that creates containers and automatically runs a specific test. 
+
+```
+# Form: note that you must have the '--service-ports' option so that the tests can run properly; without it, the tests cannot create test instances of the Volttron platform
+# docker-compose run --service-ports volttron1 pytest <path to the test or test directory that will be run>
+
+# Examples 
+# Run all tests for the Actuator Agent
+$ docker-compose run --service-ports --rm volttron1 pytest /code/volttron/services/core/ActuatorAgent/tests
+
+# Run a specifc test file, test_vc.py, for the VolttronCentral Agent
+$ docker-compose run --service-ports --rm volttron1 pytest /code/volttron/services/core/VolttronCentral/tests/test_vc.py
+
+# Run a specific test, 'test_default_config`
+$ docker-compose run --service-ports --rm volttron1 pytest /code/volttron/services/core/VolttronCentral/tests/test_vc.py::test_default_config
+```
+
+
 # Platform Initialization
 
 The VOLTTRON container when created is just a blank container with no agents.  Now there is an initialization routine available within the docker container to allow the installation of agents before launching of the instance.  To do this one will mount a `platform_config.yml` file to `/platform_config.yml` within the container. One is also likely to need to mount agent configurations (specified in the `platform_config.yml` file), into the container. The recommended way to do this is through a `docker-compose.yml` file.  An example of this is included in this repository, based on the one in the [volttron-fuel-cells repo](https://github.com/VOLTTRON/volttron-fuel-cells/).
