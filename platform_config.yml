@@ -22,10 +22,7 @@ agents:
   listener:
     source: $VOLTTRON_ROOT/examples/ListenerAgent
     config: $CONFIG/listener.config
-
-  volttron.central:
-    source: $VOLTTRON_ROOT/services/core/VolttronCentral
-    config: $VOLTTRON_ROOT/services/core/VolttronCentral/config
+    tag: listener
 
   platform.driver:
     source: $VOLTTRON_ROOT/services/core/PlatformDriverAgent
@@ -35,18 +32,26 @@ agents:
         type: --csv
       devices/fake-campus/fake-building/fake-device:
         file: $VOLTTRON_ROOT/examples/configurations/drivers/fake.config
+    tag: driver
 
   platform.agent:
     source: $VOLTTRON_ROOT/services/core/VolttronCentralPlatform
     config: $VOLTTRON_ROOT/services/core/VolttronCentralPlatform/config
+    tag: vcp
 
   platform.actuator:
     source: $VOLTTRON_ROOT/services/core/ActuatorAgent
+    tag: actuator
 
   platform.historian:
     source: $VOLTTRON_ROOT/services/core/SQLHistorian
     config: $CONFIG/historian.config
+    tag: historian
 
+#  volttron.central:
+#    source: $VOLTTRON_ROOT/services/core/VolttronCentral
+#    config: $VOLTTRON_ROOT/services/core/VolttronCentral/config
+#    tag: central
 #
 #  weather:
 #    source: $VOLTTRON_ROOT/examples/DataPublisher

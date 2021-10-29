@@ -58,14 +58,6 @@ RUN mkdir -p /code && chown $VOLTTRON_USER.$VOLTTRON_USER /code && \
 # Creating volttron_core stage
 ############################################
 FROM volttron_base AS volttron_core
-RUN mkdir /startup $VOLTTRON_HOME && \
-    chown $VOLTTRON_USER.$VOLTTRON_USER $VOLTTRON_HOME
-COPY ./core/entrypoint.sh /startup/entrypoint.sh
-COPY ./core/bootstart.sh /startup/bootstart.sh
-COPY ./core/setup-platform.py /startup/setup-platform.py
-COPY ./core/slogger.py /startup/slogger.py
-RUN chmod +x /startup/*
-
 
 USER $VOLTTRON_USER
 COPY --chown=volttron:volttron volttron /code/volttron

@@ -237,3 +237,20 @@ the image name given to the integration test script. For example, if you run the
 ```  ./run-test-docker-image.sh -g test -t integ ```,
 then the 'image' key in docker-compose.yml must be set to 'volttron/test:integ'.
 
+# Development
+
+If you plan on extending or developing the "platform_config.yml", "configs/", or the setup scripts in "core/", use the 
+Docker image, "Dockerfile-dev", and corresponding "docker-compose-dev.yml" to speed up your development time. `docker-compose-dev.yml` mounts
+the 'platform_config.yml', 'configs/' directory, and 'core/' directory into the container, thus allowing you to modify 
+those files and testing out the changes without having to rebuild the image every time. 
+
+```shell
+# give execute permissions to all users
+chmod a+x core/*
+
+# build the development image (only have to do one time)
+docker-compose -f docker-compose-dev.yml build --no-cache volttron1
+
+# run the container
+docker-compose -f docker-compose-dev.yml up 
+```
