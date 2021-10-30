@@ -41,13 +41,8 @@ $ git pull origin develop
 ## Docker-compose
 
 To create the container and start using the platform on the container, run the following commands from the command line. Ensure that you are in the root level of the directory.
-Note that there are two docker-compose files:
-* docker-compose.yml: creates a single Volttron instance with ZMQ message bus
-* docker-compose-rmq.yml: creates a single Volttron instance with RMQ message bus
 
 ```bash
-# Choose 1 of the two options for building the image:
-
 # For ZMQ-based Volttron:
 # Build a clean image locally
 $ docker-compose build --no-cache volttron1
@@ -72,8 +67,8 @@ $ docker-compose down
 ```
 
 For Volttron instances using ZMQ message bus:
-* Set the master username and password on the Volttron Central Admin page at `http://0.0.0.0:8080/index.html`
-* To log in to Volttron Central, open a browser and login to the Volttron web interface: `http://0.0.0.0:8080/vc/index.html`
+* Set the master username and password on the Volttron Central Admin page at `https://0.0.0.0:8080/index.html`
+* To log in to Volttron Central, open a browser and login to the Volttron web interface: `https://0.0.0.0:8080/vc/index.html`
 
 ## Docker
 
@@ -135,7 +130,7 @@ For example, the `vip-address` and `bind-web-address` would be populated using t
 #   as key=value
 config:
   vip-address: tcp://0.0.0.0:22916
-  bind-web-address: http://0.0.0.0:8080
+  bind-web-address: https://0.0.0.0:8080
   # volttron-central-address: a different address
   # volttron-central-serverkey: a different key
 
