@@ -59,6 +59,11 @@ RUN mkdir -p /code && chown $VOLTTRON_USER.$VOLTTRON_USER /code && \
 ############################################
 FROM volttron_base AS volttron_core
 
+# make the volttron home directory
+RUN mkdir $VOLTTRON_HOME && \
+    chown $VOLTTRON_USER.$VOLTTRON_USER $VOLTTRON_HOME
+
+# copy over volttron repo
 USER $VOLTTRON_USER
 COPY --chown=volttron:volttron volttron /code/volttron
 WORKDIR /code/volttron
@@ -68,20 +73,27 @@ RUN echo "package installed at `date`"
 ############################################
 # RABBITMQ SPECIFIC INSTALLATION
 ############################################
+# the ARG install_rmq must be declared twice due to scope; see https://docs.docker.com/engine/reference/builder/#using-arg-variables
 USER root
-ARG install_rmq=false
-RUN if [ "${install_rmq}" = "false" ] ; then echo "Not installing RMQ dependencies."; else ./scripts/rabbit_dependencies.sh $OS_TYPE $DIST && \
-    python -m pip install gevent-pika && \
-    mkdir /startup $VOLTTRON_HOME && \
-    chown $VOLTTRON_USER.$VOLTTRON_USER $VOLTTRON_HOME; fi
+ARG install_rmq
+RUN if [ "${install_rmq}" = "false" ] ; then \
+      echo "Not installing RMQ dependencies.";  \
+    else \
+      ./scripts/rabbit_dependencies.sh $OS_TYPE $DIST && \
+      python -m pip install gevent-pika; \
+    fi
 
 USER $VOLTTRON_USER
-ARG install_rmq=false
-RUN if [ "${install_rmq}" = "false" ] ; then echo "Not installing RMQ"; else mkdir $RMQ_ROOT && \
-    set -eux && \
-    wget -P $VOLTTRON_USER_HOME https://github.com/rabbitmq/rabbitmq-server/releases/download/v3.7.7/rabbitmq-server-generic-unix-3.7.7.tar.xz && \
-    tar -xf $VOLTTRON_USER_HOME/rabbitmq-server-generic-unix-3.7.7.tar.xz --directory $RMQ_ROOT && \
-    $RMQ_HOME/sbin/rabbitmq-plugins enable rabbitmq_management rabbitmq_federation rabbitmq_federation_management rabbitmq_shovel rabbitmq_shovel_management rabbitmq_auth_mechanism_ssl rabbitmq_trust_store; fi
+ARG install_rmq
+RUN if [ "${install_rmq}" = "false" ] ; then \
+      echo "Not installing RMQ"; \
+    else \
+      mkdir $RMQ_ROOT && \
+      set -eux && \
+      wget -P $VOLTTRON_USER_HOME https://github.com/rabbitmq/rabbitmq-server/releases/download/v3.7.7/rabbitmq-server-generic-unix-3.7.7.tar.xz && \
+      tar -xf $VOLTTRON_USER_HOME/rabbitmq-server-generic-unix-3.7.7.tar.xz --directory $RMQ_ROOT && \
+      $RMQ_HOME/sbin/rabbitmq-plugins enable rabbitmq_management rabbitmq_federation rabbitmq_federation_management rabbitmq_shovel rabbitmq_shovel_management rabbitmq_auth_mechanism_ssl rabbitmq_trust_store;  \
+    fi
 ############################################
 
 
@@ -96,4 +108,3 @@ USER root
 WORKDIR ${VOLTTRON_USER_HOME}
 ENTRYPOINT ["/startup/entrypoint.sh"]
 CMD ["/startup/bootstart.sh"]
-

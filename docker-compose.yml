@@ -7,7 +7,7 @@ services:
       context: .
       args:
         install_rmq: 'false'
-    image: volttron/volttron-zmq
+    image: volttron/volttron-docker-zmq
     ports:
       # host_port:container_port
       # http port for volttron central

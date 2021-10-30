@@ -6,8 +6,8 @@ config:
   vip-address: tcp://0.0.0.0:22916
   # For rabbitmq this should match the hostname specified in
   # in the docker compose file hostname field for the service.
-  bind-web-address: http://0.0.0.0:8080
-  volttron-central-address: http://0.0.0.0:8080
+  bind-web-address: https://0.0.0.0:8080
+  volttron-central-address: https://0.0.0.0:8080
   instance-name: volttron1
   message-bus: zmq # allowed values: zmq, rmq
   # volttron-central-address: a different address

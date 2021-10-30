@@ -5,9 +5,10 @@ services:
     hostname: volttron1
     build:
       context: .
+      dockerfile: Dockerfile-dev
       args:
         install_rmq: 'false'
-    image: volttron/volttron-zmq
+    image: volttron/volttron-docker-dev-zmq
     ports:
       # host_port:container_port
       # http port for volttron central

@@ -13,14 +13,14 @@ In conjunction with volume mounting of the directory, this ensures that file own
 * Docker
 * Docker-compose
 
-If you need to install docker and/or docker-compose, you can use the script in this repo. From the root level, execute the following command. NOTE: this script is written for machines running Ubuntu:
+If you need to install docker and/or docker-compose AND you are running this image on an Ubuntu machine, you can use the script in this repo. From the root level, execute the following command:
 
 ```bash
 $ ./docker_install_ubuntu.sh
 ```
 
-This repo has a directory called 'volttron', which contains the volttron codebase. In other words, this repo contains another repo in a subfolder. 
-When you initially clone this repo, the 'volttron' directory is empty. This directory contains the volttron codebase used to create the volttron platform. 
+This repo has a directory called 'volttron', which contains the volttron codebase. In other words, this repo contains another repo in a subfolder.
+When you initially clone this repo, the 'volttron' directory is empty. This directory contains the volttron codebase used to create the volttron platform.
 Before creating the container, you must pull in volttron from the [official volttron repo](https://github.com/VOLTTRON/volttron) using the following git command:
 
 ```bash
@@ -28,10 +28,10 @@ Before creating the container, you must pull in volttron from the [official volt
 $ git submodule update --init --recursive
 ```
 
-OPTIONAL: This repo uses a specific version of volttron based on the commit in the 'volttron' submodule. If you want to use the latest volttron from the `develop` 
+OPTIONAL: This repo uses a specific version of volttron based on the commit in the 'volttron' submodule. If you want to use the latest volttron from the `develop`
 branch from the volttron repo, execute the following command (NOTE: this is not required):
 
-```bash 
+```bash
 # Ensure that you are in the `volttron` folder
 $ git pull origin develop
 ```
@@ -48,25 +48,21 @@ Note that there are two docker-compose files:
 ```bash
 # Choose 1 of the two options for building the image:
 
-# For ZMQ-based Volttron: 
+# For ZMQ-based Volttron:
 # Build a clean image locally
 $ docker-compose build --no-cache volttron1
 
 # Creates Volttron instance with ZMQ message bus
 $ docker-compose up
 
-# For RMQ-based Volttron:
-$ docker-compose -f docker-compose-rmq.yml build --no-cache volttron1
-$ docker-compose -f docker-compose-rmq.yml up 
-
 # To ssh into the container
-$ docker exec -itu volttron volttron1 bash 
+$ docker exec -itu volttron volttron1 bash
 
 # To stop the container
-$ docker-compose stop 
+$ docker-compose stop
 
 # To start the container after it's been stopped
-$ docker-compose start 
+$ docker-compose start
 
 # To get a list of all containers created from docker-compose
 $ docker-compose ps
@@ -76,14 +72,10 @@ $ docker-compose down
 ```
 
 For Volttron instances using ZMQ message bus:
-* Set the master username and password on the Volttron Central Admin page at `http://0.0.0.0:8080/index.html` 
+* Set the master username and password on the Volttron Central Admin page at `http://0.0.0.0:8080/index.html`
 * To log in to Volttron Central, open a browser and login to the Volttron web interface: `http://0.0.0.0:8080/vc/index.html`
 
-For Volttron instances using RMQ message bus:
-* Set the master username and password on the Volttron Central Admin page at `https://0.0.0.0:8443/index.html` 
-* To log in to Volttron Central, open a browser and login to the Volttron web interface: `https://0.0.0.0:8443/vc/index.html`
-
-## Docker 
+## Docker
 
 ```bash
 
@@ -91,9 +83,6 @@ For Volttron instances using RMQ message bus:
 
 # For ZMQ-based volttron:
 $ docker build --no-cache --build-arg install_rmq=false -t volttron_local .
-
-# For RMQ-based volttron:
-$ docker build --no-cache --build-arg install_rmq=true-t volttron_local .
 
 # Create a docker container named "volttron1"; this container will be automatically removed when the container stops running
 $ docker run \
@@ -105,7 +94,7 @@ $ docker run \
 -v "$(pwd)"/platform_config.yml:/platform_config.yml \
 -p 8080:8080 \
 -it volttron_local
- 
+
 # Once the container is started and running, set the master username and password on the Volttron Central Admin page at `http://0.0.0.0:8080/index.html`
 
 # To log in to Volttron Central, open a browser and login to the Volttron web interface: `http://0.0.0.0:8080/vc/index.html`
@@ -148,7 +137,7 @@ config:
   vip-address: tcp://0.0.0.0:22916
   bind-web-address: http://0.0.0.0:8080
   # volttron-central-address: a different address
-  # volttron-central-serverkey: a different key 
+  # volttron-central-serverkey: a different key
 
   ...
 ```
@@ -218,7 +207,7 @@ In order to allow an external instance connect to the running volttron container
 
 # Testing
 
-## Dockerfile 
+## Dockerfile
 
 If you want to work on improving/developing the Dockerfile, you can locally run a test script to check whether the image
 works as expected. To run the test, see the following:
@@ -227,22 +216,27 @@ works as expected. To run the test, see the following:
 # run the test (rebuilds and tests the most current image)
 $ ./run-test-docker-image.sh
 
-# You can also run the test but skip rebuilding the image 
+# You can also run the test but skip rebuilding the image
 $ ./run-test-docker-image.sh -s
 ```
 
 
 Note: If you want to use a different image name and/or tag, you must ensure that the image name in docker-compose.yml matches
-the image name given to the integration test script. For example, if you run the integration tests with the following options 
+the image name given to the integration test script. For example, if you run the integration tests with the following options
 ```  ./run-test-docker-image.sh -g test -t integ ```,
 then the 'image' key in docker-compose.yml must be set to 'volttron/test:integ'.
 
 # Development
 
-If you plan on extending or developing the "platform_config.yml", "configs/", or the setup scripts in "core/", use the 
-Docker image, "Dockerfile-dev", and corresponding "docker-compose-dev.yml" to speed up your development time. `docker-compose-dev.yml` mounts
-the 'platform_config.yml', 'configs/' directory, and 'core/' directory into the container, thus allowing you to modify 
-those files and testing out the changes without having to rebuild the image every time. 
+If you plan on extending or developing the "platform_config.yml", "configs/", or the setup scripts in "core/", build the
+Docker image, "Dockerfile-dev", only once using `docker-compose -f docker-compose-dev.yml build --no-cache volttron1`. Then start
+the container using `docker-compose -f docker-compose-dev.yml up`. When you want to make changes to "platform_config.yml", "configs/", or
+"core/", simply make the changes and then rerun your container. You do not have to rebuild the image every time you make changes to those
+aforementioned files and folders because they are mounted into the container. The only time you should rebuild the image is when
+you make changes to the "volttron" source code since that is not mounted to the container but rather baked into the image during
+the image build.
+
+To setup your environment for development, do the following:
 
 ```shell
 # give execute permissions to all users
@@ -252,5 +246,6 @@ chmod a+x core/*
 docker-compose -f docker-compose-dev.yml build --no-cache volttron1
 
 # run the container
-docker-compose -f docker-compose-dev.yml up 
+# Volttron ZMQ
+docker-compose -f docker-compose-dev.yml up
 ```

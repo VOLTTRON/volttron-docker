@@ -9,7 +9,8 @@ jobs:
     env:
       # variables to change image name on DockerHub; here, the image name will take form volttron/<GROUP>:<TAG>
       GROUP: eclipsevolttron/volttron
-      TAG: volttron-docker-v1.0
+      TAG: volttron-docker-zmq-v1.0
+      # TODO add image for RMQ
 
     # The strategy allows customization of the build and allows matrixing the version of os and software
     # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#jobsjob_idstrategymatrix

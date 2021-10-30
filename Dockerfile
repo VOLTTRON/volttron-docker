@@ -19,6 +19,7 @@ ENV RMQ_ROOT=${VOLTTRON_USER_HOME}/rabbitmq_server
 ENV RMQ_HOME=${RMQ_ROOT}/rabbitmq_server-3.7.7
 
 USER root
+
 RUN set -eux; apt-get update; apt-get install -y --no-install-recommends \
     procps \
     gosu \
@@ -58,15 +59,14 @@ RUN mkdir -p /code && chown $VOLTTRON_USER.$VOLTTRON_USER /code && \
 # Creating volttron_core stage
 ############################################
 FROM volttron_base AS volttron_core
+
+# copy over /core, i.e. the custom startup scripts for this image
 RUN mkdir /startup $VOLTTRON_HOME && \
     chown $VOLTTRON_USER.$VOLTTRON_USER $VOLTTRON_HOME
-COPY ./core/entrypoint.sh /startup/entrypoint.sh
-COPY ./core/bootstart.sh /startup/bootstart.sh
-COPY ./core/setup-platform.py /startup/setup-platform.py
-COPY ./core/slogger.py /startup/slogger.py
+COPY ./core /startup
 RUN chmod +x /startup/*
 
-
+# copy over volttron repo
 USER $VOLTTRON_USER
 COPY --chown=volttron:volttron volttron /code/volttron
 WORKDIR /code/volttron
@@ -76,20 +76,27 @@ RUN echo "package installed at `date`"
 ############################################
 # RABBITMQ SPECIFIC INSTALLATION
 ############################################
+# the ARG install_rmq must be declared twice due to scope; see https://docs.docker.com/engine/reference/builder/#using-arg-variables
 USER root
-ARG install_rmq=false
-RUN if [ "${install_rmq}" = "false" ] ; then echo "Not installing RMQ dependencies."; else ./scripts/rabbit_dependencies.sh $OS_TYPE $DIST && \
-    python -m pip install gevent-pika && \
-    mkdir /startup $VOLTTRON_HOME && \
-    chown $VOLTTRON_USER.$VOLTTRON_USER $VOLTTRON_HOME; fi
+ARG install_rmq
+RUN if [ "${install_rmq}" = "false" ] ; then \
+      echo "Not installing RMQ dependencies.";  \
+    else \
+      ./scripts/rabbit_dependencies.sh $OS_TYPE $DIST && \
+      python -m pip install gevent-pika; \
+    fi
 
 USER $VOLTTRON_USER
-ARG install_rmq=false
-RUN if [ "${install_rmq}" = "false" ] ; then echo "Not installing RMQ"; else mkdir $RMQ_ROOT && \
-    set -eux && \
-    wget -P $VOLTTRON_USER_HOME https://github.com/rabbitmq/rabbitmq-server/releases/download/v3.7.7/rabbitmq-server-generic-unix-3.7.7.tar.xz && \
-    tar -xf $VOLTTRON_USER_HOME/rabbitmq-server-generic-unix-3.7.7.tar.xz --directory $RMQ_ROOT && \
-    $RMQ_HOME/sbin/rabbitmq-plugins enable rabbitmq_management rabbitmq_federation rabbitmq_federation_management rabbitmq_shovel rabbitmq_shovel_management rabbitmq_auth_mechanism_ssl rabbitmq_trust_store; fi
+ARG install_rmq
+RUN if [ "${install_rmq}" = "false" ] ; then \
+      echo "Not installing RMQ"; \
+    else \
+      mkdir $RMQ_ROOT && \
+      set -eux && \
+      wget -P $VOLTTRON_USER_HOME https://github.com/rabbitmq/rabbitmq-server/releases/download/v3.7.7/rabbitmq-server-generic-unix-3.7.7.tar.xz && \
+      tar -xf $VOLTTRON_USER_HOME/rabbitmq-server-generic-unix-3.7.7.tar.xz --directory $RMQ_ROOT && \
+      $RMQ_HOME/sbin/rabbitmq-plugins enable rabbitmq_management rabbitmq_federation rabbitmq_federation_management rabbitmq_shovel rabbitmq_shovel_management rabbitmq_auth_mechanism_ssl rabbitmq_trust_store;  \
+    fi
 ############################################
 
 
@@ -104,4 +111,3 @@ USER root
 WORKDIR ${VOLTTRON_USER_HOME}
 ENTRYPOINT ["/startup/entrypoint.sh"]
 CMD ["/startup/bootstart.sh"]
-
