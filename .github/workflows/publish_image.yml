@@ -1,3 +1,5 @@
+# This workflow is based on example from # https://github.com/marketplace/actions/build-and-push-docker-images
+
 name: Publish Image to Volttron DockerHub
 
 on:
@@ -8,9 +10,7 @@ jobs:
   build:
     env:
       # variables to change image name on DockerHub; here, the image name will take form volttron/<GROUP>:<TAG>
-      GROUP: eclipsevolttron/volttron
-      TAG: volttron-docker-zmq-v1.0
-      # TODO add image for RMQ
+      IMAGE_BASE_NAME: eclipsevolttron/volttron
 
     # The strategy allows customization of the build and allows matrixing the version of os and software
     # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#jobsjob_idstrategymatrix
@@ -35,11 +35,11 @@ jobs:
         - name: Set up Docker Buildx
           uses: docker/setup-buildx-action@v1
 
-#        - name: Docker meta
-#          id: meta
-#          uses: docker/metadata-action@v3
-#          with:
-#            images: eclipsevolttron/volttron
+        - name: Docker meta
+          id: meta
+          uses: docker/metadata-action@v3
+          with:
+            images: ${{ env.IMAGE_BASE_NAME }}
 
         # Ensure that the repo has the username and token added from the
         # official Volttron Dockerhub page at https://hub.docker.com/repository/docker/eclipsevolttron/volttron/general
@@ -57,8 +57,7 @@ jobs:
           with:
             context: .
             push:  ${{ github.event_name != 'pull_request' }}
-            tags: |
-              ${{ env.GROUP }}:${{ env.TAG }}
+            tags: ${{ steps.meta.outputs.tags }}
 
         - name: Image digest
           run: echo ${{ steps.docker_build.outputs.digest }}
