@@ -8,11 +8,11 @@ services:
       dockerfile: Dockerfile-dev
       args:
         install_rmq: 'false'
-    image: volttron/volttron-docker-dev-zmq
+    image: eclipsevolttron/volttron:v-docker-dev-latest
     ports:
       # host_port:container_port
       # http port for volttron central
-      - 8080:8080
+      - 8443:8443
     volumes:
       - ./platform_config.yml:/platform_config.yml
       - ./configs:/home/volttron/configs

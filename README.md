@@ -45,7 +45,7 @@ To create the container and start using the platform on the container, run the f
 ```bash
 # For ZMQ-based Volttron:
 # Build a clean image locally
-$ docker-compose build --no-cache volttron1
+$ docker-compose build --no-cache --force-rm
 
 # Creates Volttron instance with ZMQ message bus
 $ docker-compose up
@@ -238,9 +238,20 @@ To setup your environment for development, do the following:
 chmod a+x core/*
 
 # build the development image (only have to do one time)
-docker-compose -f docker-compose-dev.yml build --no-cache volttron1
+docker-compose -f docker-compose-dev.yml build --no-cache --force-rm
 
 # run the container
 # Volttron ZMQ
 docker-compose -f docker-compose-dev.yml up
 ```
+
+# Troubleshooting
+
+*My VC Platform agent can't connect to the Volttron Central address. I see `volttron.platform.vip.agent.subsystems.auth ERROR: Couldn't connect to https://localhost:8443 or incorrect response returned response was None` in the logs*
+
+This most likely occurs if you are deploying this container behind a proxy. Ensure that your `~/.docker/config.json`
+has no "proxies" configuration.
+
+*My Forwarder shows a BAD status when I run `vctl status`*
+
+Ensure that the configuration for your forwarder is using the same volttron-central-address property in volttron config, which is set in your platform_config.yml file.

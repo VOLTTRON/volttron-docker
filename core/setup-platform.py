@@ -63,9 +63,10 @@ def _install_required_deps():
     for req in opt_reqs:
         package, options = req
         install_cmd = ["pip3", "install", "--no-deps"]
-        if options:
-            install_cmd.append("--install-option")
-            install_cmd.extend(options)
+        # if options:
+        #     for opt in options:
+        #         install_cmd.extend([f'--install-option', opt])
+        # install_cmd.append(f'--install-option="{opt}"')
         install_cmd.append(package)
         subprocess.check_call(install_cmd)
 
@@ -224,7 +225,7 @@ def install_agents(agents):
     need_to_install = {}
 
     sys.stdout.write("Available agents that are needing to be setup/installed")
-    print(agents)
+    print(f"{agents.keys()}")
 
     # TODO Fix so that the agents identities are consulted.
     for identity, specs in agents.items():
@@ -240,6 +241,7 @@ def install_agents(agents):
         sleep(20)
 
         envcpy = os.environ.copy()
+        failed_install = []
         for identity, spec in need_to_install.items():
             slogger.info("Processing identity: {}".format(identity))
             sys.stdout.write("Processing identity: {}\n".format(identity))
@@ -301,6 +303,7 @@ def install_agents(agents):
                 # this is most likely a bug in Volttron. For now, we are ignoring that error so that the setup of the Volttron platform does not fail and to allow Docker to start the container
                 sys.stderr.write(f"IGNORING ERROR: {e}")
                 slogger.debug(f"IGNORING ERROR: {e}")
+                failed_install.append(identity)
                 continue
 
             if "config_store" in spec:
@@ -341,6 +344,7 @@ def install_agents(agents):
                         entry_cmd.append(entry["type"])
 
                     subprocess.check_call(entry_cmd)
+        slogger.info(f"Agents that failed to install {failed_install}")
 
 
 def final_platform_configurations():

@@ -9,7 +9,7 @@ on:
 jobs:
   build:
     env:
-      # variables to change image name on DockerHub; here, the image name will take form volttron/<GROUP>:<TAG>
+      # variables to change image name on DockerHub
       IMAGE_BASE_NAME: eclipsevolttron/volttron
 
     # The strategy allows customization of the build and allows matrixing the version of os and software
@@ -17,8 +17,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ ubuntu-20.04 ]
-        python-version: [ 3.9 ]
+        os: [ ubuntu-18.04 ]
+        python-version: [ 3.6 ]
 
     runs-on: ${{ matrix.os }}
 
