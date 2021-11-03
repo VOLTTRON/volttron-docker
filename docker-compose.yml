@@ -3,12 +3,15 @@ services:
   volttron1:
     container_name: volttron1
     hostname: volttron1
-    build: .
-    image: volttron/volttron:develop # located in https://hub.docker.com/r/volttron/volttron
+    build:
+      context: .
+      args:
+        install_rmq: 'false'
+    image: eclipsevolttron/volttron:v-docker-latest
     ports:
       # host_port:container_port
       # http port for volttron central
-      - 8080:8080
+      - 8443:8443
     volumes:
       - ./platform_config.yml:/platform_config.yml
       - ./configs:/home/volttron/configs

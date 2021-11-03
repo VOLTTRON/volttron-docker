@@ -3,15 +3,21 @@ services:
   volttron1:
     container_name: volttron1
     hostname: volttron1
-    build: .
-    image: volttron/volttron:develop # located in https://hub.docker.com/r/volttron/volttron
+    build:
+      context: .
+      dockerfile: Dockerfile-dev
+      args:
+        install_rmq: 'false'
+    image: eclipsevolttron/volttron:v-docker-dev-latest
     ports:
       # host_port:container_port
       # http port for volttron central
       - 8443:8443
     volumes:
-      - ./platform_config_rmq.yml:/platform_config.yml
+      - ./platform_config.yml:/platform_config.yml
       - ./configs:/home/volttron/configs
+      - ./core:/startup
+
     environment:
       - CONFIG=/home/volttron/configs
       - LOCAL_USER_ID=1000

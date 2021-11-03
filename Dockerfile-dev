@@ -19,7 +19,6 @@ ENV RMQ_ROOT=${VOLTTRON_USER_HOME}/rabbitmq_server
 ENV RMQ_HOME=${RMQ_ROOT}/rabbitmq_server-3.7.7
 
 USER root
-
 RUN set -eux; apt-get update; apt-get install -y --no-install-recommends \
     procps \
     gosu \
@@ -60,11 +59,9 @@ RUN mkdir -p /code && chown $VOLTTRON_USER.$VOLTTRON_USER /code && \
 ############################################
 FROM volttron_base AS volttron_core
 
-# copy over /core, i.e. the custom startup scripts for this image
-RUN mkdir /startup $VOLTTRON_HOME && \
+# make the volttron home directory
+RUN mkdir $VOLTTRON_HOME && \
     chown $VOLTTRON_USER.$VOLTTRON_USER $VOLTTRON_HOME
-COPY ./core /startup
-RUN chmod +x /startup/*
 
 # copy over volttron repo
 USER $VOLTTRON_USER
