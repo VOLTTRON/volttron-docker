@@ -1,13 +1,9 @@
-version: '3'
+version: '3.4'
 services:
   volttron1:
     container_name: volttron1
     hostname: volttron1
-    build:
-      context: .
-      args:
-        install_rmq: 'false'
-    image: eclipsevolttron/volttron:v-docker-latest
+    image: eclipsevolttron/volttron:v2.0
     ports:
       # host_port:container_port
       # http port for volttron central
