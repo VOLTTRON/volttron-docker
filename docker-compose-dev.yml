@@ -1,4 +1,4 @@
-version: '3'
+version: '3.4'
 services:
   volttron1:
     container_name: volttron1
@@ -17,7 +17,11 @@ services:
       - ./platform_config.yml:/platform_config.yml
       - ./configs:/home/volttron/configs
       - ./core:/startup
-
+      - volttron1-volume:/home/volttron/db
     environment:
       - CONFIG=/home/volttron/configs
       - LOCAL_USER_ID=1000
+
+volumes:
+  volttron1-volume:
+    name: volttron1-data

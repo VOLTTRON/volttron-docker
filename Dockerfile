@@ -40,7 +40,8 @@ RUN set -eux; apt-get update; apt-get install -y --no-install-recommends \
     wget \
     curl \
     ca-certificates \
-    libffi-dev
+    libffi-dev \
+    sqlite3
 
 # Set default 'python' to 'python3'
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 1
