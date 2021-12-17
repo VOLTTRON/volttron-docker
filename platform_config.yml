@@ -52,11 +52,11 @@ agents:
     config: $CONFIG/historian.config
     tag: historian
 
-#  volttron.central:
-#    source: $VOLTTRON_ROOT/services/core/VolttronCentral
-#    config: $VOLTTRON_ROOT/services/core/VolttronCentral/config
-#    tag: central
-#
+  volttron.central:
+    source: $VOLTTRON_ROOT/services/core/VolttronCentral
+    config: $CONFIG/vc.config
+    tag: vc
+
 #  weather:
 #    source: $VOLTTRON_ROOT/examples/DataPublisher
 #    config: $CONFIG/weather.config
