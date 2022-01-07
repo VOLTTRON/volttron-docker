@@ -1,51 +1,189 @@
-
-# Change Log
-All notable changes to this project will be documented in this file.
- 
-The format is based on [Keep a Changelog](http://keepachangelog.com/)
-and this project adheres to [Semantic Versioning](http://semver.org/).
- 
-## [Unreleased] - yyyy-mm-dd
- 
-Here we write upgrading notes for brands. It's a team effort to make them as
-straightforward as possible.
- 
-### Added
-- [PROJECTNAME-XXXX](http://tickets.projectname.com/browse/PROJECTNAME-XXXX)
-  MINOR Ticket title goes here.
-- [PROJECTNAME-YYYY](http://tickets.projectname.com/browse/PROJECTNAME-YYYY)
-  PATCH Ticket title goes here.
- 
-### Changed
- 
-### Fixed
- 
-## [1.2.4] - 2017-03-15
-  
-Here we would have the update steps for 1.2.4 for people to follow.
- 
-### Added
- 
-### Changed
-  
-- [PROJECTNAME-ZZZZ](http://tickets.projectname.com/browse/PROJECTNAME-ZZZZ)
-  PATCH Drupal.org is now used for composer.
- 
-### Fixed
- 
-- [PROJECTNAME-TTTT](http://tickets.projectname.com/browse/PROJECTNAME-TTTT)
-  PATCH Add logic to runsheet teaser delete to delete corresponding
-  schedule cards.
- 
-## [1.2.3] - 2017-03-14
- 
-### Added
-   
-### Changed
- 
-### Fixed
- 
-- [PROJECTNAME-UUUU](http://tickets.projectname.com/browse/PROJECTNAME-UUUU)
-  MINOR Fix module foo tests
-- [PROJECTNAME-RRRR](http://tickets.projectname.com/browse/PROJECTNAME-RRRR)
-  MAJOR Module foo's timeline uses the browser timezone for date resolution 
+- Merge pull request #52 from VOLTTRON/develop
+- Merge pull request #51 from bonicim/bugfix/add-vc-config
+- Add vc config; uncomment Volttron Central agent in platform_config
+- Merge pull request #50 from VOLTTRON/release/3.0
+- Merge pull request #49 from bonicim/hotfix/sqlhistorian
+- Pin Volttron to 8.x; update README and docker-compose scripts
+- Merge pull request #46 from VOLTTRON/release/1.0
+- Merge pull request #45 from bonicim/update/8.1.1volt
+- Update README
+- Fix VCP setup; update Workflows and README
+- Add dynamic tags to docker image name
+- Update README
+- Cleanup code using black
+- Update
+- Update GH Workflows
+- Update to volttron 8.1.1
+- Merge pull request #42 from bonicim/fix/image
+- Update Dockerfile and README
+- Merge pull request #41 from shwethanidd/develop
+- Updated volttron submodule to point to main branch
+- Merge pull request #39 from VOLTTRON/main
+- Merge pull request #38 from VOLTTRON/develop
+- Merge pull request #37 from bonicim/update-readme
+- Update README
+- Merge pull request #36 from VOLTTRON/develop
+- Merge remote-tracking branch 'upstream/main' into develop
+- Merge pull request #35 from bonicim/fix-setup-script
+- Fix setup-platform.py to not fail on agent installation
+- Merge pull request #33 from timothyclifford/patch-1
+- Merge branch 'develop' into patch-1
+- Merge pull request #31 from VOLTTRON/release-1.0
+- Merge pull request #32 from VOLTTRON/release-1.0
+- chore: update readme
+- Rebase volttron submodule from 038d1 on volttron/develop
+- Merge remote-tracking branch 'origin/develop' into test-8.0rc1
+- Merge pull request #29 from GHYOON/issue/27_fix_rmq_certficiation
+- Merge remote-tracking branch 'origin/develop' into issue/27_fix_rmq_certficiation
+- Test 8.0rc1
+- Add integ tests for PR's to develop
+- fix #24 (rmq certification is changed)
+- Merge pull request #26 from GHYOON/fix_web_ssl_issue
+- fix setup-platform.py (avoid duplication of 'web-ssl-cert' and 'web-ssl-key')
+- fix setup-platform.py (avoid duplication of 'web-ssl-cert' and 'web-ssl-key')
+- Merge pull request #1 from VOLTTRON/develop
+- Merge pull request #22 from bonicim/add-docker-image-test-scripts
+- Build docker image locally
+- Rebase volttron to 8.0
+- Rebase volttron to latest on develop
+- Remove branch
+- Remove Travis-related files; no longer needed
+- Add --force on cleanup
+- Cleanup test script and workflows
+- Add test script, GH Actions for CI
+- Merge remote-tracking branch 'origin/main' into add-docker-image-test-scripts
+- Merge pull request #19 from VOLTTRON/revert-18-revert-17-add-docker-image-test-scripts
+- Revert "Revert "Add docker image test scripts c2""
+- Add integ tests script; add GH Workflows for CI
+- Merge pull request #18 from VOLTTRON/revert-17-add-docker-image-test-scripts
+- Revert "Add docker image test scripts c2"
+- Merge pull request #17 from bonicim/add-docker-image-test-scripts
+- Add checkout step
+- Change branch to main for gh actions
+- Add github actions for CI work
+- Add test script for image
+- Update test script
+- Changes
+- Add test script; update docker compose file
+- Cleanup docker-compose; update README
+- Update volttron submodule
+- Merge remote-tracking branch 'forked/fix-compose' into add-rmq
+- Add support for RMQ
+- Update docker-compose and platform_config
+- Update README
+- Update volttron submodule commit to latest from origin/develop
+- Update volttron submodule commit to latest on origin/develop
+- Fix docker-compose, correct examples in README
+- Update docker-compose and configs
+- Update volttron submodule commit
+- Fix setup-platform.py to setup RMQ volttron
+- Update Dockerfile and associated configs
+- Update volttron submodule with latest develop
+- Merge pull request #14 from craig8/mount-volttron-home
+- Modified to recursively change the owner of the volttron home before transitioning to volttron user
+- Merge pull request #13 from bonicim/master
+- Update docker-compose.yml
+- Update README.md
+- Fix agent configuration; change docker-compose to use dockerhub image; updated README
+- Update README with git submodule info
+- Fix docker-compose.yml to work on local Dockerfile; update README
+- Update README
+- Uncomment actuator
+- Fix install_cmd
+- Move volttron submodule to latest commit in develop
+- Fix bugs in setup-platform; update platform_config
+- Merge pull request #12 from VOLTTRON/fix-script
+- Add python3-wheel package; move symlink closer to pip3 usage
+- Fix bootstart script; add symlink in Dockerfile
+- Merge pull request #10 from VOLTTRON/issue/9_permission_issue
+- Handle permission issue as USER_ID shouldn't be hard coded.
+- Merge pull request #8 from laroque/volttron7_on_python3
+- system now builds with python3 and volttron7 release candidate
+- Merge pull request #7 from dzimmanck/bugs/fix_hardcoded_priority-6
+- Made code more concise with get() method.
+- Another small spelling error.
+- Typo fix.
+- Added code for getting agent install priority from the system config file.  Defaults to 50 if no priority is found.
+- Merge pull request #5 from laroque/master
+- Update .gitmodules
+- moving repo owner to volttron
+- Merge branch 'feature/multi-arch'
+- comment out armv8, build takes too long
+- adding arm8
+- still need the env for docker
+- pull it all together
+- fixing docker version for manifest building
+- more
+- repeated user stuff shouldn't fail
+- permissions fix
+- fixing base image name
+- tie things together
+- more stages
+- fixing caseesac syntax
+- can't track my own syntax
+- partial build
+- don't clone things, use a submodule
+- adding volttron proper as submodule
+- back to pure buster build to check timing
+- more verbose timestamps in pip steps
+- more verbose tag
+- fixing python image name
+- python base
+- adding packages to travis required packages list
+- ignore script artifacts
+- fixing arm emulated build
+- error codes aren't working
+- make sure bootstrap errors if it fails
+- try arm and publish
+- docker login in travis file
+- fixing docker login
+- also push
+- confirm os
+- use buster
+- pass in base image
+- match ARG names for realz
+- correct dockerfile ARGS
+- need to pass a build phase
+- don't break docker please
+- run my build script
+- more xenial issues?
+- restore?
+- move to xenial and more verbose script
+- migrating build
+- Merge pull request #4 from laroque/master
+- conflict resolution
+- clarifying readme updates
+- removing unused rabbitmq image
+- a bit of a reorg
+- Merge branch 'feature/compose-upgrade'
+- more readme notes
+- dropping commented lines that are now irrelevant
+- updating comments in bootstart; a bit more cleaning
+- cleaning up commented lines
+- bootstart now exits with expected error code
+- adding part of platform description from fuel-cells
+- resolved configs starts the platform with basic set of agents
+- adding some README notes
+- exit with something between 1 and 255.
+- Updated for best practices.
+- Merge pull request #3 from schandrika/master
+- handling existing certs use case
+- remove unused things from docker-compose.yml
+- Upgraded Dockerfile for rabbitmq-volttron
+- removed bootstart and entrypoint from the root of the directory
+- Brought docker file from main repo to this one.
+- Added context for setup-platform.py script.
+- Updated readme to point to fuel-cells.  removed "future"
+- Added .bashrc file to the build of the docker file.
+- Moved bootstart.sh and setup-platform.py from the fuel-cells docker repo. Updated Dockerfile to use those files effectively.
+- Updated README.md and removed the requirement on platform_config.yml
+- startup directory is now /home/volttron check for startup command.
+- Add a message when a command isn't passed to the run script.
+- Added VOLTTRON_USER_HOME env variable.
+- Update docker image master->latest
+- update .travis.yml to  not use the bootstrap.py from the other repo
+- Updated dockerfile with variables.
+- Added travis building support for docker image
+- Added easy non-rooooooooooooooooooooooooooooooooooooooooooooooooooooooot
+- Initial comit
+- Initial commit
