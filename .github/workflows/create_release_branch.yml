@@ -5,6 +5,9 @@ on:
       versionName:
         description: 'Name of version  (ie 5.5.0)'
         required: true
+env:
+  GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
 jobs:
   createrelease:
     runs-on: ubuntu-20.04
@@ -25,7 +28,7 @@ jobs:
     - name: Create pull request into main
       uses: thomaseizinger/create-pull-request@1.0.0
       with:
-       github-token: ${{ secrets.GITHUB_TOKEN }}
+       github-token: ${{ env.GITHUB_TOKEN }}
        head: release/v${{ github.event.inputs.versionName }}
        base: main
        title: v${{ github.event.inputs.versionName }} into main
