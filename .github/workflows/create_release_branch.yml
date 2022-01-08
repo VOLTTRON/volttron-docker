@@ -36,21 +36,11 @@ jobs:
        body: |
            Hi!
            This PR was created in response to running a GithubAction workflow.
-    
-    - name: Create pull request into main
-      uses: thomaseizinger/create-pull-request@1.0.0
-      with:
-       github-token: ${{ env.GITHUB_TOKEN }}
-       head: release/v${{ github.event.inputs.versionName }}
-       base: develop
-       title: v${{ github.event.inputs.versionName }} into develop
-       reviewers: ${{ github.event.issue.user.login }}
-       body: |
-           Hi!
-           This PR was created in response to running a GithubAction workflow.
            
     - name: Create a tag
       run: | 
         echo "Current tags"
         git tag 
         echo "Creating new tag ${{ github.event.inputs.versionName }}"
+        git tag "v${{ github.event.inputs.versionName }}"
+        git tag
