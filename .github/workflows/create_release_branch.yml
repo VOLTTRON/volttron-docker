@@ -25,20 +25,14 @@ jobs:
     - name: Push new branch
       run: git push origin release/v${{ github.event.inputs.versionName }}
 
-    - name: Create Pull Request
-      id: cpr
-      uses: peter-evans/create-pull-request@v3
+    - name: pull-request
+      uses: repo-sync/pull-request@v2
       with:
-        token: ${{ env.GITHUB_TOKEN }}
-        commit-message: "Merge release ${{ github.event.inputs.versionName }} into main"
-        committer: GitHub <noreply@github.com>
-        author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
-        signoff: false
-        base: main
-        delete-branch: false
-        title: "Merge release ${{ github.event.inputs.versionName }} into main"
-        labels: |
-          automerge
+        source_branch: "release/v${{ github.event.inputs.versionName }}"
+        destination_branch: "main"                      # If blank, default: master
+        pr_title: "Pulling ${{ github.ref }} into main" # Title of pull request
+        pr_label: "automerge"                               # Comma-separated list (no spaces)
+        github_token: ${{ env.GITHUB_TOKEN }}
            
     - name: Create a tag
       run: | 
