@@ -30,7 +30,7 @@ jobs:
       with:
         source_branch: "release/v${{ github.event.inputs.versionName }}"
         destination_branch: "main"                      # If blank, default: master
-        pr_title: "Pulling ${{ github.ref }} into main" # Title of pull request
+        pr_title: "Merge release/v${{ github.event.inputs.versionName }} into main" # Title of pull request
         pr_label: "automerge"                               # Comma-separated list (no spaces)
         github_token: ${{ env.GITHUB_TOKEN }}
            
