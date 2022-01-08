@@ -59,7 +59,7 @@ jobs:
 
     - name: Image digest
       run: echo ${{ steps.docker_build.outputs.digest }}
-  
+
   on-failure:
     runs-on: ubuntu-20.04
     if: ${{ github.event.workflow_run.conclusion == 'failure' }}
