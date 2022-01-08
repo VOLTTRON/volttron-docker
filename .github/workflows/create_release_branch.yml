@@ -1,4 +1,4 @@
-name: Create Release Branch
+name: Create and Merge Release Branch
 on:
   workflow_dispatch:
     inputs:
@@ -33,7 +33,13 @@ jobs:
         pr_title: "Merge release/v${{ github.event.inputs.versionName }} into main" # Title of pull request
         pr_label: "automerge"                               # Comma-separated list (no spaces)
         github_token: ${{ env.GITHUB_TOKEN }}
-           
+
+    - name: automerge
+      uses: "pascalgn/automerge-action@v0.14.3"
+      env:
+        GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
+        LOG: "TRACE"
+        
     - name: Create a tag
       run: | 
         echo "Current tags"
