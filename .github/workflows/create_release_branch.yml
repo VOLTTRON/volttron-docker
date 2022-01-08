@@ -21,28 +21,6 @@ jobs:
       run: |
        git config user.name "GitHub Actions"
        git config user.email noreply@github.com
-
-    - name: Run Changelog CI
-      uses: saadmk11/changelog-ci@v1.0.0
-      with:
-        # Optional, you can provide any name for your changelog file,
-        # We currently support Markdown (.md) and reStructuredText (.rst) files
-        # defaults to `CHANGELOG.md` if not provided.
-        changelog_filename: CHANGELOG.md
-        # Optional, This will be used to configure git
-        # defaults to `github-actions[bot]` if not provided.
-        committer_username: 'GitHub Actions'
-        committer_email: 'noreply@github.com'
-        release_version: ${{ github.event.inputs.versionName }}
-        # Optional
-        github_token: ${{ env.GITHUB_TOKEN }}
-      
-    - name: Commit changelog and manifest files
-      id: make-commit
-      run: |
-        git add CHANGELOG.md
-        git commit --message "Prepare release ${{ github.event.inputs.versionName }}"
-        echo "::set-output name=commit::$(git rev-parse HEAD)"
         
     - name: Push new branch
       run: git push origin release/v${{ github.event.inputs.versionName }}
