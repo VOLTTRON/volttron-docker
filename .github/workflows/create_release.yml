@@ -1,0 +1,124 @@
+name: Create Release and Publish to DHub
+
+on:
+  workflow_dispatch:
+    inputs:
+      versionName:
+        description: 'Name of version  (ie 5.5.0)'
+        required: true
+
+env:
+  GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+  VERSION: v${{ github.event.inputs.versionName }}
+  IMAGE_BASE_NAME: eclipsevolttron/volttron
+
+jobs:
+  create_release_publish_to_dhub:
+    runs-on: ubuntu-20.04
+
+    steps:
+    - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
+    - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
+    - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+
+    # https://github.com/marketplace/actions/checkout
+    - name: Check out code
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+        ref: develop
+
+    - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
+    - name: List files in the repository
+      run: |
+        ls ${{ github.workspace }}
+
+    - name: Create release branch
+      run: |
+        git checkout -b release/${{ env.VERSION }}
+
+    - name: Initialize mandatory git config
+      run: |
+       git config user.name "GitHub Actions"
+       git config user.email noreply@github.com
+
+    - name: Push release branch to origin
+      run: git push origin release/${{ env.VERSION }}
+
+    # https://github.com/marketplace/actions/automatic-changelog-generator
+    - name: Generate changelog
+      uses: charmixer/auto-changelog-action@v1
+      with:
+        token: ${{ env.GITHUB_TOKEN }}
+        release_branch: main
+
+    - name: Commit files
+      run: |
+        git add CHANGELOG.md && git commit -m 'Updated CHANGELOG.md' && echo "push=true" >> $GITHUB_ENV || echo "No changes to CHANGELOG.md"
+
+    - name: Push changes to release branch
+      if: env.push == 'true'
+      run: |
+        git push --set-upstream origin release/${{ env.VERSION }}
+
+    # https://github.com/marketplace/actions/github-pull-request-action
+    - name: Create pull-request from release branch to main
+      uses: repo-sync/pull-request@v2
+      with:
+        source_branch: "release/${{ env.VERSION }}"
+        destination_branch: "main"
+        pr_title: "Merge release/${{ env.VERSION }} into main"
+        github_token: ${{ env.GITHUB_TOKEN }}
+
+    - name: Create and push tag
+      run: |
+        echo "Creating new tag ${{ env.VERSION }}"
+        git tag ${{ env.VERSION }}
+        git tag
+        git push origin ${{ env.VERSION }}
+
+    # https://github.com/marketplace/actions/gh-release
+    - name: Create release from tag
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: ${{ env.VERSION }}
+        body_path: ${{ github.workspace }}/CHANGELOG.md
+
+    # Copied from publish_develop_image.yml
+    - name: Clone submodule
+      run: git submodule update --init --recursive
+
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v1
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    # Ensure that the repo has the username and token added from the
+    # official Volttron Dockerhub page at https://hub.docker.com/repository/docker/eclipsevolttron/volttron/general
+    # On instructions how to do this, see https://docs.github.com/en/actions/guides/publishing-docker-images
+    # https://github.com/docker/login-action
+    - name: Login to DockerHub
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKER_USER }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Build and push
+      id: docker_build
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        push:  true
+        tags: |
+          ${{ env.IMAGE_BASE_NAME }}:${{ env.VERSION }}
+          ${{ env.IMAGE_BASE_NAME }}:latest
+
+    - name: Check image publish
+      if: steps.docker_build.outputs.digest == ''
+      run: exit 1
+
+    - name: Image digest
+      run: echo ${{ steps.docker_build.outputs.digest }}
+
+    - run: echo "🍏 This job's status is ${{ job.status }}."
