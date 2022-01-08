@@ -34,6 +34,7 @@ jobs:
         committer: GitHub <noreply@github.com>
         author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
         signoff: false
+        base: main
         delete-branch: false
         title: "Merge release ${{ github.event.inputs.versionName }} into main"
         labels: |
