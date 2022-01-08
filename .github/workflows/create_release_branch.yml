@@ -44,3 +44,4 @@ jobs:
         echo "Creating new tag ${{ github.event.inputs.versionName }}"
         git tag "v${{ github.event.inputs.versionName }}"
         git tag
+        git push origin "v${{ github.event.inputs.versionName }}"
