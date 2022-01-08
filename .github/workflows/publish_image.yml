@@ -2,12 +2,16 @@
 
 name: Publish Image to Volttron DockerHub
 
+# on:
+#   workflow_run:
+#     workflows: ["Create and Merge Release Branch"]
+#     branches: [main]
+#     types: [completed]
+
 on:
-  workflow_run:
-    workflows: ["Create and Merge Release Branch"]
-    branches: [main]
-    types: [completed]
-    
+  push:
+    tags:
+      - v*
 env:
   # variables to change image name on DockerHub
   IMAGE_BASE_NAME: eclipsevolttron/volttron
