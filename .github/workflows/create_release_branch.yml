@@ -22,10 +22,20 @@ jobs:
        git config user.name "GitHub Actions"
        git config user.email noreply@github.com
 
-    - name: Conventional Changelog Action
-      uses: TriPSs/conventional-changelog-action@v3
+    - name: Run Changelog CI
+      uses: saadmk11/changelog-ci@v1.0.0
       with:
-        github-token: ${{ env.GITHUB_TOKEN}}
+        # Optional, you can provide any name for your changelog file,
+        # We currently support Markdown (.md) and reStructuredText (.rst) files
+        # defaults to `CHANGELOG.md` if not provided.
+        changelog_filename: CHANGELOG.md
+        # Optional, This will be used to configure git
+        # defaults to `github-actions[bot]` if not provided.
+        committer_username: 'GitHub Actions'
+        committer_email: 'noreply@github.com'
+        release_version: ${{ github.event.inputs.versionName }}
+        # Optional
+        github_token: ${{ env.GITHUB_TOKEN }}
       
     - name: Commit changelog and manifest files
       id: make-commit
