@@ -25,17 +25,19 @@ jobs:
     - name: Push new branch
       run: git push origin release/v${{ github.event.inputs.versionName }}
 
-    - name: Create pull request into main
-      uses: thomaseizinger/create-pull-request@1.0.0
+    - name: Create Pull Request
+      id: cpr
+      uses: peter-evans/create-pull-request@v3
       with:
-       github-token: ${{ env.GITHUB_TOKEN }}
-       head: release/v${{ github.event.inputs.versionName }}
-       base: main
-       title: v${{ github.event.inputs.versionName }} into main
-       reviewers: ${{ github.event.issue.user.login }}
-       body: |
-           Hi!
-           This PR was created in response to running a GithubAction workflow.
+        token: ${{ env.GITHUB_TOKEN }}
+        commit-message: "Merge release ${{ github.event.inputs.versionName }} into main"
+        committer: GitHub <noreply@github.com>
+        author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+        signoff: false
+        delete-branch: false
+        title: "Merge release ${{ github.event.inputs.versionName }} into main"
+        labels: |
+          automerge
            
     - name: Create a tag
       run: | 
