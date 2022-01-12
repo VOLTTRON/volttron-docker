@@ -59,11 +59,13 @@ jobs:
       run: echo ${{ steps.docker_build.outputs.digest }}
 
     # https://github.com/marketplace/actions/docker-hub-description
-    - name: Update DockerHub repo README
-      uses: peter-evans/dockerhub-description@v2
-      with:
-        username: ${{ secrets.DOCKER_USER }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
-        readme-filepath: ./README_DHUB.md
+    # Currently doesn't work with personal access tokens; see https://github.com/peter-evans/dockerhub-description/issues/10
+    # when fixed, uncomment this step
+#    - name: Update DockerHub repo README
+#      uses: peter-evans/dockerhub-description@v2
+#      with:
+#        username: ${{ secrets.DOCKER_USER }}
+#        password: ${{ secrets.DOCKER_PASSWORD }}
+#        readme-filepath: ./README_DHUB.md
 
     - run: echo "🍏 This job's status is ${{ job.status }}."
