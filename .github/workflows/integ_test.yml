@@ -1,32 +1,39 @@
-name: Test image CI
+name: Test Image
 
 on:
   pull_request:
     branches:
-      - main
       - develop
+      - main
 
 jobs:
-  build:
+  run_integ_tests:
     # The strategy allows customization of the build and allows matrixing the version of os and software
     # https://docs.github.com/en/free-pro-team@l.atest/actions/reference/workflow-syntax-for-github-actions#jobsjob_idstrategy
     strategy:
       fail-fast: false
       matrix:
         # Each entry in the os and python-version matrix will be run so for the 1 x 3 there will be 4 jobs run
-        os: [ ubuntu-18.04 ]
-        python-version: [ 3.6, 3.7 , 3.8 ]
+        os: [ ubuntu-20.04 ]
+        python-version: [ 3.8 ]
 
     runs-on: ${{ matrix.os }}
 
     steps:
-        - uses: actions/checkout@v2
-        - name: Code cleanup
-          run: |
-            pip install pre-commit
-            pre-commit run --all-files
-        - name: Run integration tests
-          run: ./run-test-docker-image.sh -g volttron -t develop -w 360
-          # After numerous test runs, it appears that the server on GitHub Actions takes about 6 minutes (360 seconds) to complete the Volttron setup;
-          # if the tests start running less than 6 minutes after the container is being created, we might exec into the container before it starts running,
-          # thereby causing the tests to fail because the container isn't running.
+    - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
+    - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
+    - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+
+    # https://github.com/marketplace/actions/checkout
+    - uses: actions/checkout@v2
+    - name: Code cleanup
+      run: |
+        pip install pre-commit
+        pre-commit run --all-files
+    - name: Run integration tests
+      run: ./run-test-docker-image.sh -g volttron -t develop -w 360
+      # After numerous test runs, it appears that the server on GitHub Actions takes about 6 minutes (360 seconds) to complete the Volttron setup;
+      # if the tests start running less than 6 minutes after the container is being created, we might exec into the container before it starts running,
+      # thereby causing the tests to fail because the container isn't running.
+
+    - run: echo "🍏 This job's status is ${{ job.status }}."

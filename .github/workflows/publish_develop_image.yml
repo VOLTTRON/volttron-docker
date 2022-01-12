@@ -1,0 +1,69 @@
+# This workflow is based on example from # https://github.com/marketplace/actions/build-and-push-docker-images
+
+name: Publish Develop Image
+
+on:
+  push:
+    branches:
+      - develop
+env:
+  # Image name on Volttron DockerHub account at https://hub.docker.com/orgs/eclipsevolttron
+  IMAGE_BASE_NAME: eclipsevolttron/volttron
+
+jobs:
+  publish_develop_to_dhub:
+    runs-on: ubuntu-20.04
+
+    steps:
+    - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
+    - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
+    - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+
+    # https://github.com/marketplace/actions/checkout
+    - name: Check out the repo
+      uses: actions/checkout@v2
+
+    - name: Clone submodule
+      run: git submodule update --init --recursive
+
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v1
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    # Ensure that the repo has the username and token added from the
+    # official Volttron Dockerhub page at https://hub.docker.com/repository/docker/eclipsevolttron/volttron/general
+    # On instructions how to do this, see https://docs.github.com/en/actions/guides/publishing-docker-images
+    # https://github.com/docker/login-action
+    - name: Login to DockerHub
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKER_USER }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Build and push
+      id: docker_build
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        push: true
+        tags: |
+          ${{ env.IMAGE_BASE_NAME }}:develop
+
+    - name: Check image publish
+      if: steps.docker_build.outputs.digest == ''
+      run: exit 1
+
+    - name: Image Digest
+      run: echo ${{ steps.docker_build.outputs.digest }}
+
+    # https://github.com/marketplace/actions/docker-hub-description
+    - name: Update DockerHub repo README
+      uses: peter-evans/dockerhub-description@v2
+      with:
+        username: ${{ secrets.DOCKER_USER }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        readme-filepath: ./README_DHUB.md
+
+    - run: echo "🍏 This job's status is ${{ job.status }}."
