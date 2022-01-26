@@ -29,8 +29,6 @@ if [[ $VOLTTRON_UID_ORIGINAL != $USER_ID ]]; then
   echo "Changing volttron USER_ID to match passed LOCAL_USER_ID ${USER_ID} "
   usermod -u $USER_ID volttron
 fi
-# echo "Exporting HOME"
-# export HOME=${VOLTTRON_USER_HOME}
 
 # # Only need to change
 # if [ -z "${VOLTTRON_USER_HOME}" ]; then
@@ -38,14 +36,6 @@ echo "chown volttron.volttron -R $VOLTTRON_USER_HOME"
 chown volttron.volttron -R ${VOLTTRON_USER_HOME}
 # fi
 
-# echo "cd to $VOLTTRON_USER_HOME"
-# cd ${VOLTTRON_USER_HOME}
-
-# # if [ ! -f "platform_config.yml" ]; then
-# #   echo "File not found at $VOLTTRON_USER_HOME/platform_config.yml";
-# #   echo "mount or copy file into child container."
-# #   exit 1;
-# # fi
 
 if [[ $# -lt 1 ]]; then
   echo "Please provide a command to run (e.g. /bin/bash, volttron -vv)";
