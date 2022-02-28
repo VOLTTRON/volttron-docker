@@ -6,18 +6,32 @@ if [[ -z /startup/setup-platform.py ]]; then
     exit 1
 fi
 
-echo "Right before setup-platform.py is called I am calling printenv"
+echo "Before platform setup, print environment."
 printenv
 
-python3 /startup/setup-platform.py
-setup_return=$?
+#Check if the config file is already there and don't run setup-platform.py
+# if it is. Otherwise, the startup errors out when setup-platform.py tries
+# to write new certificates.
 
-if [[ $setup_return -ne 0 ]]; then
-    echo "error running setup-platform.py"
-    exit $setup_return
+VOLTTRON_CONFIG=${VOLTTRON_HOME}"/config"
+
+if [[ -e $VOLTTRON_CONFIG ]]
+then
+    echo "Container already initialized, skipping setup-platform.py"
+else
+    echo "Initializing container. Running setup-platform.py to setup the Volttron platform for the first and only time for this container..."
+
+    python3 /startup/setup-platform.py
+    setup_return=$?
+    if [[ $setup_return -ne 0 ]]; then
+	    echo "error running setup-platform.py"
+	    exit $setup_return
+    fi
+
+    echo "Setup of Volttron platform is complete."
+
 fi
 
-echo "Setup of Volttron platform is complete."
 echo "Starting Volttron..."
 
 # Now spin up the volttron platform

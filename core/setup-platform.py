@@ -58,14 +58,17 @@ def get_platform_configurations(platform_config_path):
 
 def _install_required_deps():
     # install required volttron dependencies, wheel and pyzmq, because they are not required in setup.py
+    # opt_reqs is a list of tuples, in which the tuple consists pf a pinned dependency and a list of zero or more options
+    # example: [('wheel==0.30', []), ('pyzmq==22.2.1', ['--zmq=bundled'])]
     from requirements import option_requirements as opt_reqs
 
     for req in opt_reqs:
         package, options = req
         install_cmd = ["pip3", "install", "--no-deps"]
+        # TODO: see if options can be used as part of installation
         # if options:
         #     for opt in options:
-        #         install_cmd.extend([f'--install-option', opt])
+        #         install_cmd.extend([f"--install-option=\"{opt}\""])
         # install_cmd.append(f'--install-option="{opt}"')
         install_cmd.append(package)
         subprocess.check_call(install_cmd)
