@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased](https://github.com/VOLTTRON/volttron-docker/tree/HEAD)
+## [v3.2](https://github.com/VOLTTRON/volttron-docker/tree/v3.2)  (2022-02-28)
 
 [Full Changelog](https://github.com/VOLTTRON/volttron-docker/compare/v3.1...HEAD)
 

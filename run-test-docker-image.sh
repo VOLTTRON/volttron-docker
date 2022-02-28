@@ -31,7 +31,7 @@ check_error_code() {
 skip_build='' # skip building the image
 wait=360 # 6 minutes; wait is used for sleep while the container is setting up Volttron
 group='volttron' # group name of the image; will be used to name the image <group>/volttron
-tag='develop' # image tag; will be used to name the image <source image>:<tag>
+tag='test-build' # image tag; will be used to name the image <source image>:<tag>
 while getopts 'sw:g:t:' flag; do
   case "${flag}" in
     s) skip_build=true ;;
@@ -58,7 +58,7 @@ else
 fi
 
 ###### Test that the image was built
-docker images --format "{{.Tag}}: {{.Repository}}" | grep 'develop: volttron/volttron'
+docker images --format "{{.Tag}}: {{.Repository}}" | grep "${tag}: volttron/volttron"
 check_error_code $? 'Failed to build image'
 
 ############ Setup and start container
