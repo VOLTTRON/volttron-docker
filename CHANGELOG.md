@@ -1,8 +1,25 @@
 # Changelog
 
-## [Unreleased](https://github.com/VOLTTRON/volttron-docker/tree/HEAD)
+## [v3.2](https://github.com/VOLTTRON/volttron-docker/tree/v3.2)  (2022-02-28)
 
-[Full Changelog](https://github.com/VOLTTRON/volttron-docker/compare/v3.0...HEAD)
+[Full Changelog](https://github.com/VOLTTRON/volttron-docker/compare/v3.1...HEAD)
+
+**Closed issues:**
+
+- Error on ZMQ socket bind\(\) needs more information, patch attached. [\#63](https://github.com/VOLTTRON/volttron-docker/issues/63)
+- Volttron1 container is not reentrant [\#54](https://github.com/VOLTTRON/volttron-docker/issues/54)
+- realpath not a thing anymore [\#11](https://github.com/VOLTTRON/volttron-docker/issues/11)
+
+**Merged pull requests:**
+
+- Fix reentrant bug [\#62](https://github.com/VOLTTRON/volttron-docker/pull/62) ([bonicim](https://github.com/bonicim))
+- Merge release/v3.1 into main [\#61](https://github.com/VOLTTRON/volttron-docker/pull/61) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Update Workflows and README [\#58](https://github.com/VOLTTRON/volttron-docker/pull/58) ([bonicim](https://github.com/bonicim))
+- Fix docker-compose script and platform config for Volttron Central agent [\#52](https://github.com/VOLTTRON/volttron-docker/pull/52) ([bonicim](https://github.com/bonicim))
+
+## [v3.1](https://github.com/VOLTTRON/volttron-docker/tree/v3.1) (2022-01-14)
+
+[Full Changelog](https://github.com/VOLTTRON/volttron-docker/compare/v3.0...v3.1)
 
 **Closed issues:**
 
@@ -10,11 +27,10 @@
 
 **Merged pull requests:**
 
-- Update Workflows and README [\#58](https://github.com/VOLTTRON/volttron-docker/pull/58) ([bonicim](https://github.com/bonicim))
+- Pin volttron submodule to 8.1.3 [\#59](https://github.com/VOLTTRON/volttron-docker/pull/59) ([bonicim](https://github.com/bonicim))
 - Add DockerHub README and supporting Workflow action [\#57](https://github.com/VOLTTRON/volttron-docker/pull/57) ([bonicim](https://github.com/bonicim))
 - Automate release process for Volttron Docker image [\#56](https://github.com/VOLTTRON/volttron-docker/pull/56) ([bonicim](https://github.com/bonicim))
 - Remove Python 3.6, add \>=3.7 to all GH workflows [\#53](https://github.com/VOLTTRON/volttron-docker/pull/53) ([bonicim](https://github.com/bonicim))
-- Fix docker-compose script and platform config for Volttron Central agent [\#52](https://github.com/VOLTTRON/volttron-docker/pull/52) ([bonicim](https://github.com/bonicim))
 - Update platform\_config.yml config for VolttronCentral [\#51](https://github.com/VOLTTRON/volttron-docker/pull/51) ([bonicim](https://github.com/bonicim))
 
 ## [v3.0](https://github.com/VOLTTRON/volttron-docker/tree/v3.0) (2021-12-09)
