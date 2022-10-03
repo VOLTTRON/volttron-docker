@@ -5,7 +5,7 @@ import yaml
 
 from shutil import copy
 from time import sleep
-from volttron.platform import set_home, certs
+from volttron.platform import set_home
 from volttron.platform.agent.known_identities import PLATFORM_WEB
 from volttron.utils import get_hostname
 from slogger import get_logger
@@ -96,7 +96,12 @@ def _create_platform_config_file(platform_cfg, cfg_path):
 
 def _create_certs(cfg_path, platform_cfg):
     print("Creating CA Certificate...")
-    crts = certs.Certs()
+    # We need to import Certs here because we Certs depends on zmq, which only gets installed after _install_required_deps() is executed.
+    # If we put this import statement at the top of the module, we will run into an import error because zmq gets
+    # installed when _install_required_deps() is executed later in the module
+    from volttron.platform.auth.certs import Certs
+
+    crts = Certs()
     data = {
         "C": "US",
         "ST": "WA",
@@ -239,7 +244,7 @@ def install_agents(agents):
     # if we need to do installs then we haven't setup this at all.
     if need_to_install:
         # Start volttron first because we can't install anything without it
-        proc = subprocess.Popen([VOLTTRON_CMD, "-vv"])
+        proc = subprocess.Popen([VOLTTRON_CMD, "-v"])
         assert proc is not None
         sleep(20)
 

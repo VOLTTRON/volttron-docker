@@ -27,6 +27,7 @@ as a volume (i.e. volume-mounted) in your Docker run command to persist the Volt
   * To create this volume, run the following command:`docker volume create volttron1-data`
 
 * You must create a `platform_config.yml` that will describe your Volttron platform configuration and the agents that you want installed. For an example, see [volttron-docker/platform.config](https://github.com/VOLTTRON/volttron-docker/blob/main/platform_config.yml). This file will be bind-mounted into your container. Below is an example of such a configuration file:
+
 ```shell
 # Properties to be added to the root config file
 # the properties should be ingestible for volttron
@@ -56,10 +57,14 @@ agents:
 
 * You must create a `volttron_configs` directory that will hold all your agent configurations. For an example of what files can be put in this directory, see [volttron-docker/configs](https://github.com/VOLTTRON/volttron-docker/tree/main/configs). This directory will be bind-mounted into your container.
 
-After you have completed all the prerequisites, you can now run the container. NOTE: You need to ensure that the source paths for
+After you have completed all the prerequisites, you can now run the container.
+
+NOTE: You need to ensure that the source paths for
 your bind mounts (i.e. your local version of platform_config.yml and the directory volttron_configs) are properly created. In the following example,
 the file and directory are placed in the working directory denoted by `pwd`:
 
+NOTE2: You also need to specify the tag of the image which you want to run. It takes the form `eclipsevolttron/volttron:[tag]`, where tag
+is the tag that you want to use. For example, `eclipsevolttron/volttron:v3.0` uses the tagged image `v3.0`
 ```shell
 docker run \
 --name volttron1 \
@@ -78,7 +83,7 @@ eclipsevolttron/volttron:v3.0
 If you don't want to type a long `docker run` command every time you run a container, you can wrap your command in a
 docker-compose script. See this example from (docker-compose.yml)[https://github.com/VOLTTRON/volttron-docker/blob/main/docker-compose.yml].
 Note that you still need to ensure that the paths to the bind-mounts are properly constructed. After you create your docker-compose script,
-simply run `docker-compose run` in the same directory that holds your script.
+run `docker-compose run` in the same directory that holds your script.
 
 ```shell
 version: '3.4'

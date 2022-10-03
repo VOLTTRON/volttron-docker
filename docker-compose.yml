@@ -4,11 +4,11 @@ services:
   volttron1:
     container_name: volttron1
     hostname: volttron1
-    image: eclipsevolttron/volttron:v3.0
+    image: eclipsevolttron/volttron:v8.2
     ports:
       # host_port:container_port
       # http port for volttron central
-      - 8443:8443
+      - "8443:8443"
     volumes:
       - ./platform_config.yml:/platform_config.yml
       - ./configs:/home/volttron/configs
