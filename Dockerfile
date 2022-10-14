@@ -1,13 +1,12 @@
-ARG image_user=amd64
 ARG image_repo=debian
-ARG image_tag=buster
+ARG image_tag=bullseye
 #
-FROM ${image_user}/${image_repo}:${image_tag} as volttron_base
+FROM ${image_repo}:${image_tag} as volttron_base
 #
 SHELL [ "bash", "-c" ]
 #
 ENV OS_TYPE=debian
-ENV DIST=buster
+ENV DIST=bullseye
 ENV VOLTTRON_GIT_BRANCH=rabbitmq-volttron
 ENV VOLTTRON_USER_HOME=/home/volttron
 ENV VOLTTRON_HOME=${VOLTTRON_USER_HOME}/.volttron
@@ -45,9 +44,6 @@ RUN set -eux; apt-get update; apt-get install -y --no-install-recommends \
 #
 # Set default 'python' to 'python3'
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 1
-#
-# Set default 'pip' to 'pip3'
-RUN ln -s /usr/bin/pip3 /usr/bin/pip
 #
 # Upgrade pip so that we get a pre-compiled wheel for 'cryptopgraphy', which is a dependency of Volttron
 # See https://cryptography.io/en/latest/faq/#installing-cryptography-fails-with-error-can-not-find-rust-compiler

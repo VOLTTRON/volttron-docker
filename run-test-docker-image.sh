@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-sudo apt-get install jq -y
-
 start=$(date +%s)
 
 exit_cleanly() {
