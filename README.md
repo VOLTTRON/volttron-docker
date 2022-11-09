@@ -29,7 +29,7 @@ To create the container and start using the platform on the container, run the f
 docker-compose script with the updated image name that uses the tag as part of
 its name.
 
-# Example bloew
+# Example below
 $ docker build -t eclipsevolttron/volttron:<some tag> --build-arg install_rmq=false --no-cache  .
 
 # Create and start the container that has runs Volttron
@@ -67,9 +67,10 @@ of this repository.
 The `platform_config.yml` file has two sections: `config`, which configures the main instance and populate's the main config file ($VOLTTRON_HOME/config), and `agents`, which contains a list of agents with references to configurations for them (note the frequent use of environment variables in this section).
 
 ## Main Configuration
-The Volttron configuration is defined under the section "config" in `platform_config.yml`.
+The Volttron configuration is defined under the section "config" in `platform_config.yml`. Note: This image requires that the Volttron Platform enable web. Thus, the platform configuration must set 'bind-web-address'.
 
-For example, the `vip-address` and `bind-web-address` would be populated using the following partial file:
+For example, the `vip-address` and `bind-web-address` would be set to specific values as seen in the following:
+
 ``` yaml
 # Properties to be added to the root config file:
 # - the properties should be ingestable for volttron
