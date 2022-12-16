@@ -68,6 +68,10 @@ RUN mkdir $VOLTTRON_HOME && \
 USER $VOLTTRON_USER
 COPY --chown=volttron:volttron volttron /code/volttron
 WORKDIR /code/volttron
+#
+# Upgrade pip so that we get a pre-compiled wheel for 'cryptopgraphy', which is a dependency of Volttron
+# See https://cryptography.io/en/latest/faq/#installing-cryptography-fails-with-error-can-not-find-rust-compiler
+RUN pip install --upgrade pip
 RUN pip install -e . --user
 RUN echo "package installed at `date`"
 #
