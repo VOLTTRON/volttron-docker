@@ -35,7 +35,7 @@ fi
 echo "Starting Volttron..."
 
 # Now spin up the volttron platform
-volttron -vv
+volttron -v
 volttron_retcode=$?
 if [[ $volttron_retcode ]]; then
   echo "volttron error"

@@ -31,7 +31,7 @@ jobs:
         pip install pre-commit
         pre-commit run --all-files
     - name: Run integration tests
-      run: ./run-test-docker-image.sh -g volttron -t develop -w 360
+      run: ./run-test-docker-image.sh
       # After numerous test runs, it appears that the server on GitHub Actions takes about 6 minutes (360 seconds) to complete the Volttron setup;
       # if the tests start running less than 6 minutes after the container is being created, we might exec into the container before it starts running,
       # thereby causing the tests to fail because the container isn't running.

@@ -5,7 +5,7 @@ import yaml
 
 from shutil import copy
 from time import sleep
-from volttron.platform import set_home, certs
+from volttron.platform import set_home
 from volttron.platform.agent.known_identities import PLATFORM_WEB
 from volttron.utils import get_hostname
 from slogger import get_logger
@@ -57,33 +57,29 @@ def get_platform_configurations(platform_config_path):
 
 
 def _install_required_deps():
-    # install required volttron dependencies, wheel and pyzmq, because they are not required in setup.py
-    # opt_reqs is a list of tuples, in which the tuple consists pf a pinned dependency and a list of zero or more options
-    # example: [('wheel==0.30', []), ('pyzmq==22.2.1', ['--zmq=bundled'])]
     from requirements import option_requirements as opt_reqs
 
     for req in opt_reqs:
         package, options = req
         install_cmd = ["pip3", "install", "--no-deps"]
-        # TODO: see if options can be used as part of installation
-        # if options:
-        #     for opt in options:
-        #         install_cmd.extend([f"--install-option=\"{opt}\""])
-        # install_cmd.append(f'--install-option="{opt}"')
+        if options:
+            for opt in options:
+                install_cmd.extend([f'--config-settings="{opt}"'])
         install_cmd.append(package)
         subprocess.check_call(install_cmd)
 
 
-def _install_web_deps(bind_web_address):
-    print(f"Platform bind web address set to: {bind_web_address}")
+def _install_addl_deps():
     from requirements import extras_require as extras
 
-    web_plt_pack = extras.get("web", None)
-    install_cmd = ["pip3", "install"]
-    install_cmd.extend(web_plt_pack)
-    if install_cmd is not None:
-        print(f"Installing packages for web platform: {web_plt_pack}")
-        subprocess.check_call(install_cmd)
+    addl_deps = ["web", "testing", "weather", "drivers", "databases"]
+    for dep in addl_deps:
+        deps_to_install = extras.get(dep, None)
+        if deps_to_install is not None:
+            install_cmd = ["pip3", "install"]
+            install_cmd.extend(deps_to_install)
+            print(f"Installing {dep} group dependencies: {deps_to_install}")
+            subprocess.check_call(install_cmd)
 
 
 def _create_platform_config_file(platform_cfg, cfg_path):
@@ -96,7 +92,12 @@ def _create_platform_config_file(platform_cfg, cfg_path):
 
 def _create_certs(cfg_path, platform_cfg):
     print("Creating CA Certificate...")
-    crts = certs.Certs()
+    # We need to import Certs here because we Certs depends on zmq, which only gets installed after _install_required_deps() is executed.
+    # If we put this import statement at the top of the module, we will run into an import error because zmq gets
+    # installed when _install_required_deps() is executed later in the module
+    from volttron.platform.auth.certs import Certs
+
+    crts = Certs()
     data = {
         "C": "US",
         "ST": "WA",
@@ -199,12 +200,7 @@ def _setup_rmq(platform_cfg):
 def configure_platform(platform_cfg, config):
     # install required dependencies (this is temporary due to setup.py of volttron)
     _install_required_deps()
-
-    # install web dependencies if web-enabled
-    bind_web_address = platform_cfg.get("bind-web-address", None)
-    if bind_web_address is not None:
-        print(f"Platform bind web address set to: {bind_web_address}")
-        _install_web_deps(bind_web_address)
+    _install_addl_deps()
 
     # Create the main volttron config file
     if not os.path.isdir(VOLTTRON_HOME):
@@ -239,7 +235,7 @@ def install_agents(agents):
     # if we need to do installs then we haven't setup this at all.
     if need_to_install:
         # Start volttron first because we can't install anything without it
-        proc = subprocess.Popen([VOLTTRON_CMD, "-vv"])
+        proc = subprocess.Popen([VOLTTRON_CMD, "-v"])
         assert proc is not None
         sleep(20)
 

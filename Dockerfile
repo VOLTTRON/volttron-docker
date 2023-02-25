@@ -1,13 +1,12 @@
-ARG image_user=amd64
 ARG image_repo=debian
-ARG image_tag=buster
-
-FROM ${image_user}/${image_repo}:${image_tag} as volttron_base
-
+ARG image_tag=bullseye
+#
+FROM ${image_repo}:${image_tag} as volttron_base
+#
 SHELL [ "bash", "-c" ]
-
+#
 ENV OS_TYPE=debian
-ENV DIST=buster
+ENV DIST=bullseye
 ENV VOLTTRON_GIT_BRANCH=rabbitmq-volttron
 ENV VOLTTRON_USER_HOME=/home/volttron
 ENV VOLTTRON_HOME=${VOLTTRON_USER_HOME}/.volttron
@@ -17,9 +16,9 @@ ENV VOLTTRON_USER=volttron
 ENV USER_PIP_BIN=${VOLTTRON_USER_HOME}/.local/bin
 ENV RMQ_ROOT=${VOLTTRON_USER_HOME}/rabbitmq_server
 ENV RMQ_HOME=${RMQ_ROOT}/rabbitmq_server-3.7.7
-
+#
 USER root
-
+#
 RUN set -eux; apt-get update; apt-get install -y --no-install-recommends \
     procps \
     gosu \
@@ -42,38 +41,39 @@ RUN set -eux; apt-get update; apt-get install -y --no-install-recommends \
     ca-certificates \
     libffi-dev \
     sqlite3
-
+#
 # Set default 'python' to 'python3'
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 1
-
-# Set default 'pip' to 'pip3'
-RUN ln -s /usr/bin/pip3 /usr/bin/pip
-
+#
+# Upgrade pip so that we get a pre-compiled wheel for 'cryptopgraphy', which is a dependency of Volttron
+# See https://cryptography.io/en/latest/faq/#installing-cryptography-fails-with-error-can-not-find-rust-compiler
+RUN pip install --upgrade pip
+#
 # Create a user called 'volttron'
 RUN id -u $VOLTTRON_USER &>/dev/null || adduser --disabled-password --gecos "" $VOLTTRON_USER
-
+#
 RUN mkdir -p /code && chown $VOLTTRON_USER.$VOLTTRON_USER /code && \
     echo "export PATH=/home/volttron/.local/bin:$PATH" > /home/volttron/.bashrc
-
+#
 ############################################
 # ENDING volttron_base stage
 # Creating volttron_core stage
 ############################################
 FROM volttron_base AS volttron_core
-
+#
 # copy over /core, i.e. the custom startup scripts for this image
 RUN mkdir /startup $VOLTTRON_HOME && \
     chown $VOLTTRON_USER.$VOLTTRON_USER $VOLTTRON_HOME
 COPY ./core /startup
 RUN chmod +x /startup/*
-
+#
 # copy over volttron repo
 USER $VOLTTRON_USER
 COPY --chown=volttron:volttron volttron /code/volttron
 WORKDIR /code/volttron
 RUN pip install -e . --user
 RUN echo "package installed at `date`"
-
+#
 ############################################
 # RABBITMQ SPECIFIC INSTALLATION
 ############################################
@@ -86,7 +86,7 @@ RUN if [ "${install_rmq}" = "false" ] ; then \
       ./scripts/rabbit_dependencies.sh $OS_TYPE $DIST && \
       python -m pip install gevent-pika; \
     fi
-
+#
 USER $VOLTTRON_USER
 ARG install_rmq
 RUN if [ "${install_rmq}" = "false" ] ; then \
@@ -99,8 +99,6 @@ RUN if [ "${install_rmq}" = "false" ] ; then \
       $RMQ_HOME/sbin/rabbitmq-plugins enable rabbitmq_management rabbitmq_federation rabbitmq_federation_management rabbitmq_shovel rabbitmq_shovel_management rabbitmq_auth_mechanism_ssl rabbitmq_trust_store;  \
     fi
 ############################################
-
-
 ########################################
 # The following lines should be run from any Dockerfile that
 # is inheriting from this one as this will make the volttron
