@@ -71,7 +71,7 @@ RUN chmod +x /startup/*
 USER $VOLTTRON_USER
 COPY --chown=volttron:volttron volttron /code/volttron
 WORKDIR /code/volttron
-RUN pip install -e . --user
+RUN pip install -e . --user --extra-index-url https://www.piwheels.org/simple
 RUN echo "package installed at `date`"
 
 ############################################
@@ -84,7 +84,7 @@ RUN if [ "${install_rmq}" = "false" ] ; then \
       echo "Not installing RMQ dependencies.";  \
     else \
       ./scripts/rabbit_dependencies.sh $OS_TYPE $DIST && \
-      python -m pip install gevent-pika; \
+      python -m pip install gevent-pika --extra-index-url https://www.piwheels.org/simple; \
     fi
 
 USER $VOLTTRON_USER
