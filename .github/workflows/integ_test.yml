@@ -25,7 +25,7 @@ jobs:
     - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
 
     # https://github.com/marketplace/actions/checkout
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Code cleanup
       run: |
         pip install pre-commit
