@@ -132,7 +132,7 @@ def _create_certs(cfg_path, platform_cfg):
         fout.write(f"web-ssl-cert = {master_web_cert}\n")
         fout.write(f"web-ssl-key = {master_web_key}\n")
 
-#
+
 # def _create_rmq_config(platform_cfg, config):
 #     # validation checks
 #     if not config.get("rabbitmq-config"):
