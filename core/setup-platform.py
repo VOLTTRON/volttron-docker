@@ -15,7 +15,7 @@ slogger = get_logger("setup-platform", "setup-platform")
 # The environment variables must be set or we have big issues
 VOLTTRON_ROOT = os.environ["VOLTTRON_ROOT"]
 VOLTTRON_HOME = os.environ["VOLTTRON_HOME"]
-RMQ_HOME = os.environ["RMQ_HOME"]
+# RMQ_HOME = os.environ["RMQ_HOME"]
 VOLTTRON_CMD = "volttron"
 VOLTTRON_CTL_CMD = "volttron-ctl"
 VOLTTRON_CFG_CMD = "vcfg"
@@ -133,68 +133,68 @@ def _create_certs(cfg_path, platform_cfg):
         fout.write(f"web-ssl-key = {master_web_key}\n")
 
 
-def _create_rmq_config(platform_cfg, config):
-    # validation checks
-    if not config.get("rabbitmq-config"):
-        sys.stderr.write(
-            "Invalid rabbit-config entry in platform configuration file.\n"
-        )
-        sys.exit(1)
-
-    rabbitcfg_file = os.path.expandvars(
-        os.path.expanduser(config.get("rabbitmq-config"))
-    )
-    if not os.path.isfile(rabbitcfg_file):
-        sys.stderr.write("Invalid rabbit-config entry {} \n".format(rabbitcfg_file))
-        sys.exit(1)
-    with open("/etc/hostname") as hostfile:
-        hostname = hostfile.read().strip()
-    if not hostname:
-        sys.stderr.write(
-            "Invalid hostname set, please set it in the docker-compose or in the container."
-        )
-        sys.exit(1)
-
-    # Now we can configure the rabbit/rmq configuration
-    with open(rabbitcfg_file) as cin:
-        rabbit_config = yaml.safe_load(cin)
-
-    # set host
-    rabbit_config["host"] = hostname
-
-    # set use-existing-certs
-    certs_test_path = os.path.join(
-        VOLTTRON_HOME,
-        "certificates/certs/{}-trusted-cas.crt".format(
-            platform_cfg.get("instance-name")
-        ),
-    )
-    if os.path.isfile(certs_test_path):
-        rabbit_config["use-existing-certs"] = True
-
-    # Set rmq_home
-    print(f"Setting rmq-home to {RMQ_HOME}")
-    rabbit_config["rmq-home"] = RMQ_HOME
-
-    # Create rmq config YAML file
-    rabbitfilename = os.path.join(VOLTTRON_HOME, "rabbitmq_config.yml")
-    print("Creating rabbitmq conifg file at {}".format(rabbitfilename))
-    print("dumpfile is :{}".format(rabbit_config))
-    with open(rabbitfilename, "w") as outfile:
-        yaml.dump(rabbit_config, outfile, default_flow_style=False)
-    assert os.path.isfile(rabbitfilename)
-
-
-def _setup_rmq(platform_cfg):
-    now_dir = os.getcwd()
-    os.chdir(VOLTTRON_ROOT)
-    # we must import the function here because it requires pyzmq, which is not installed during the image build but in configure_platform, which is called before this function
-    from volttron.platform.instance_setup import setup_rabbitmq_volttron
-
-    setup_rabbitmq_volttron(
-        "single", True, instance_name=platform_cfg.get("instance-name")
-    )
-    os.chdir(now_dir)
+# def _create_rmq_config(platform_cfg, config):
+#     # validation checks
+#     if not config.get("rabbitmq-config"):
+#         sys.stderr.write(
+#             "Invalid rabbit-config entry in platform configuration file.\n"
+#         )
+#         sys.exit(1)
+#
+#     rabbitcfg_file = os.path.expandvars(
+#         os.path.expanduser(config.get("rabbitmq-config"))
+#     )
+#     if not os.path.isfile(rabbitcfg_file):
+#         sys.stderr.write("Invalid rabbit-config entry {} \n".format(rabbitcfg_file))
+#         sys.exit(1)
+#     with open("/etc/hostname") as hostfile:
+#         hostname = hostfile.read().strip()
+#     if not hostname:
+#         sys.stderr.write(
+#             "Invalid hostname set, please set it in the docker-compose or in the container."
+#         )
+#         sys.exit(1)
+#
+#     # Now we can configure the rabbit/rmq configuration
+#     with open(rabbitcfg_file) as cin:
+#         rabbit_config = yaml.safe_load(cin)
+#
+#     # set host
+#     rabbit_config["host"] = hostname
+#
+#     # set use-existing-certs
+#     certs_test_path = os.path.join(
+#         VOLTTRON_HOME,
+#         "certificates/certs/{}-trusted-cas.crt".format(
+#             platform_cfg.get("instance-name")
+#         ),
+#     )
+#     if os.path.isfile(certs_test_path):
+#         rabbit_config["use-existing-certs"] = True
+#
+#     # Set rmq_home
+#     print(f"Setting rmq-home to {RMQ_HOME}")
+#     rabbit_config["rmq-home"] = RMQ_HOME
+#
+#     # Create rmq config YAML file
+#     rabbitfilename = os.path.join(VOLTTRON_HOME, "rabbitmq_config.yml")
+#     print("Creating rabbitmq conifg file at {}".format(rabbitfilename))
+#     print("dumpfile is :{}".format(rabbit_config))
+#     with open(rabbitfilename, "w") as outfile:
+#         yaml.dump(rabbit_config, outfile, default_flow_style=False)
+#     assert os.path.isfile(rabbitfilename)
+#
+#
+# def _setup_rmq(platform_cfg):
+#     now_dir = os.getcwd()
+#     os.chdir(VOLTTRON_ROOT)
+#     # we must import the function here because it requires pyzmq, which is not installed during the image build but in configure_platform, which is called before this function
+#     from volttron.platform.instance_setup import setup_rabbitmq_volttron
+#
+#     setup_rabbitmq_volttron(
+#         "single", True, instance_name=platform_cfg.get("instance-name")
+#     )
+#     os.chdir(now_dir)
 
 
 def configure_platform(platform_cfg, config):
@@ -214,10 +214,10 @@ def configure_platform(platform_cfg, config):
     # create the certs
     _create_certs(cfg_path, platform_cfg)
 
-    # setup rmq if necessary
-    if platform_cfg.get("message-bus") == "rmq":
-        _create_rmq_config(platform_cfg, config)
-        _setup_rmq(platform_cfg)
+    # # setup rmq if necessary
+    # if platform_cfg.get("message-bus") == "rmq":
+    #     _create_rmq_config(platform_cfg, config)
+    #     _setup_rmq(platform_cfg)
 
 
 def install_agents(agents):
