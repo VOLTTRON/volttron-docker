@@ -1,5 +1,5 @@
-ARG image_repo=debian
-ARG image_tag=bullseye
+ARG image_repo=ubuntu
+ARG image_tag=20.04
 #
 FROM ${image_repo}:${image_tag} as volttron_base
 #
@@ -44,6 +44,9 @@ RUN set -eux; apt-get update; apt-get install -y --no-install-recommends \
     libffi-dev \
     sqlite3
 #
+# Set timezone
+RUN echo UTC > /etc/timezone
+
 # Set default 'python' to 'python3'
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 1
 #

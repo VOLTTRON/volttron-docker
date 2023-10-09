@@ -4,7 +4,7 @@ services:
   volttron1:
     container_name: volttron1
     hostname: volttron1
-    image: volttroncommunity/volttron:v8.2-zmq
+    image: volttroncommunity/volttron:v9.0-zmq
     ports:
       # host_port:container_port
       # http port for volttron central
