@@ -1,12 +1,12 @@
-ARG image_repo=ubuntu
-ARG image_tag=20.04
+ARG image_repo=rust
+ARG image_tag=bookworm
 #
-FROM ${image_repo}:${image_tag} as volttron_base
+FROM ${image_repo}:${image_tag} AS volttron_base
 #
 SHELL [ "bash", "-c" ]
 #
 ENV OS_TYPE=debian
-ENV DIST=bullseye
+ENV DIST=bookworm
 ENV VOLTTRON_GIT_BRANCH=main
 ENV VOLTTRON_USER_HOME=/home/volttron
 ENV VOLTTRON_HOME=${VOLTTRON_USER_HOME}/.volttron
@@ -30,6 +30,7 @@ RUN set -eux; apt-get update; apt-get install -y --no-install-recommends \
     python3-dev \
     python3-pip \
     python3-setuptools \
+    python3-venv \
     python3-wheel \
     openssl \
     libssl-dev \
@@ -50,9 +51,17 @@ RUN echo UTC > /etc/timezone
 # Set default 'python' to 'python3'
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 1
 #
+# Set global.break-system-packages to true to allow pip to install packages
+#
+RUN python3 -m pip config set global.break-system-packages true
+#
 # Upgrade pip so that we get a pre-compiled wheel for 'cryptopgraphy', which is a dependency of Volttron
 # See https://cryptography.io/en/latest/faq/#installing-cryptography-fails-with-error-can-not-find-rust-compiler
 RUN pip install --upgrade pip
+#
+# Install rust and cargo
+#
+RUN rustup default stable
 #
 # Create a user called 'volttron'
 RUN id -u $VOLTTRON_USER &>/dev/null || adduser --disabled-password --gecos "" $VOLTTRON_USER
@@ -69,19 +78,28 @@ FROM volttron_base AS volttron_core
 # copy over /core, i.e. the custom startup scripts for this image
 RUN mkdir /startup $VOLTTRON_HOME && \
     chown $VOLTTRON_USER.$VOLTTRON_USER $VOLTTRON_HOME
-COPY ./core /startup
+COPY --chown=volttron:volttron ./core /startup
 RUN chmod +x /startup/*
 #
 # copy over volttron repo
 USER $VOLTTRON_USER
 COPY --chown=volttron:volttron volttron /code/volttron
 WORKDIR /code/volttron
+#
+# Set global.break-system-packages to true to allow pip to install packages
+#
+RUN python3 -m pip config set global.break-system-packages true
+#
+# Upgrade pip so that we get a pre-compiled wheel for 'cryptopgraphy', which is a dependency of Volttron
+# See https://cryptography.io/en/latest/faq/#installing-cryptography-fails-with-error-can-not-find-rust-compiler
+RUN pip install --upgrade pip
+
 RUN pip install -e . --user
 RUN echo "package installed at `date`"
 
 # copy default configs
-COPY --chown=volttron:volttron ./platform_config.yml /platform_config.yml
-COPY --chown=volttron:volttron ./configs /home/volttron/configs
+#COPY --chown=volttron:volttron ./platform_config.yml /platform_config.yml
+#COPY --chown=volttron:volttron ./configs /home/volttron/configs
 
 
 ##
@@ -110,6 +128,9 @@ COPY --chown=volttron:volttron ./configs /home/volttron/configs
 #      $RMQ_HOME/sbin/rabbitmq-plugins enable rabbitmq_management rabbitmq_federation rabbitmq_federation_management rabbitmq_shovel rabbitmq_shovel_management rabbitmq_auth_mechanism_ssl rabbitmq_trust_store;  \
 #    fi
 ############################################
+
+RUN python -m pip install zmq
+
 ########################################
 # The following lines should be run from any Dockerfile that
 # is inheriting from this one as this will make the volttron

@@ -16,6 +16,7 @@ services:
     environment:
       - CONFIG=/home/volttron/configs
       - LOCAL_USER_ID=1000
+      - TZ=America/Los_Angeles
 
 volumes:
   volttron1-volume:
