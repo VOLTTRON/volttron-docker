@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - develop
+  workflow_dispatch:
 env:
   # Image name on Volttron DockerHub account at https://hub.docker.com/orgs/eclipsevolttron
   IMAGE_BASE_NAME: eclipsevolttron/volttron
