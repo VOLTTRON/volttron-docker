@@ -16,11 +16,11 @@ services:
     volumes:
       - ./platform_config.yml:/platform_config.yml
       - ./configs:/home/volttron/configs
-      - ./core:/startup
       - volttron1-volume:/home/volttron/db
     environment:
       - CONFIG=/home/volttron/configs
       - LOCAL_USER_ID=1000
+      - TZ=America/Los_Angeles
 
 volumes:
   volttron1-volume:
