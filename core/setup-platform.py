@@ -1,7 +1,9 @@
+import json
 import subprocess
 import os
 import sys
 import yaml
+
 
 from shutil import copy
 from time import sleep
@@ -50,10 +52,11 @@ def get_platform_configurations(platform_config_path):
         config = yaml.safe_load(cin)
         agents = config["agents"]
         platform_cfg = config["config"]
+        web_users_params = config.get("web_users")
 
     print("Platform instance name set to: {}".format(platform_cfg.get("instance-name")))
 
-    return config, agents, platform_cfg
+    return config, agents, platform_cfg, web_users_params
 
 
 def _install_required_deps():
@@ -361,12 +364,30 @@ def final_platform_configurations():
     sleep(5)
     sys.exit(0)
 
+def create_web_map(username, password, groups=None, return_json=False):
+    from passlib.hash import argon2
+    groups = groups if isinstance(groups, list) else [groups] if groups else ['admin', 'vui']
+    web_users_dict = {
+        username: {
+            "hashed_password": argon2.hash(password),
+            "groups": groups
+        }
+    }
+    return web_users_dict if not return_json else json.dumps(web_users_dict)
+
+def save_web_users_json_file(username, password, groups=None):
+    from pathlib import Path
+    with open(Path(VOLTTRON_HOME)/'web-users.json', 'w') as f:
+        json.dump(create_web_map(username, password, groups), f)
+
 
 if __name__ == "__main__":
     set_home(VOLTTRON_HOME)
-    config_tmp, agents_tmp, platform_cfg_tmp = get_platform_configurations(
+    config_tmp, agents_tmp, platform_cfg_tmp, web_users = get_platform_configurations(
         get_platform_config_path()
     )
     configure_platform(platform_cfg_tmp, config_tmp)
     install_agents(agents_tmp)
+    if web_users:
+        save_web_users_json_file(**web_users)
     final_platform_configurations()
