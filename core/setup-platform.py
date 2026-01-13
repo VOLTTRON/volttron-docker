@@ -94,6 +94,9 @@ def _create_platform_config_file(platform_cfg, cfg_path):
 
 
 def _create_certs(cfg_path, platform_cfg):
+    if not platform_cfg.get("bind-web-address", "").startswith("https://"):
+        print("Web address is not set to use SSL. Skipping certificate creation.")
+        return
     print("Creating CA Certificate...")
     # We need to import Certs here because we Certs depends on zmq, which only gets installed after _install_required_deps() is executed.
     # If we put this import statement at the top of the module, we will run into an import error because zmq gets
