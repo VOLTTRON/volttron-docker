@@ -6,6 +6,8 @@ if [[ -z /startup/setup-platform.py ]]; then
     exit 1
 fi
 
+export PYTHONPATH=$PYTHONPATH:$VOLTTRON_ROOT
+
 echo "Before platform setup, print environment."
 printenv
 
